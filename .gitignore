@@ -1,0 +1,5 @@
+.env
+hanzhu.db
+hanzhu.db-*
+__pycache__/
+*.pyc
