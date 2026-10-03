@@ -1,6 +1,6 @@
 """Тексты интерфейса на четырёх языках."""
 
-LANG_PROMPT = "🌐 Выбери язык · Tilni tanlang · Choose language · 选择语言"
+LANG_PROMPT = "Выбери язык 🇷🇺\nTilni tanlang 🇺🇿\nChoose language 🇬🇧\n选择语言 🇨🇳"
 
 WEEKDAYS = {
     "ru": ["пн", "вт", "ср", "чт", "пт", "сб", "вс"],
@@ -11,7 +11,17 @@ WEEKDAYS = {
 
 T = {
 "ru": {
- "ask_name": "你好！👋 Я 汉助 (HanZhu), помощник по китайскому от Лазизы.\n\nКак тебя зовут?",
+ "greet": "🍵 <b>Привет-привет!</b>\n\nМеня зовут <b>茶茶 (ЧаЧа)</b>, я маленький чайный дух 🌿\nЖиву в чашке-гайвань, а работаю помощником Лазизы по китайскому ✨\n\n<i>Налью тебе немного китайского: без спешки и без зубрёжки</i> 🫖\n\nДавай знакомиться! Как тебя зовут?",
+ "features": "Вот чем я могу быть полезен:\n\n📚 <b>Слово дня</b>, 🧧 <b>чэнъюй</b> и 🌏 <b>факты о Китае</b>, когда хочется чего-то небольшого и интересного\n🔤 <b>Перевод</b> на китайский и обратно, с пиньинем\n📊 <b>Прогресс</b>, если занимаешься с Лазизой: уроки, оплата, результаты тестов\n🗓 <b>Напоминания</b> о занятиях\n\nНе нашёл(ла), что нужно? Просто напиши мне, я передам Лазизе, и она ответит сама 💌\n\nМеню внизу, начинай с чего угодно 👇\n<i>Как я обращаюсь с данными: /privacy</i>",
+ "about_head": "🍵 <b>茶茶 (ЧаЧа)</b> · 汉助 Bot\nЧайный помощник Лазизы по китайскому",
+ "privacy": "🔒 <b>Конфиденциальность</b>\n\nЯ храню только то, что нужно, чтобы бот работал:\n· твой Telegram ID и @username\n· имя, язык, уровень и откуда ты узнал(а) обо мне\n· если ты ученик: количество проведённых и оплаченных уроков, расписание, результаты тестов, подтверждения и отмены занятий с причинами\n· какими кнопками бота ты пользуешься (просто счётчик, без текста)\n\nТвои сообщения мне бот в своей базе не хранит, они только пересылаются Лазизе.\n\nДоступ к данным есть только у Лазизы. Я не продаю их и не передаю рекламным сервисам. Они лежат на сервере, где работает бот, а раз в неделю копия базы отправляется Лазизе в Telegram.\n\n<b>Твои права</b>\n· получить копию своих данных: /mydata\n· удалить всё: /deletemydata (кроме того, что закон обязывает хранить, если такое требование есть)\n· исправить данные, ограничить их обработку, возразить против неё или отозвать согласие: напиши Лазизе через бота\n· подать жалобу в орган по защите персональных данных своей страны, если считаешь, что твои права не соблюдаются\n\nЕсли ученик несовершеннолетний, всё это может сделать родитель, написав Лазизе через бота.\n\nОбновлено: октябрь 2026. Изменения публикуются здесь, в /privacy.",
+ "mydata_caption": "📄 Копия всех данных, которые бот хранит о тебе.",
+ "mydata_empty": "Пока у меня нет твоих данных.",
+ "del_ask": "Удалить все твои данные из бота: профиль, уроки, оплаты, результаты тестов, расписание? Это нельзя отменить.",
+ "btn_del_yes": "🗑 Да, удалить",
+ "btn_del_no": "Отмена",
+ "del_done": "Готово, всё удалено. Если захочешь вернуться, нажми /start 🍵",
+ "del_cancel": "Хорошо, ничего не удалила.",
  "ask_source": "Приятно познакомиться, {name}!\n\nОткуда ты про меня узнал(а)?",
  "ask_level": "И последнее: какой у тебя уровень китайского?",
  "done": "Готово, {name}! Добро пожаловать 🐉",
@@ -27,7 +37,7 @@ T = {
  "channel": "📢 Мой канал о китайском языке и культуре:\nhttps://t.me/qing_laoshi",
  "help": ("汉助, помощник по китайскому\nСоздан Лазизой Ропижоновой\n\n"
           "/menu меню\n/word слово дня\n/chengyu чэнъюй\n/fact факт о Китае\n"
-          "/translate перевод\n/progress мой прогресс\n/lang сменить язык\n\n"
+          "/translate перевод\n/progress мой прогресс\n/lang сменить язык\n/about что я умею\n/privacy конфиденциальность\n/mydata копия моих данных\n/deletemydata удалить мои данные\n\n"
           "Если напишешь мне что-то своё, я передам это Лазизе, и она ответит сама."),
  "no_progress": ("Пока тут пусто 🌱\n\nЭтот раздел заполняется, когда ты занимаешься с Лазизой: "
                  "видно пройденные уроки, оплату и результаты тестов.\n\n"
@@ -51,7 +61,17 @@ T = {
  "q_sent": "Передала твоё сообщение Лазизе, она ответит сама 🤍",
 },
 "uz": {
- "ask_name": "你好！👋 Men 汉助 (HanZhu), Lazizaning xitoy tili yordamchisiman.\n\nIsmingiz nima?",
+ "greet": "🍵 <b>Salom-salom!</b>\n\nMening ismim <b>茶茶 (ChaCha)</b>, men kichkina choy ruhiman 🌿\nGaywan piyolada yashayman, Lazizaning xitoy tili yordamchisi bo'lib ishlayman ✨\n\n<i>Sizga ozgina xitoy tilini quyib beraman: shoshilmasdan va yodlamasdan</i> 🫖\n\nKeling, tanishamiz! Ismingiz nima?",
+ "features": "Mana nimalarga qodirman:\n\n📚 <b>Kunning so'zi</b>, 🧧 <b>chengyu</b> va 🌏 <b>Xitoy haqida faktlar</b>, kichkina va qiziq narsa kerak bo'lganda\n🔤 <b>Tarjima</b> xitoychaga va orqaga, pinyin bilan\n📊 <b>Natijam</b>, Laziza bilan shug'ullansangiz: darslar, to'lov, test natijalari\n🗓 Darslar haqida <b>eslatmalar</b>\n\nKerakli narsani topolmadingizmi? Shunchaki yozing, Lazizaga yetkazaman, u o'zi javob beradi 💌\n\nMenyu pastda, istalgan joydan boshlang 👇\n<i>Ma'lumotlar bilan qanday ishlayman: /privacy</i>",
+ "about_head": "🍵 <b>茶茶 (ChaCha)</b> · 汉助 Bot\nLazizaning xitoy tili bo'yicha choy yordamchisi",
+ "privacy": "🔒 <b>Maxfiylik</b>\n\nFaqat bot ishlashi uchun kerakli narsalarni saqlayman:\n· Telegram ID va @username\n· ism, til, daraja va men haqimda qayerdan bilganingiz\n· agar o'quvchi bo'lsangiz: o'tilgan va to'langan darslar soni, jadval, test natijalari, darslarni tasdiqlash va bekor qilish (sabablari bilan)\n· bot tugmalaridan qaysi birini ishlatganingiz (faqat hisob, matnsiz)\n\nMenga yozgan xabarlaringizni bot o'z bazasida saqlamaydi, ular faqat Lazizaga yuboriladi.\n\nMa'lumotlarga faqat Laziza kira oladi. Ularni sotmayman va reklama xizmatlariga bermayman. Ular bot ishlayotgan serverda turadi, haftasiga bir marta baza nusxasi Lazizaga Telegram orqali yuboriladi.\n\n<b>Sizning huquqlaringiz</b>\n· ma'lumotlaringiz nusxasini olish: /mydata\n· hammasini o'chirish: /deletemydata (qonun saqlashni majbur qiladigan narsalar bundan mustasno, agar shunday talab bo'lsa)\n· ma'lumotlarni tuzatish, qayta ishlashni cheklash, e'tiroz bildirish yoki rozilikni qaytarib olish: bot orqali Lazizaga yozing\n· huquqlaringiz buzilyapti desangiz, o'z mamlakatingizdagi shaxsiy ma'lumotlarni himoya qilish organiga shikoyat qilish\n\nO'quvchi voyaga yetmagan bo'lsa, buni ota-ona ham qila oladi: bot orqali Lazizaga yozing.\n\nYangilangan: 2026-yil oktabr. O'zgarishlar shu yerda, /privacy da e'lon qilinadi.",
+ "mydata_caption": "📄 Bot siz haqingizda saqlayotgan barcha ma'lumotlar nusxasi.",
+ "mydata_empty": "Hozircha sizning ma'lumotlaringiz yo'q.",
+ "del_ask": "Botdagi barcha ma'lumotlaringiz o'chirilsinmi: profil, darslar, to'lovlar, test natijalari, jadval? Buni qaytarib bo'lmaydi.",
+ "btn_del_yes": "🗑 Ha, o'chirish",
+ "btn_del_no": "Bekor qilish",
+ "del_done": "Tayyor, hammasi o'chirildi. Qaytmoqchi bo'lsangiz, /start ni bosing 🍵",
+ "del_cancel": "Yaxshi, hech narsa o'chirmadim.",
  "ask_source": "Tanishganimdan xursandman, {name}!\n\nMen haqimda qayerdan bildingiz?",
  "ask_level": "Oxirgi savol: xitoy tili darajangiz qanday?",
  "done": "Tayyor, {name}! Xush kelibsiz 🐉",
@@ -67,7 +87,7 @@ T = {
  "channel": "📢 Xitoy tili va madaniyati haqidagi kanalim:\nhttps://t.me/qing_laoshi",
  "help": ("汉助, xitoy tili yordamchisi\nLaziza Ropijonova yaratgan\n\n"
           "/menu menyu\n/word kunning so'zi\n/chengyu chengyu\n/fact fakt\n"
-          "/translate tarjima\n/progress natijam\n/lang tilni almashtirish\n\n"
+          "/translate tarjima\n/progress natijam\n/lang tilni almashtirish\n/about nimalarga qodirman\n/privacy maxfiylik\n/mydata ma'lumotlarim nusxasi\n/deletemydata ma'lumotlarimni o'chirish\n\n"
           "O'zingizdan biror narsa yozsangiz, uni Lazizaga yetkazaman, u o'zi javob beradi."),
  "no_progress": ("Hozircha bo'sh 🌱\n\nBu bo'lim Laziza bilan darslar boshlanganda to'ladi: "
                  "o'tilgan darslar, to'lov va test natijalari ko'rinadi."),
@@ -90,7 +110,17 @@ T = {
  "q_sent": "Xabaringizni Lazizaga yetkazdim, u o'zi javob beradi 🤍",
 },
 "en": {
- "ask_name": "你好！👋 I'm 汉助 (HanZhu), Laziza's Chinese learning assistant.\n\nWhat's your name?",
+ "greet": "🍵 <b>Hello, hello!</b>\n\nMy name is <b>茶茶 (ChaCha)</b>, I'm a tiny tea spirit 🌿\nI live in a gaiwan cup and work as Laziza's Chinese learning assistant ✨\n\n<i>I'll pour you a little Chinese: no rush, no cramming</i> 🫖\n\nLet's get to know each other! What's your name?",
+ "features": "Here's how I can help:\n\n📚 <b>Word of the day</b>, 🧧 <b>chengyu</b> and 🌏 <b>facts about China</b>, when you want something small and interesting\n🔤 <b>Translation</b> to Chinese and back, with pinyin\n📊 <b>Progress</b>, if you study with Laziza: lessons, payments, test results\n🗓 <b>Reminders</b> about lessons\n\nCan't find what you need? Just write to me, I'll pass it to Laziza and she'll reply herself 💌\n\nThe menu is below, start anywhere 👇\n<i>How I handle your data: /privacy</i>",
+ "about_head": "🍵 <b>茶茶 (ChaCha)</b> · 汉助 Bot\nLaziza's tea-flavored Chinese learning assistant",
+ "privacy": "🔒 <b>Privacy</b>\n\nI only keep what's needed for the bot to work:\n· your Telegram ID and @username\n· your name, language, level and how you found me\n· if you're a student: the number of lessons held and paid for, schedule, test results, lesson confirmations and cancellations with reasons\n· which bot buttons you use (just a counter, no text)\n\nYour messages to me are not stored in the bot's database, they are only forwarded to Laziza.\n\nOnly Laziza has access to this data. I don't sell it or share it with advertisers. It is stored on the server where the bot runs, and once a week a copy of the database is sent to Laziza on Telegram.\n\n<b>Your rights</b>\n· get a copy of your data: /mydata\n· delete everything: /deletemydata (except what the law requires to be kept, if any such requirement applies)\n· correct your data, restrict or object to its processing, or withdraw consent: write to Laziza through the bot\n· lodge a complaint with the data protection authority of your country if you believe your rights are not being upheld\n\nIf a student is a minor, a parent can do all of this by writing to Laziza through the bot.\n\nUpdated: October 2026. Changes are published here, in /privacy.",
+ "mydata_caption": "📄 A copy of all the data the bot keeps about you.",
+ "mydata_empty": "I don't have any of your data yet.",
+ "del_ask": "Delete all your data from the bot: profile, lessons, payments, test results, schedule? This can't be undone.",
+ "btn_del_yes": "🗑 Yes, delete",
+ "btn_del_no": "Cancel",
+ "del_done": "Done, everything is deleted. If you want to come back, press /start 🍵",
+ "del_cancel": "Okay, nothing was deleted.",
  "ask_source": "Nice to meet you, {name}!\n\nHow did you find out about me?",
  "ask_level": "Last one: what's your Chinese level?",
  "done": "All set, {name}! Welcome 🐉",
@@ -106,7 +136,7 @@ T = {
  "channel": "📢 My channel about Chinese language and culture:\nhttps://t.me/qing_laoshi",
  "help": ("汉助, Chinese learning assistant\nCreated by Laziza Ropijonova\n\n"
           "/menu menu\n/word word of the day\n/chengyu chengyu\n/fact China fact\n"
-          "/translate translate\n/progress my progress\n/lang change language\n\n"
+          "/translate translate\n/progress my progress\n/lang change language\n/about what I can do\n/privacy privacy\n/mydata a copy of my data\n/deletemydata delete my data\n\n"
           "If you write me something of your own, I'll pass it to Laziza and she'll reply herself."),
  "no_progress": ("Nothing here yet 🌱\n\nThis section fills up once you start lessons with Laziza: "
                  "lessons completed, payments and test results."),
@@ -129,7 +159,17 @@ T = {
  "q_sent": "Passed your message to Laziza, she'll reply herself 🤍",
 },
 "zh": {
- "ask_name": "你好！👋 我是汉助，Laziza 老师的汉语学习助手。\n\n你叫什么名字？",
+ "greet": "🍵 <b>你好呀！</b>\n\n我是<b>茶茶 (Chá Chá)</b>，一只小小的茶精灵 🌿\n我住在盖碗里，给 Laziza 老师当汉语学习小助手 ✨\n\n<i>让我给你倒一点汉语：不着急，也不死记硬背</i> 🫖\n\n先认识一下吧！你叫什么名字？",
+ "features": "我能帮你做这些：\n\n📚 <b>每日词汇</b>、🧧 <b>成语</b>和 🌏 <b>中国小知识</b>，想看点轻松有趣的时候\n🔤 <b>翻译</b>：中文和母语互译，带拼音\n📊 <b>进度</b>：如果你在跟 Laziza 上课，可以看课时、付款和测试成绩\n🗓 上课<b>提醒</b>\n\n没找到想要的？直接给我留言，我会转给 Laziza，她会亲自回复 💌\n\n菜单在下面，随便从哪里开始 👇\n<i>我如何处理你的数据：/privacy</i>",
+ "about_head": "🍵 <b>茶茶 (Chá Chá)</b> · 汉助 Bot\nLaziza 老师的茶香汉语小助手",
+ "privacy": "🔒 <b>隐私</b>\n\n我只保存让机器人正常工作所需的内容：\n· 你的 Telegram ID 和用户名\n· 你的名字、语言、水平，以及你是怎么知道我的\n· 如果你是学员：已上和已付的课时数、课程时间、测试成绩、上课确认和请假（含原因）\n· 你用了机器人的哪些按钮（只是计数，不含文字）\n\n你发给我的消息不会保存在机器人的数据库里，只会转给 Laziza。\n\n只有 Laziza 能查看这些数据。我不会出售，也不会提供给广告服务。数据保存在机器人运行的服务器上，每周会把一份数据库副本通过 Telegram 发给 Laziza。\n\n<b>你的权利</b>\n· 获取你的数据副本：/mydata\n· 删除全部数据：/deletemydata（法律要求必须保留的内容除外，如果存在这类要求）\n· 更正数据、限制或反对处理、撤回同意：通过机器人联系 Laziza\n· 如果你认为自己的权利没有得到保障，可向你所在国家的个人数据保护机构投诉\n\n如果学员未成年，家长也可以通过机器人联系 Laziza 办理以上事项。\n\n更新时间：2026年10月。变更会发布在这里，即 /privacy。",
+ "mydata_caption": "📄 机器人保存的关于你的所有数据副本。",
+ "mydata_empty": "我这里暂时没有你的数据。",
+ "del_ask": "要删除你在机器人里的所有数据吗：资料、课时、付款、测试成绩、课程时间？此操作无法撤销。",
+ "btn_del_yes": "🗑 是，删除",
+ "btn_del_no": "取消",
+ "del_done": "好了，全部已删除。想回来的话，点 /start 🍵",
+ "del_cancel": "好的，什么都没有删除。",
  "ask_source": "很高兴认识你，{name}！\n\n你是怎么知道我的？",
  "ask_level": "最后一个问题：你的汉语水平是？",
  "done": "都准备好了，{name}！欢迎 🐉",
@@ -145,7 +185,7 @@ T = {
  "channel": "📢 我的汉语和文化频道：\nhttps://t.me/qing_laoshi",
  "help": ("汉助，汉语学习助手\n由 Laziza Ropijonova 创建\n\n"
           "/menu 菜单\n/word 今日词汇\n/chengyu 成语\n/fact 小知识\n"
-          "/translate 翻译\n/progress 我的进度\n/lang 切换语言\n\n"
+          "/translate 翻译\n/progress 我的进度\n/lang 切换语言\n/about 我能做什么\n/privacy 隐私\n/mydata 我的数据副本\n/deletemydata 删除我的数据\n\n"
           "你写给我的其他内容，我会转给 Laziza，她会亲自回复。"),
  "no_progress": "这里还是空的 🌱\n\n开始上课后，这里会显示课时、付款和测试成绩。",
  "p_title": "📊 你的进度", "p_lessons": "已上课时", "p_paid": "已付课时",
@@ -172,3 +212,21 @@ T = {
 def t(lang, key, **kw):
     s = T.get(lang, T["ru"]).get(key) or T["ru"].get(key, key)
     return s.format(**kw) if kw else s
+
+
+# Профиль бота в Telegram. Бот выставляет его сам при запуске (см. apply_profile в bot.py).
+# Описание: до 512 знаков, «о боте»: до 120, имя: до 64. Язык = язык приложения Telegram у человека.
+PROFILE = {
+ "ru": {"name": "茶茶 (ЧаЧа) · 汉助",
+        "description": "🍵 Привет! Я 茶茶 (ЧаЧа), чайный помощник Лазизы по китайскому.\n\nСлово дня, чэнъюй, факты о Китае, перевод с пиньинем, напоминания об уроках и твой прогресс, если занимаешься с Лазизой. Говорю по-русски, по-узбекски, по-английски и по-китайски.\n\nНажми «Запустить», и давай знакомиться 🌿",
+        "short": "Чайный помощник Лазизы по китайскому: слова, чэнъюй, перевод и напоминания об уроках 🍵"},
+ "uz": {"name": "茶茶 (ChaCha) · 汉助",
+        "description": "🍵 Salom! Men 茶茶 (ChaCha), Lazizaning xitoy tili bo'yicha choy yordamchisiman.\n\nKunning so'zi, chengyu, Xitoy haqida faktlar, pinyinli tarjima, darslar haqida eslatmalar va Laziza bilan shug'ullansangiz, natijangiz. Rus, o'zbek, ingliz va xitoy tillarida gaplashaman.\n\nBoshlash tugmasini bosing, tanishamiz 🌿",
+        "short": "Lazizaning choy yordamchisi: so'zlar, chengyu, tarjima va darslar haqida eslatmalar 🍵"},
+ "en": {"name": "茶茶 (ChaCha) · 汉助",
+        "description": "🍵 Hi! I'm 茶茶 (ChaCha), Laziza's tea-flavored Chinese learning assistant.\n\nWord of the day, chengyu, facts about China, translation with pinyin, lesson reminders and your progress if you study with Laziza. I speak Russian, Uzbek, English and Chinese.\n\nPress Start and let's get acquainted 🌿",
+        "short": "Laziza's tea-flavored Chinese helper: words, chengyu, translation and lesson reminders 🍵"},
+ "zh": {"name": "茶茶 (Chá Chá) · 汉助",
+        "description": "🍵 你好！我是茶茶 (Chá Chá)，Laziza 老师的茶香汉语小助手。\n\n每日词汇、成语、中国小知识、带拼音的翻译、上课提醒，如果你在跟 Laziza 上课，还能看到学习进度。我会说俄语、乌兹别克语、英语和中文。\n\n点“开始”，我们认识一下吧 🌿",
+        "short": "Laziza 老师的茶香汉语小助手：词汇、成语、翻译和上课提醒 🍵"},
+}

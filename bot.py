@@ -20,6 +20,9 @@ def _read_env():
 _read_env()
 
 import html
+import io
+import json
+import hashlib
 import random
 import logging
 import threading
@@ -31,7 +34,7 @@ from telebot import types
 import db
 import scheduler
 import content as C
-from texts import t, T, LANG_PROMPT, WEEKDAYS
+from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
 
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 OWNER_ID = int(os.environ.get("OWNER_ID", "0") or 0)
@@ -52,10 +55,34 @@ ONBOARD_STEPS = {"name", "source", "level"}
 
 
 def lang_of(uid):
+    st = STATE.get(uid)                       # посреди знакомства язык ещё живёт только в диалоге
+    if st and st.get("data", {}).get("lang"):
+        return st["data"]["lang"]
     return (db.get_user(uid) or {}).get("lang") or "ru"
 
 def is_owner(uid):
     return bool(OWNER_ID) and uid == OWNER_ID
+
+STICKER_ROLES = {
+    "hello":     "👋 Приветствие (после знакомства)",
+    "thanks":    "🙏 Спасибо (оплата получена)",
+    "celebrate": "🎉 Радость (результат теста вырос)",
+    "thinking":  "🤔 Думает (слова нет в словаре)",
+    "study":     "📖 Урок скоро (напоминание за час)",
+    "sleepy":    "😴 Про запас (пока нигде не используется)",
+}
+
+
+def send_sticker(uid, name):
+    """Отправляет стикер, если он задан. Если нет или не вышло, тихо пропускает."""
+    file_id = db.get_sticker(name)
+    if not file_id:
+        return
+    try:
+        bot.send_sticker(uid, file_id)
+    except Exception as e:
+        logging.warning("стикер %s не отправился: %s", name, e)
+
 
 def notify_owner(text, **kw):
     if not OWNER_ID:
@@ -117,7 +144,12 @@ def cb_lang(c):
     if st and st["step"] == "lang":                 # первый запуск
         st["data"]["lang"] = lang
         st["step"] = "name"
-        bot.edit_message_text(t(lang, "ask_name"), uid, c.message.message_id)
+        try:
+            bot.delete_message(uid, c.message.message_id)
+        except Exception:
+            pass
+        send_sticker(uid, "hello")
+        bot.send_message(uid, t(lang, "greet"), reply_markup=types.ReplyKeyboardRemove())
     elif st and st["step"] in ONBOARD_STEPS:        # старая кнопка посреди знакомства
         return
     else:                                           # смена языка у уже знакомого
@@ -160,7 +192,7 @@ def cb_level(c):
     db.save_user(uid, name=d.get("name", ""), username=c.from_user.username or "",
                  lang=lang, level=level, source=d.get("source", ""))
     bot.edit_message_text(t(lang, "done", name=esc(d.get("name", ""))), uid, c.message.message_id)
-    bot.send_message(uid, t(lang, "menu"), reply_markup=kb_main(uid))
+    bot.send_message(uid, t(lang, "features"), reply_markup=kb_main(uid))
     notify_owner(
         f"🆕 <b>Новый пользователь</b>\n{esc(d.get('name',''))} (@{esc(c.from_user.username or '—')})\n"
         f"Язык: {lang} · Уровень: {level}\nИсточник: {esc(d.get('source',''))}\n"
@@ -269,6 +301,50 @@ def cmd_progress(m): send_progress(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
+@bot.message_handler(commands=["about"])
+def cmd_about(m):
+    lang = lang_of(m.from_user.id)
+    bot.send_message(m.chat.id, t(lang, "about_head") + "\n\n" + t(lang, "features"),
+                     reply_markup=kb_main(m.from_user.id))
+
+@bot.message_handler(commands=["privacy"])
+def cmd_privacy(m):
+    bot.send_message(m.chat.id, t(lang_of(m.from_user.id), "privacy"))
+
+@bot.message_handler(commands=["mydata"])
+def cmd_mydata(m):
+    uid = m.from_user.id
+    lang = lang_of(uid)
+    data = db.export_user(uid)
+    if not data:
+        return bot.send_message(uid, t(lang, "mydata_empty"))
+    f = io.BytesIO(json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8"))
+    f.name = "my_data.json"
+    bot.send_document(uid, f, caption=t(lang, "mydata_caption"))
+
+@bot.message_handler(commands=["deletemydata"])
+def cmd_delete_ask(m):
+    uid = m.from_user.id
+    lang = lang_of(uid)
+    k = types.InlineKeyboardMarkup(row_width=2)
+    k.add(types.InlineKeyboardButton(t(lang, "btn_del_yes"), callback_data="del:yes"),
+          types.InlineKeyboardButton(t(lang, "btn_del_no"), callback_data="del:no"))
+    bot.send_message(uid, t(lang, "del_ask"), reply_markup=k)
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("del:"))
+def cb_delete(c):
+    uid = c.from_user.id
+    lang = lang_of(uid)
+    bot.answer_callback_query(c.id)
+    if c.data == "del:yes":
+        u = db.get_user(uid) or {}
+        db.delete_user(uid)
+        STATE.pop(uid, None)
+        bot.edit_message_text(t(lang, "del_done"), uid, c.message.message_id)
+        notify_owner(f"🗑 {esc(u.get('name') or '?')} (@{esc(u.get('username') or '—')}) удалил(а) свои данные.")
+    else:
+        bot.edit_message_text(t(lang, "del_cancel"), uid, c.message.message_id)
+
 @bot.message_handler(commands=["help"])
 def cmd_help(m):
     bot.send_message(m.chat.id, t(lang_of(m.from_user.id), "help"))
@@ -292,6 +368,7 @@ def send_reminder(kind, slot, lesson):
         if slot.get("zoom_link"):
             txt += t(lang, "remind1_link", link=esc(slot["zoom_link"]))
         bot.send_message(uid, txt)
+        send_sticker(uid, "study")
 
 
 @bot.callback_query_handler(func=lambda c: c.data.startswith("att:"))
@@ -550,6 +627,41 @@ def lesson_balance_alert(sid):
 
 # ─── ТЕКСТОВЫЕ СООБЩЕНИЯ ──────────────────────────────────────────────────────
 
+@bot.message_handler(content_types=["sticker"])
+def on_sticker(m):
+    uid = m.from_user.id
+    if not is_owner(uid):
+        return
+    STATE[uid] = {"step": "sticker_pick", "data": {"file_id": m.sticker.file_id}}
+    k = types.InlineKeyboardMarkup(row_width=1)
+    for name, label in STICKER_ROLES.items():
+        k.add(types.InlineKeyboardButton(label, callback_data=f"stk:{name}"))
+    bot.send_message(uid, "Для чего этот стикер?", reply_markup=k)
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("stk:"))
+@owner_only
+def cb_sticker(c):
+    st = STATE.get(c.from_user.id)
+    name = c.data.split(":", 1)[1]
+    if not st or st["step"] != "sticker_pick" or name not in STICKER_ROLES:
+        return bot.answer_callback_query(c.id, "Пришли стикер заново")
+    STATE.pop(c.from_user.id, None)
+    db.set_sticker(name, st["data"]["file_id"])
+    bot.answer_callback_query(c.id, "Сохранила")
+    bot.edit_message_text(f"✅ Сохранила: {STICKER_ROLES[name]}", c.message.chat.id, c.message.message_id)
+
+
+@bot.message_handler(commands=["stickers"])
+def cmd_stickers(m):
+    if not is_owner(m.from_user.id):
+        return
+    have = db.sticker_names()
+    lines = [f"{'✅' if n in have else '▫️'} {label}" for n, label in STICKER_ROLES.items()]
+    bot.send_message(m.chat.id, "<b>Стикеры бота</b>\n\n" + "\n".join(lines) +
+                     "\n\nЧтобы задать или заменить, просто пришли мне стикер.")
+
+
 @bot.message_handler(func=lambda m: True, content_types=["text"])
 def on_text(m):
     uid = m.from_user.id
@@ -584,7 +696,8 @@ def on_text(m):
             db.log_event(uid, "translate")
             r = C.DICT.get(txt.lower())
             if not r:
-                return bot.send_message(uid, t(lang, "tr_none"), reply_markup=kb_main(uid))
+                bot.send_message(uid, t(lang, "tr_none"), reply_markup=kb_main(uid))
+                return send_sticker(uid, "thinking")
             if "zh" in r:
                 out = f"🔤 {esc(txt)} → <b>{r['zh']}</b>\n🔊 <code>{r['py']}</code>"
             else:
@@ -619,6 +732,7 @@ def on_text(m):
                 bot.send_message(uid, f"💰 Оплата записана.\n\n{student_card(sid)}")
                 try:
                     bot.send_message(sid, "💰 Оплата получена, спасибо!\n\n" + progress_text(sid, lang_of(sid)))
+                    send_sticker(sid, "thanks")
                 except Exception:
                     pass
                 return
@@ -634,10 +748,15 @@ def on_text(m):
                 except ValueError:
                     return bot.send_message(uid, "Баллы должны быть числами, максимум больше нуля.")
                 STATE.pop(uid, None)
+                prev = db.tests(sid)
+                prev_pct = prev[-1]["score"] / prev[-1]["max_score"] * 100 if prev else None
                 db.add_test(sid, parts[0][:80], sc, mx)
+                grew = prev_pct is not None and sc / mx * 100 > prev_pct
                 bot.send_message(uid, f"📝 Результат записан.\n\n{student_card(sid)}")
                 try:
                     bot.send_message(sid, "📝 Появился новый результат теста!\n\n" + progress_text(sid, lang_of(sid)))
+                    if grew:
+                        send_sticker(sid, "celebrate")
                 except Exception:
                     pass
                 return
@@ -687,14 +806,41 @@ def on_text(m):
     bot.send_message(uid, t(lang, "q_sent"), reply_markup=kb_main(uid))
 
 
+# ─── ПРОФИЛЬ БОТА В TELEGRAM ──────────────────────────────────────────────────
+
+def apply_profile():
+    """Имя, «о боте» и описание на четырёх языках. Применяется только если тексты изменились:
+    Telegram ограничивает частоту смены имени, поэтому на каждом запуске не дёргаем."""
+    stamp = "profile:" + hashlib.md5(json.dumps(PROFILE, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    if db.was_sent(0, stamp):
+        return True
+    failed = False
+    targets = [(None, PROFILE["en"])] + [(code, p) for code, p in PROFILE.items()]   # None = язык по умолчанию
+    for code, p in targets:
+        for call, value in ((bot.set_my_name, p["name"]),
+                            (bot.set_my_description, p["description"]),
+                            (bot.set_my_short_description, p["short"])):
+            try:
+                call(value, language_code=code)
+            except Exception as e:
+                failed = True
+                logging.warning("профиль бота (%s, %s): %s", code or "по умолчанию", call.__name__, e)
+    if not failed:
+        db.mark_sent(0, stamp)
+    return not failed
+
+
 # ─── ЗАПУСК ───────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    apply_profile()
     try:
         bot.set_my_commands([
             types.BotCommand("menu", "меню"), types.BotCommand("word", "слово дня"),
             types.BotCommand("chengyu", "чэнъюй"), types.BotCommand("fact", "факт о Китае"),
-            types.BotCommand("progress", "мой прогресс"), types.BotCommand("lang", "язык")])
+            types.BotCommand("progress", "мой прогресс"), types.BotCommand("lang", "язык"), types.BotCommand("about", "что я умею"),
+            types.BotCommand("privacy", "конфиденциальность"),
+            types.BotCommand("mydata", "копия моих данных")])
     except Exception as e:
         logging.warning("не удалось задать команды: %s", e)
     threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly), daemon=True).start()

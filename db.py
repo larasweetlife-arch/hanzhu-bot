@@ -67,6 +67,9 @@ def init():
         CREATE TABLE IF NOT EXISTS events (
             id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, kind TEXT, date TEXT
         );
+        CREATE TABLE IF NOT EXISTS stickers (
+            name TEXT PRIMARY KEY, file_id TEXT NOT NULL
+        );
         CREATE TABLE IF NOT EXISTS inbox (
             owner_msg_id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL
         );
@@ -266,3 +269,55 @@ def make_backup(dest):
             src.backup(dst)
         finally:
             dst.close()
+
+
+# ─── СТИКЕРЫ ──────────────────────────────────────────────────────────────────
+
+def set_sticker(name, file_id):
+    with _conn() as c:
+        c.execute("INSERT OR REPLACE INTO stickers (name, file_id) VALUES (?,?)", (name, file_id))
+
+
+def get_sticker(name):
+    with _conn() as c:
+        r = c.execute("SELECT file_id FROM stickers WHERE name=?", (name,)).fetchone()
+        return r["file_id"] if r else None
+
+
+def sticker_names():
+    with _conn() as c:
+        return {r["name"] for r in c.execute("SELECT name FROM stickers")}
+
+
+# ─── УДАЛЕНИЕ ДАННЫХ ──────────────────────────────────────────────────────────
+
+def delete_user(uid):
+    """Стирает всё, что бот знает об этом человеке. Данные других людей не трогает."""
+    with _conn() as c:
+        for table in ("lessons", "payments", "tests", "schedule", "attendance", "events", "sent"):
+            c.execute(f"DELETE FROM {table} WHERE user_id=?", (uid,))
+        c.execute("DELETE FROM inbox WHERE user_id=?", (uid,))
+        c.execute("DELETE FROM users WHERE user_id=?", (uid,))
+
+
+# ─── КОПИЯ ДАННЫХ ЧЕЛОВЕКА ────────────────────────────────────────────────────
+
+def export_user(uid):
+    """Всё, что бот хранит об одном человеке. Данные других людей сюда не попадают."""
+    u = get_user(uid)
+    if not u:
+        return None
+    with _conn() as c:
+        def rows(sql):
+            return [dict(r) for r in c.execute(sql, (uid,))]
+        usage = {r["kind"]: r["n"] for r in c.execute(
+            "SELECT kind, COUNT(*) AS n FROM events WHERE user_id=? GROUP BY kind", (uid,))}
+        return {
+            "profile": u,
+            "lessons": rows("SELECT date, topic FROM lessons WHERE user_id=? ORDER BY date, id"),
+            "payments": rows("SELECT date, lessons, note FROM payments WHERE user_id=? ORDER BY date, id"),
+            "tests": rows("SELECT date, title, score, max_score FROM tests WHERE user_id=? ORDER BY date, id"),
+            "schedule": rows("SELECT weekday, time FROM schedule WHERE user_id=? ORDER BY weekday, time"),
+            "attendance": rows("SELECT lesson, status, reason, date FROM attendance WHERE user_id=? ORDER BY id"),
+            "button_usage": usage,
+        }
