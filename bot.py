@@ -107,7 +107,7 @@ def kb_main(uid):
     k.row(t(lang, "b_grammar"), t(lang, "b_texts"))
     k.row(t(lang, "b_progress"), t(lang, "b_adult"))
     k.row(t(lang, "b_lang"), t(lang, "b_channel"))
-    k.row(t(lang, "b_help"))
+    k.row(t(lang, "b_sched"), t(lang, "b_help"))
     return k
 
 def kb_langs():
@@ -127,14 +127,45 @@ def kb_list(prefix, items):
 
 # ─── ЗНАКОМСТВО: язык → имя → откуда узнал → уровень ─────────────────────────
 
+def start_payload(m):
+    """Что стоит после /start в ссылке t.me/бот?start=... (пусто, если человек просто нажал «Старт»)."""
+    parts = (m.text or "").split(maxsplit=1)
+    if parts and parts[0].split("@")[0] == "/start" and len(parts) > 1:
+        return parts[1].strip()
+    return ""
+
+
+def invite_code():
+    """Секретная часть ссылки для учеников. Можно задать свою через INVITE_CODE, иначе считается из токена."""
+    custom = os.environ.get("INVITE_CODE", "").strip()
+    if custom:
+        return custom
+    return "s_" + hashlib.sha256(("invite:" + TOKEN).encode()).hexdigest()[:10]
+
+
+def welcome_back(u, tg_user):
+    """Личное приветствие по имени (из знакомства), с учётом времени суток в Ташкенте."""
+    lang = u.get("lang") or "ru"
+    name = (u.get("name") or "").strip() or (tg_user.first_name or "").strip() or (tg_user.username or "")
+    h = datetime.now(db.TZ).hour
+    hi = t(lang, "hi_morning" if 5 <= h < 12 else "hi_day" if 12 <= h < 18 else "hi_evening")
+    return t(lang, "welcome_back", hi=hi, name=esc(name))
+
+
 @bot.message_handler(commands=["start"])
 def cmd_start(m):
     uid = m.from_user.id
     STATE.pop(uid, None)
     u = db.get_user(uid)
+    invited = start_payload(m) == invite_code()        # пришёл по ссылке ученика
     if u and u.get("level"):
-        return bot.send_message(uid, t(u["lang"], "menu"), reply_markup=kb_main(uid))
-    STATE[uid] = {"step": "lang", "data": {}}
+        if invited and not u.get("is_student") and not is_owner(uid):
+            db.save_user(uid, is_student=1)
+            bot.send_message(uid, t(u["lang"], "student_welcome"))
+            notify_owner(f"🎓 <b>{esc(u['name'] or '?')}</b> (@{esc(u['username'] or '—')}) "
+                         f"перешёл(ла) по твоей ссылке и теперь ученик.")
+        return bot.send_message(uid, welcome_back(u, m.from_user), reply_markup=kb_main(uid))
+    STATE[uid] = {"step": "lang", "data": {"student": invited}}
     bot.send_message(uid, LANG_PROMPT, reply_markup=kb_langs())
 
 
@@ -196,11 +227,14 @@ def cb_level(c):
     lang = d["lang"]
     db.save_user(uid, name=d.get("name", ""), username=c.from_user.username or "",
                  lang=lang, level=level, source=d.get("source", ""))
+    if d.get("student") and not is_owner(uid):
+        db.save_user(uid, is_student=1)
     bot.edit_message_text(t(lang, "done", name=esc(d.get("name", ""))), uid, c.message.message_id)
     bot.send_message(uid, t(lang, "features"), reply_markup=kb_main(uid))
     notify_owner(
         f"🆕 <b>Новый пользователь</b>\n{esc(d.get('name',''))} (@{esc(c.from_user.username or '—')})\n"
         f"Язык: {lang} · Уровень: {level}\nИсточник: {esc(d.get('source',''))}\n"
+        + ("🎓 Пришёл(ла) по ссылке ученика: уже отмечен(а) учеником\n" if d.get("student") and not is_owner(uid) else "") +
         f"ID: <code>{uid}</code>")
 
 
@@ -358,6 +392,47 @@ def ask_language(uid):
 def send_progress(uid):
     db.log_event(uid, "progress")
     bot.send_message(uid, progress_text(uid, lang_of(uid)))
+
+
+def next_lesson(sched, now):
+    """Ближайшее занятие по расписанию ученика (datetime) или None."""
+    best = None
+    for off in range(0, 8):
+        day = now.date() + timedelta(days=off)
+        for s in sched:
+            if s["weekday"] != day.weekday():
+                continue
+            h, mi = map(int, s["time"].split(":"))
+            dt = datetime.combine(day, datetime.min.time().replace(hour=h, minute=mi), tzinfo=db.TZ)
+            if dt > now and (best is None or dt < best):
+                best = dt
+    return best
+
+
+def send_schedule(uid):
+    db.log_event(uid, "schedule")
+    lang = lang_of(uid)
+    u = db.get_user(uid) or {}
+    if not u.get("is_student"):
+        return bot.send_message(uid, t(lang, "sch_guest"))
+    sched = db.get_schedule(uid)
+    if not sched:
+        return bot.send_message(uid, t(lang, "sch_empty"))
+    now = datetime.now(db.TZ)
+    days = ", ".join(f"{WEEKDAYS[lang][s['weekday']]} {s['time']}" for s in sched)
+    out = [t(lang, "sch_title"), "", f"{t(lang, 'sch_days')}: <b>{days}</b>"]
+    nxt = next_lesson(sched, now)
+    if nxt:
+        delta = (nxt.date() - now.date()).days
+        when = t(lang, "sch_today") if delta == 0 else t(lang, "sch_tomorrow") if delta == 1 \
+            else f"{WEEKDAYS[lang][nxt.weekday()]}, {nxt.strftime('%d.%m')}"
+        out.append(f"{t(lang, 'sch_next')}: <b>{when}, {nxt.strftime('%H:%M')}</b>")
+    out += ["", t(lang, "sch_remind")]
+    bot.send_message(uid, "\n".join(out))
+
+
+@bot.message_handler(commands=["lessons"])
+def cmd_lessons(m): send_schedule(m.from_user.id)
 
 
 @bot.message_handler(commands=["menu"])
@@ -746,6 +821,7 @@ def cmd_admin(m):
     STATE.pop(m.from_user.id, None)
     k = types.InlineKeyboardMarkup(row_width=1)
     k.add(types.InlineKeyboardButton("👥 Мои ученики", callback_data="a:students"),
+          types.InlineKeyboardButton("🔗 Ссылка для ученика", callback_data="a:invite"),
           types.InlineKeyboardButton("➕ Сделать учеником", callback_data="a:make"),
           types.InlineKeyboardButton("📊 Статистика бота", callback_data="a:stats"))
     bot.send_message(m.chat.id, f"<b>Панель преподавателя</b>\n\nВсего в боте: {len(db.all_users())}\n"
@@ -793,6 +869,27 @@ def cb_stats(c):
     txt += [f"· {esc(k)}: {v}" for k, v in sorted(by_src.items(), key=lambda x: -x[1])]
     bot.send_message(c.message.chat.id, "\n".join(txt))
     bot.answer_callback_query(c.id)
+
+
+@bot.callback_query_handler(func=lambda c: c.data == "a:invite")
+@owner_only
+def cb_invite(c):
+    bot.answer_callback_query(c.id)
+    try:
+        uname = bot.get_me().username
+    except Exception:
+        uname = ""
+    if not uname:
+        return bot.send_message(c.message.chat.id, "Не удалось узнать имя бота. Попробуй ещё раз через минуту.")
+    link = f"https://t.me/{uname}?start={invite_code()}"
+    bot.send_message(c.message.chat.id,
+                     "🔗 <b>Ссылка для учеников</b>\n\nОтправь её ученику. Он нажмёт «Старт», познакомится с ботом "
+                     "и сразу окажется в списке «Мои ученики», вручную отмечать не нужно.\n\n"
+                     f"<code>{link}</code>\n\n"
+                     "Потом открой «👥 Мои ученики», выбери его и задай расписание (кнопка «Расписание»), "
+                     "чтобы пошли напоминания. Уроки, оплаты и тесты вносятся там же.\n\n"
+                     "<i>Ссылку лучше давать только своим ученикам: по ней любой становится учеником.</i>",
+                     disable_web_page_preview=True)
 
 
 @bot.callback_query_handler(func=lambda c: c.data == "a:make")
@@ -1103,7 +1200,8 @@ def on_text(m):
     actions = {t(lang, "b_word"): send_word, t(lang, "b_chengyu"): send_chengyu,
                t(lang, "b_fact"): send_fact, t(lang, "b_tr"): ask_translate,
                t(lang, "b_progress"): send_progress, t(lang, "b_lang"): ask_language,
-               t(lang, "b_grammar"): send_grammar, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult}
+               t(lang, "b_grammar"): send_grammar, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
+               t(lang, "b_sched"): send_schedule}
     if txt in actions:
         return actions[txt](uid)
     if txt == t(lang, "b_channel"):
@@ -1157,7 +1255,7 @@ if __name__ == "__main__":
         bot.set_my_commands([
             types.BotCommand("menu", "меню"), types.BotCommand("word", "слово дня"),
             types.BotCommand("chengyu", "чэнъюй"), types.BotCommand("fact", "факт о Китае"),
-            types.BotCommand("progress", "мой прогресс"),
+            types.BotCommand("progress", "мой прогресс"), types.BotCommand("lessons", "мои занятия"),
             types.BotCommand("grammar", "грамматика"), types.BotCommand("texts", "тексты"), types.BotCommand("lang", "язык"), types.BotCommand("about", "что я умею"),
             types.BotCommand("privacy", "конфиденциальность"),
             types.BotCommand("mydata", "копия моих данных")])
