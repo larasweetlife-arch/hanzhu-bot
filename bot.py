@@ -67,7 +67,7 @@ def is_owner(uid):
     return bool(OWNER_ID) and uid == OWNER_ID
 
 STICKER_ROLES = {
-    "hello":     "👋 Приветствие (после знакомства)",
+    "hello":     "👋 Приветствие (после знакомства и при каждом /start)",
     "thanks":    "🙏 Спасибо (оплата получена)",
     "celebrate": "🎉 Радость (результат теста вырос)",
     "thinking":  "🤔 Думает (слова нет в словаре)",
@@ -144,12 +144,10 @@ def invite_code():
 
 
 def welcome_back(u, tg_user):
-    """Личное приветствие по имени (из знакомства), с учётом времени суток в Ташкенте."""
+    """Личное приветствие: 哈喽 / 你好 + имя из Telegram, стикер и список возможностей."""
     lang = u.get("lang") or "ru"
-    name = (u.get("name") or "").strip() or (tg_user.first_name or "").strip() or (tg_user.username or "")
-    h = datetime.now(db.TZ).hour
-    hi = t(lang, "hi_morning" if 5 <= h < 12 else "hi_day" if 12 <= h < 18 else "hi_evening")
-    return t(lang, "welcome_back", hi=hi, name=esc(name))
+    name = (tg_user.first_name or "").strip() or (u.get("name") or "").strip() or (tg_user.username or "")   # имя из Telegram
+    return t(lang, "welcome_back", hi=t(lang, "hi"), name=esc(name))
 
 
 @bot.message_handler(commands=["start"])
@@ -164,6 +162,7 @@ def cmd_start(m):
             bot.send_message(uid, t(u["lang"], "student_welcome"))
             notify_owner(f"🎓 <b>{esc(u['name'] or '?')}</b> (@{esc(u['username'] or '—')}) "
                          f"перешёл(ла) по твоей ссылке и теперь ученик.")
+        send_sticker(uid, "hello")
         return bot.send_message(uid, welcome_back(u, m.from_user), reply_markup=kb_main(uid))
     STATE[uid] = {"step": "lang", "data": {"student": invited}}
     bot.send_message(uid, LANG_PROMPT, reply_markup=kb_langs())
