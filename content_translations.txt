@@ -1,0 +1,605 @@
+# Переводы слов из автоматического списка на русский и узбекский.
+# Формат: иероглифы | по-русски | по-узбекски | пиньинь (необязательно: только если в автоматическом списке он неверный)
+# Эти переводы сделаны для слов HSK 6 по частоте. Они не проверены носителем: узбекский особенно стоит просмотреть.
+# Строки с # бот пропускает. Свои правки вноси прямо сюда.
+哦 | ага, о (междометие понимания) | aha, oh (tushunish undovi) | ò
+啦 | частица «la» (слияние 了+啊: радость, уговор) | «la» yuklamasi (了+啊 qo'shilmasi: quvonch, ishontirish) | la
+嘛 | частица «ведь, же» (очевидность, уговор) | yuklama «axir, ku» (ravshanlik, ishontirish) | ma
+现场 | место происшествия; на месте; прямой эфир | voqea joyi; joyida; jonli efir
+拥有 | иметь; обладать | ega bo'lmoq; egalik qilmoq
+哇 | ого! (междометие удивления) | voy! (hayrat undovi) | wa
+交易 | сделка; торговать; заключать сделку | bitim; savdo qilmoq
+死亡 | смерть; умирать | o'lim; vafot etmoq
+事件 | событие; происшествие; инцидент | voqea; hodisa
+啥 | что (разг., то же, что 什么) | nima (so'zlashuv, 什么 bilan bir xil) | shá
+选手 | спортсмен; участник соревнования | sportchi; musobaqa ishtirokchisi
+投票 | голосовать; голосование | ovoz bermoq; ovoz berish
+客户 | клиент; заказчик | mijoz; buyurtmachi
+或许 | может быть; возможно | ehtimol; balki
+同志 | товарищ; (сленг) гей | o'rtoq; (jargon) gey
+媒体 | СМИ; медиа | ommaviy axborot vositalari; media
+意识 | сознание; осознавать | ong; anglamoq
+机构 | учреждение; организация; структура | muassasa; tashkilot; tuzilma
+副 | заместитель; вспомогательный; сч. сл. для пар и комплектов | o'rinbosar; yordamchi; juft va to'plamlar uchun sanoq so'zi
+事业 | дело жизни; предприятие; карьера | hayotiy ish; faoliyat; martaba
+而已 | только и всего; лишь | xolos; shundan boshqa emas
+成员 | член; участник | a'zo; ishtirokchi
+网络 | сеть; интернет | tarmoq; internet | wǎngluò
+队伍 | отряд; команда; колонна; очередь | otryad; jamoa; saf; navbat
+事故 | авария; несчастный случай | avariya; baxtsiz hodisa
+协议 | соглашение; договорённость; протокол | kelishuv; bitim; protokol
+攻击 | атаковать; нападать; критиковать | hujum qilmoq; tanqid qilmoq
+超级 | супер-; сверх- | o'ta; super-
+意味着 | означать; подразумевать | anglatmoq; ma'nosini bildirmoq
+案件 | судебное дело; случай | sud ishi; huquqiy ish
+确保 | обеспечить; гарантировать | ta'minlamoq; kafolatlamoq
+区域 | район; зона; регион | hudud; zona; mintaqa
+爆炸 | взрыв; взрываться | portlash; portlamoq
+展示 | демонстрировать; показывать; выставлять | namoyish qilmoq; ko'rsatmoq
+基地 | база (военная, промышленная) | baza (harbiy, sanoat)
+战斗 | сражаться; бой | jang qilmoq; jang
+人家 | другие люди; он, она, они; семья; (разг.) я (о себе, кокетливо) | boshqalar; u, ular; oila; (so'zlashuv) men (erkalanib)
+军队 | армия; войска | armiya; qo'shin
+基金 | фонд | jamg'arma; fond
+社区 | община; микрорайон; жилой квартал | jamoa; mahalla
+即将 | вот-вот; скоро (о событии) | yaqinda; tez orada
+欧洲 | Европа | Yevropa | Ōuzhōu
+中央 | центр; центральный; ЦК | markaz; markaziy
+州 | область; штат; округ | viloyat; shtat
+显著 | заметный; значительный; выдающийся | sezilarli; ko'zga tashlanadigan
+袭击 | нападение; внезапно напасть; налёт | hujum; to'satdan hujum qilmoq
+承诺 | обещать; обязательство | va'da bermoq; majburiyat
+尽快 | как можно скорее | imkon qadar tezroq
+感染 | заражение; заражать(ся); оказывать эмоциональное влияние | yuqish; yuqtirmoq; ta'sir qilmoq
+砸 | разбивать; бить; провалиться | urib sindirmoq; urmoq; barbod bo'lmoq
+打击 | удар; наносить удар; подавлять | zarba; zarba bermoq; bostirmoq
+转移 | переносить; перемещать; переключать (внимание) | ko'chirmoq; o'tkazmoq; chalg'itmoq
+生物 | живой организм; биология | tirik organizm; biologiya
+主题 | тема | mavzu
+人士 | лицо; деятель | shaxs; arbob
+集团 | группа; корпорация; концерн | guruh; korporatsiya; konsern
+进展 | ход дел; продвигаться; прогресс | rivojlanish; oldinga siljish
+试验 | опыт; испытание; экспериментировать | tajriba; sinov
+系列 | серия; ряд | seriya; turkum
+真相 | истина; подлинное положение дел | haqiqat; chin ahvol
+搭 | ставить; сооружать; садиться (на транспорт); цеплять | qurmoq; (transportga) minmoq; ulamoq
+夫人 | госпожа; супруга (вежл.) | xonim; (hurmat bilan) turmush o'rtog'i
+毫无 | совершенно без; нисколько не | mutlaqo yo'q; zarracha ham yo'q
+尝试 | пробовать; попытка | sinab ko'rmoq; urinish
+疾病 | болезнь; заболевание | kasallik
+类似 | подобный; сходный | o'xshash; shunga yaqin
+联盟 | союз; альянс; коалиция | ittifoq; alyans
+评论 | комментировать; обсуждать; комментарий | sharhlamoq; sharh
+仪式 | церемония; обряд | marosim
+进攻 | наступать; атаковать | hujum qilmoq; hujumga o'tmoq
+来源 | источник; происхождение | manba; kelib chiqishi
+生存 | выживать; существовать | omon qolmoq; yashamoq
+并非 | вовсе не; отнюдь не | aslo emas; hech ham emas
+非法 | незаконный | noqonuniy
+本身 | сам по себе; само | o'zi; o'z-o'zidan
+端 | конец; край; нести (в руках) | chekka; uch; ko'tarib kelmoq
+时光 | время; пора; годы | vaqt; davr; yillar
+实力 | реальная сила; потенциал | haqiqiy kuch; salohiyat
+证实 | подтверждать | tasdiqlamoq
+盯 | пристально смотреть; не спускать глаз | tikilib qaramoq; ko'z uzmaslik
+将军 | генерал; полководец; ставить шах | general; sarkarda; shoh qo'ymoq | jiāngjūn
+尸体 | труп; тело умершего | jasad; murda
+分手 | расстаться; порвать отношения | ajrashmoq; munosabatni uzmoq
+模式 | модель; образец; режим | model; namuna; rejim
+异常 | необычный; ненормальный; крайне | g'ayrioddiy; g'ayritabiiy; nihoyatda
+档案 | досье; архив; личное дело | dosye; arxiv; shaxsiy ish
+维持 | поддерживать; сохранять | saqlab turmoq; qo'llab-quvvatlamoq
+协会 | ассоциация; общество | assotsiatsiya; jamiyat
+细胞 | клетка | hujayra
+症状 | симптом | simptom; belgi
+试图 | пытаться; стремиться | urinmoq; harakat qilmoq
+患者 | больной; пациент | bemor; kasal
+艘 | сч. сл. для кораблей | kemalar uchun sanoq so'zi | sōu
+刺 | колоть; шип; заноза; упрекать | sanchmoq; tikan; ayblamoq | cì
+灵魂 | душа | ruh; jon
+镜头 | объектив; кадр; план | obyektiv; kadr
+实施 | осуществлять; проводить в жизнь | amalga oshirmoq; joriy etmoq
+凌晨 | ранним утром; перед рассветом | tong saharda; erta tongda
+淘汰 | отсеивать; выбывать; устаревать | saralab chiqarmoq; chiqib ketmoq; eskirmoq
+释放 | освобождать; выпускать; высвобождать | ozod qilmoq; chiqarmoq
+操作 | управлять; оперировать; операция | boshqarmoq; amal; operatsiya
+达成 | достигать (соглашения); добиваться | erishmoq (kelishuvga); amalga oshirmoq
+本人 | сам; лично; я сам | o'zi; shaxsan; men o'zim
+嗨 | эй; привет! (заимств.) | hoy; salom! (o'zlashma)
+斗争 | борьба; бороться | kurash; kurashmoq
+给予 | давать; оказывать; предоставлять (книжн.) | bermoq; ko'rsatmoq (kitobiy)
+舞蹈 | танец; танцевать | raqs
+突破 | прорыв; прорваться; преодолеть | yorib o'tish; yutuq; yengib o'tmoq
+发布 | публиковать; обнародовать; выпускать | e'lon qilmoq; chiqarmoq
+嘿 | эй!; ага! | hoy!; mana!
+哼 | фыркать; мычать; напевать; хмыкнуть | pishillamoq (norozilik bilan); ming'irlab kuylamoq; xirgoyi qilmoq
+主管 | ведать; ответственный; руководитель | boshqarmoq; mas'ul; rahbar
+动力 | движущая сила; мотивация | harakatlantiruvchi kuch; motivatsiya
+奖励 | поощрять; награда; поощрение | rag'batlantirmoq; mukofot
+能量 | энергия; потенциал | energiya; qudrat
+领先 | лидировать; быть впереди | oldinda bormoq; yetakchilik qilmoq
+清理 | убирать; приводить в порядок; расчищать | tozalamoq; tartibga keltirmoq
+声明 | заявлять; заявление | e'lon qilmoq; bayonot
+激情 | страсть; пыл; воодушевление | ehtiros; shijoat
+成交 | заключать сделку | bitim tuzmoq
+在乎 | придавать значение; переживать; заботиться | e'tibor bermoq; parvo qilmoq
+造型 | облик; форма; моделирование | tashqi ko'rinish; shakl; modellashtirish
+装备 | оборудование; снаряжение; оснащать | jihoz; anjom; jihozlamoq
+障碍 | препятствие; помеха | to'siq; g'ov
+危机 | кризис | inqiroz
+公民 | гражданин | fuqaro
+当初 | в то время; сначала; изначально | o'sha paytda; dastlab
+情报 | информация; разведданные | axborot; razvedka ma'lumoti
+线索 | нить; зацепка; улика | ip; dalil; iz
+眼神 | взгляд; выражение глаз | nigoh; ko'z qarashi
+石油 | нефть | neft
+依靠 | опираться; полагаться; опора | tayanmoq; suyanmoq; tayanch
+警告 | предупреждать; предостережение | ogohlantirmoq; ogohlantirish
+基因 | ген | gen
+孤独 | одинокий; одиночество | yolg'iz; yolg'izlik
+蒙 | покрывать; обманывать; угадывать | yopmoq; aldamoq; taxmin qilmoq | mēng
+暴力 | насилие; насильственный | zo'ravonlik; zo'ravon
+神奇 | чудесный; волшебный | g'aroyib; ajoyib
+尴尬 | неловкий; неудобный (о положении) | noqulay; xijolatli
+发射 | запускать (ракету); стрелять; излучать | uchirmoq; otmoq; nurlantirmoq
+代价 | цена; плата; издержки | narx (to'lanadigan); evaz; xarajat
+婴儿 | младенец; грудной ребёнок | chaqaloq; go'dak
+团结 | сплачиваться; сплочённость; единство | birlashmoq; hamjihatlik
+涉及 | касаться; затрагивать; быть связанным | taalluqli bo'lmoq; qamrab olmoq
+搜索 | искать; поиск; обыскивать | qidirmoq; qidiruv
+发动 | запускать; начинать; поднимать (на что-либо) | ishga tushirmoq; boshlamoq; safarbar qilmoq
+策略 | стратегия; тактика; гибкий (о подходе) | strategiya; taktika | cèlüè
+牺牲 | жертвовать; жертва; погибнуть | qurbon qilmoq; qurbonlik; halok bo'lmoq
+位于 | находиться; быть расположенным | joylashmoq; joylashgan bo'lmoq
+陷入 | погрузиться; попасть (в трудное положение); увязнуть | botib qolmoq; tushib qolmoq; duch kelmoq
+回报 | отдача; вознаграждение; отплатить; докладывать | daromad (qaytim); mukofot; evaziga javob qaytarmoq; hisobot bermoq
+需求 | потребность; спрос; требовать | ehtiyoj; talab
+展现 | являться взору; раскрываться; демонстрировать | ko'z oldida namoyon bo'lmoq; ko'rsatmoq
+评估 | оценивать; оценка | baholamoq; baho
+环节 | звено; этап; элемент (цепи) | bo'g'in; bosqich
+武装 | вооружение; вооружать | qurol-yarog'; qurollantirmoq
+跟踪 | следить; выслеживать; идти по следу | izma-iz kuzatmoq; ta'qib qilmoq
+活力 | жизненная сила; энергия; бодрость | hayotiy kuch; shijoat
+心灵 | душа; духовный мир; сообразительный | qalb; ma'naviy dunyo | xīnlíng
+对付 | справляться; бороться с; обходиться | uddalamoq; kurashmoq; chiqishmoq
+天堂 | рай; небеса | jannat; osmon
+航空 | авиация; воздухоплавание | aviatsiya; havo qatnovi
+先进 | передовой; прогрессивный | ilg'or; peshqadam
+混乱 | хаос; беспорядок; путаница | tartibsizlik; chalkashlik
+火箭 | ракета | raketa
+注射 | инъекция; делать укол | inyeksiya; ukol qilmoq
+冲突 | конфликт; столкновение | ziddiyat; to'qnashuv
+惊讶 | удивлённый; поражённый; удивляться | hayron; hayratlanmoq
+肿瘤 | опухоль | o'sma
+敏感 | чувствительный; восприимчивый | sezgir; ta'sirchan
+提示 | подсказывать; напоминать; подсказка | eslatmoq; ishora; maslahat
+防止 | предотвращать; не допускать | oldini olmoq
+设置 | устанавливать; настраивать; задавать | o'rnatmoq; sozlamoq
+结局 | финал; исход; развязка | yakun; oqibat
+典型 | типичный; образец; типаж | tipik; namuna
+夫妇 | супружеская пара; муж и жена | er-xotin
+清醒 | трезвый; ясный (об уме); прийти в себя | hushyor; aniq; o'ziga kelmoq
+战略 | стратегия (военная, общая) | strategiya | zhànlüè
+艰难 | трудный; тяжёлый | qiyin; mashaqqatli
+怀孕 | быть беременной; забеременеть | homilador bo'lmoq
+即便 | даже если; пусть даже | hatto ... bo'lsa ham; agar ... bo'lsa ham
+抱怨 | жаловаться; ворчать; обида | nolimoq; shikoyat qilmoq
+失踪 | пропасть без вести; исчезнуть | bedarak yo'qolmoq
+抢劫 | грабить; ограбление | talamoq; talonchilik
+卫星 | спутник | yo'ldosh
+动手 | приступить к делу; пустить в ход руки | boshlamoq; qo'l ko'tarmoq
+栋 | сч. сл. для зданий | binolar uchun sanoq so'zi
+直播 | прямой эфир; транслировать в прямом эфире | jonli efir; jonli uzatmoq
+监督 | контролировать; надзор | nazorat qilmoq; nazorat
+交往 | общаться; поддерживать отношения; общение | muloqot qilmoq; aloqa; munosabat
+遭遇 | столкнуться с; пережить; судьба | duch kelmoq; boshdan kechirmoq; taqdir
+时机 | подходящий момент; шанс | qulay payt; imkoniyat
+治安 | общественный порядок; безопасность | jamoat tartibi; xavfsizlik
+恐惧 | страх; ужас; бояться | qo'rquv; dahshat
+折 | сгибать; ломать; скидка; потерять (деньги) | bukmoq; sindirmoq; chegirma; yo'qotmoq | zhé
+渴望 | жаждать; страстно желать | intilmoq; orzu qilmoq
+摆脱 | избавиться; вырваться; отделаться | qutulmoq; xalos bo'lmoq
+完毕 | завершить; закончить | tugatmoq; tamomlamoq
+财富 | богатство; достояние | boylik; mol-dunyo
+监狱 | тюрьма | qamoqxona
+模型 | макет; модель; форма (для отливки) | maket; model; qolip
+爆发 | вспыхнуть; разразиться; извергаться | avj olmoq; yuz bermoq; otilib chiqmoq
+周年 | годовщина; юбилей | yilligi; yubiley
+扮演 | играть роль; исполнять | rol o'ynamoq; ijro etmoq
+统计 | статистика; подсчитывать | statistika; hisoblamoq
+创作 | творить; создавать (произведение); творчество | ijod qilmoq; yaratmoq; ijod
+扎 | колоть; вонзать; ставить (палатку); перевязывать | sanchmoq; sanchib kirmoq; chodir tikmoq; bog'lamoq
+保障 | гарантировать; обеспечивать; гарантия | kafolatlamoq; ta'minlamoq; kafolat
+吼 | реветь; орать; рычать | bo'kirmoq; na'ra tortmoq; o'kirmoq
+资产 | активы; имущество | aktivlar; mol-mulk
+皆 | все; каждый; во всех случаях (книжн.) | hamma; barchasi (kitobiy)
+运行 | двигаться по орбите; функционировать; работать | harakatlanmoq; ishlamoq; faoliyat yuritmoq
+局面 | положение дел; ситуация; обстановка | vaziyat; ahvol
+期望 | надеяться; ожидание; надежда | umid qilmoq; kutish; umid
+当事人 | заинтересованная сторона; участник дела | tomon; ishtirokchi (ishda)
+演讲 | лекция; выступление; произносить речь | ma'ruza; nutq so'zlamoq
+补偿 | компенсировать; компенсация | qoplamoq; kompensatsiya
+诉讼 | судебный иск; тяжба | da'vo; sud jarayoni
+负担 | нести (расходы, ответственность); бремя; нагрузка | zimmasiga olmoq; yuk; og'irlik
+毒品 | наркотики | giyohvand moddalar
+年度 | год (финансовый, учебный); годовой | yil (moliyaviy, o'quv); yillik
+检验 | проверять; испытывать; экспертиза | tekshirmoq; sinab ko'rmoq; ekspertiza
+排除 | исключать; устранять; убирать | istisno qilmoq; bartaraf etmoq
+发行 | выпускать (акции, деньги); издавать; тираж | chiqarmoq (aksiya, pul); nashr qilmoq
+培训 | обучать; готовить; обучение; курсы | o'qitmoq; tayyorlamoq; trening
+井 | колодец; шахта | quduq; shaxta | jǐng
+判决 | приговор; решение суда; выносить приговор | hukm; sud qarori; hukm chiqarmoq
+被告 | ответчик; подсудимый | javobgar; sudlanuvchi
+欢乐 | радость; веселье | quvonch; shodlik
+收藏 | коллекционировать; хранить; собирать | kolleksiya yig'moq; saqlab qo'ymoq; yig'moq
+团体 | коллектив; организация; команда | jamoa; tashkilot
+消防 | пожаротушение; противопожарная защита | yong'inga qarshi kurash
+太空 | космос; космическое пространство | koinot; fazo
+指示 | указывать; давать указания; указание | ko'rsatma bermoq; yo'l-yo'riq; ko'rsatma
+暴露 | раскрывать; разоблачать; обнажать | fosh qilmoq; ochib tashlamoq
+官方 | официальный; власти | rasmiy; hokimiyat
+逮捕 | арестовывать; арест | hibsga olmoq; hibs
+机械 | механизм; машины; механический | mexanizm; mashina; mexanik
+引导 | направлять; вести; руководить | yo'naltirmoq; boshlab bormoq
+协助 | помогать; содействовать | yordam bermoq; ko'maklashmoq
+防守 | обороняться; защищать; оборона | mudofaa qilmoq; himoya qilmoq
+审判 | суд; судить; судебный процесс | sud; sud qilmoq; sud jarayoni
+财务 | финансы; финансовые дела | moliya; moliyaviy ishlar
+顾问 | консультант; советник | maslahatchi; konsultant
+助理 | помощник; ассистент | yordamchi; assistent
+潜力 | потенциал; скрытые возможности | salohiyat; yashirin imkoniyat
+折磨 | мучить; терзать; мучение | qiynamoq; azoblamoq; azob
+消除 | устранять; снимать; ликвидировать | yo'qotmoq; bartaraf etmoq
+随意 | по желанию; как угодно; произвольно | xohlagancha; ixtiyoriy
+贼 | вор; предатель; хитрый | o'g'ri; xoin; ayyor
+算了 | ладно; оставим; забудь | bo'ldi; qo'yaylik; unut
+策划 | замышлять; планировать; организовывать | rejalashtirmoq; tashkil qilmoq
+预算 | бюджет; смета | byudjet; smeta
+行政 | администрация; административный | ma'muriyat; ma'muriy
+司法 | правосудие; судебный | adliya; sud-huquq
+冲动 | порыв; импульс; импульсивный | to'satdan istak (impuls); jo'shqinlik; shoshqaloq
+考验 | испытывать; проверка; испытание | sinovdan o'tkazmoq; sinov
+技巧 | мастерство; приём; техника | mahorat; usul; texnika
+公正 | справедливый; беспристрастный | adolatli; xolis
+和谐 | гармоничный; гармония | uyg'un; uyg'unlik
+呈现 | представать; проявляться; демонстрировать | namoyon bo'lmoq; ko'rinmoq
+无比 | несравненный; беспримерный | tengsiz; nihoyatda
+信仰 | вера; убеждение; верить (в религию) | e'tiqod; ishonch; dinga e'tiqod qilmoq
+思维 | мышление; ход мысли | tafakkur; fikrlash
+规划 | планировать; план; программа | rejalashtirmoq; reja; dastur
+不止 | не прекращаться; более чем; не только | to'xtamaslik; dan ortiq; nafaqat
+震惊 | потрясти; шокировать; потрясение | hayratda qoldirmoq; larzaga solmoq
+混合 | смешивать; смесь; гибрид | aralashtirmoq; aralashma; gibrid
+坑 | яма; впадина; ловушка; обмануть | chuqur; o'ra; tuzoq; aldamoq
+导弹 | ракета (управляемая) | raketa (boshqariladigan)
+领袖 | лидер; вождь | yetakchi; rahnamo
+代理 | представлять; замещать; агент; доверенный | vakillik qilmoq; o'rniga ishlamoq; agent; vakil
+过度 | чрезмерный; излишний; сверх меры | haddan tashqari; ortiqcha
+机关 | орган; учреждение; механизм; хитрость | organ; idora; mexanizm; hiyla
+明明 | ясно же; очевидно; несомненно | aniq; shubhasiz; ravshanki
+亦 | тоже; также (книжн.) | ham; shuningdek (kitobiy)
+群众 | массы; народ; люди | omma; xalq; ko'pchilik
+按摩 | массаж; массировать | massaj; massaj qilmoq
+绑架 | похищать; похищение | o'g'irlamoq; garovga olmoq
+倾向 | тенденция; склонность; склоняться | tendensiya; moyillik; moyil bo'lmoq
+诱惑 | соблазн; соблазнять; прельщать | vasvasa; yo'ldan urmoq; ayartmoq
+产业 | отрасль; промышленность; собственность | sanoat tarmog'i; mulk
+居住 | проживать; жить | yashamoq; istiqomat qilmoq
+情形 | обстоятельства; положение; ситуация | holat; vaziyat; sharoit
+起码 | по меньшей мере; минимальный | kamida; eng kamida
+带领 | возглавлять; вести за собой | boshchilik qilmoq; yetaklamoq
+嫉妒 | завидовать; ревновать; зависть | hasad qilmoq; rashk qilmoq; hasad
+探索 | исследовать; изучать; поиски | tadqiq qilmoq; izlamoq; izlanish
+财政 | государственные финансы; финансовый | davlat moliyasi; moliyaviy
+对抗 | противостоять; сопротивляться; противоборство | qarshi turmoq; qarshilik; kurash
+迹象 | признак; примета; симптом | belgi; alomat
+支援 | поддерживать; помогать; помощь | qo'llab-quvvatlamoq; yordam bermoq; yordam
+娃娃 | малыш; ребёнок; кукла | go'dak; bola; qo'g'irchoq
+以往 | в прошлом; прежде | ilgari; avval
+签署 | подписывать (соглашение) | imzolamoq (shartnoma)
+犬 | собака (книжн.) | it (kitobiy)
+欺骗 | обманывать; обман | aldamoq; aldov
+金融 | финансы; банковское дело; финансовый | moliya; bank ishi; moliyaviy
+子弹 | пуля | o'q
+痕迹 | след; отпечаток; метка | iz; belgi
+过于 | слишком; чересчур | haddan tashqari; juda ham
+染 | красить; заразиться; приобрести (дурную привычку) | bo'yamoq; yuqtirmoq; yomon odat orttirmoq
+清晰 | чёткий; ясный | aniq; ravshan
+码头 | пристань; причал; порт | pristan; dengiz porti
+咋 | как; почему (диал., то же, что 怎么) | qanday; nega (shevada, 怎么 bilan bir xil)
+崩溃 | рухнуть; развалиться; сломаться (психологически) | qulamoq; parchalanmoq; ruhan sinmoq
+循环 | цикл; циркулировать; кругооборот | sikl; aylanmoq; aylanish
+汇报 | докладывать; отчитываться; доклад | hisobot bermoq; ma'ruza qilmoq
+鉴定 | экспертиза; оценивать; удостоверять | ekspertiza; baholamoq
+超越 | превосходить; выходить за пределы | ortda qoldirmoq; chegaradan o'tmoq
+膜 | плёнка; мембрана | parda; membrana
+特色 | особенность; своеобразие | xususiyat; o'ziga xoslik
+用户 | пользователь; абонент | foydalanuvchi; abonent
+正义 | справедливость; праведность; справедливый | adolat; haqiqat; adolatli
+穿越 | пересекать; проходить насквозь; (сленг) перемещаться во времени | kesib o'tmoq; (slang) vaqt bo'ylab sayohat qilmoq
+抛弃 | бросать; отвергать; оставлять | tashlab ketmoq; rad etmoq
+跨 | шагать; переступать; охватывать | kesib o'tmoq; qadam tashlamoq; qamrab olmoq
+战术 | тактика | taktika
+临床 | клинический | klinik
+欲望 | желание; жажда; вожделение | istak; ehtiros
+立场 | позиция; точка зрения | pozitsiya; nuqtai nazar
+认定 | твёрдо считать; признать; установить | qat'iy hisoblamoq; aniqlamoq
+跌 | падать; спотыкаться; снижаться (о ценах) | yiqilmoq; qoqilmoq; tushmoq
+足以 | достаточно, чтобы; хватает | yetarli; kifoya qiladi
+场面 | сцена; обстановка; зрелище | sahna; manzara; vaziyat
+目光 | взгляд; внимание; кругозор | nigoh; e'tibor; qarash
+放手 | отпустить; отказаться; развязать руки | qo'yib yubormoq; voz kechmoq; erkinlik bermoq
+脱离 | отрываться; порывать; оторваться от | ajralmoq; uzilmoq
+解除 | отменять; снимать; увольнять | bekor qilmoq; olib tashlamoq; ishdan bo'shatmoq
+惩罚 | наказание; наказывать | jazo; jazolamoq
+事务 | дела; текущие дела | ishlar; kundalik ishlar
+在意 | обращать внимание; переживать из-за | e'tibor bermoq; ahamiyat bermoq
+技能 | навык; умение | ko'nikma; mahorat
+抵抗 | сопротивляться; сопротивление | qarshilik ko'rsatmoq; qarshilik
+动机 | мотив; побуждение | motiv; sabab
+情节 | сюжет; обстоятельства (дела) | syujet; holat
+预期 | ожидать; предполагать; ожидаемый | kutmoq; taxmin qilmoq; kutilgan
+侵犯 | нарушать; посягать; вторгаться | buzmoq; tajovuz qilmoq
+乐趣 | удовольствие; радость | zavq; huzur
+熬 | варить на медленном огне; терпеть; не спать (熬夜) | past olovda qaynatmoq; chidamoq; uxlamay chiqmoq | áo
+天才 | талант; гений | iste'dod; daho
+一向 | всегда; всё время; последнее время | hamisha; hozirgacha doim
+绝望 | отчаяние; отчаяться | umidsizlik; umidni uzmoq
+迷人 | очаровательный; пленительный | maftunkor; dilbar
+职位 | должность; пост | lavozim; o'rin
+化妆 | краситься; гримироваться | bezanmoq; upa-elik qilmoq
+节奏 | ритм; темп | ritm; sur'at
+裁判 | судья; судить (в спорте); судебное решение | hakam; hakamlik qilmoq; hukm
+角落 | угол; уголок; закоулок | burchak; chekka-burchak
+剧本 | сценарий; пьеса | ssenariy; pyesa
+版本 | версия; издание | versiya; nashr
+干扰 | мешать; помехи; вмешиваться | xalaqit bermoq; xalal
+联络 | связываться; поддерживать связь | bog'lanmoq; aloqa qilmoq
+途径 | путь; способ; канал | yo'l; usul; kanal
+体系 | система; структура | tizim; tuzilma
+遭受 | терпеть; подвергаться (потерям, бедствию) | duchor bo'lmoq; jabr ko'rmoq
+轨道 | рельсы; колея; орбита | rels; iz; orbita
+忍受 | терпеть; выносить | chidamoq; bardosh bermoq
+新娘 | невеста; новобрачная | kelin; yangi kelin
+脆弱 | хрупкий; слабый; уязвимый | mo'rt; nozik; zaif
+引擎 | двигатель (заимств.) | dvigatel
+维修 | ремонт; обслуживание; ремонтировать | ta'mirlash; xizmat ko'rsatish
+漫画 | карикатура; комикс; манга | karikatura; komiks; manga
+窝 | гнездо; логово; ямка (на теле); угол | uya; in; chuqurcha; burchak
+继承 | наследовать; унаследовать; продолжать | meros qilib olmoq; davom ettirmoq
+依据 | на основании; основание; опираться | asosida; asos; tayanmoq
+弥补 | восполнять; компенсировать (недостаток) | to'ldirmoq; qoplamoq
+扑 | бросаться на; накидываться; отдаваться (делу) | tashlanmoq; ko'milmoq; berilmoq
+天生 | врождённый; от природы | tug'ma; tabiatan
+抵达 | прибывать; достигать (пункта) | yetib kelmoq; yetmoq
+登陆 | высаживаться; сходить на берег; выходить на сушу | qirg'oqqa chiqmoq; quruqlikka o'tmoq
+灵感 | вдохновение; озарение | ilhom; ilhomlanish
+忽略 | пренебрегать; упускать из виду; игнорировать | e'tiborsiz qoldirmoq; nazardan chetda qoldirmoq | hūlüè
+失误 | промах; ошибка; допустить ошибку | xato; yanglishish
+支撑 | поддерживать; подпирать; опора | tayanmoq; qo'llab turmoq; tayanch
+依旧 | по-прежнему; как и раньше | avvalgidek; hanuzgacha
+包装 | упаковывать; упаковка | o'ramoq; qadoqlash
+边缘 | край; грань; периферия; пограничный | chekka; chet; chegara
+元素 | элемент; химический элемент | element; unsur
+强迫 | принуждать; заставлять | majburlamoq
+别墅 | вилла; особняк | villa; dala hovli; dacha
+高潮 | кульминация; подъём; пик | avj nuqtasi; ko'tarilish; cho'qqi
+钻石 | бриллиант; алмаз | brilliant; olmos
+仓库 | склад | ombor
+回顾 | оглядываться назад; подводить итоги | ortga nazar tashlamoq; sarhisob qilmoq
+岗位 | пост; рабочее место; должность | post; ish o'rni
+前提 | предпосылка; условие | old shart; shart-sharoit
+清洁 | чистый; чистить | toza; tozalamoq
+场所 | место; помещение | joy; maskan
+焦点 | фокус; центр внимания | fokus; diqqat markazi
+福利 | льготы; благосостояние; социальное обеспечение | imtiyozlar; farovonlik; ijtimoiy ta'minot
+不可思议 | непостижимый; невероятный | aql bovar qilmas; ajoyib
+故障 | неисправность; поломка | nosozlik; buzilish
+宁愿 | предпочесть; скорее; лучше уж | afzal ko'rmoq; yaxshisi
+手法 | приём; манера; способ исполнения | usul; uslub; yo'l
+指责 | упрекать; обвинять; осуждать | ayblamoq; tanqid qilmoq
+成本 | себестоимость; издержки | tannarx; xarajat
+拼命 | изо всех сил; не жалея жизни | jon-jahdi bilan; hayotini ayamay
+免疫 | иммунитет | immunitet
+割 | резать; отрезать | kesmoq; kesib olmoq
+初步 | предварительный; первоначальный | dastlabki; boshlang'ich
+渣 | осадок; остатки; шлак | cho'kma; qoldiq; shlak
+假设 | предполагать; допущение; гипотеза | faraz qilmoq; taxmin; gipoteza
+布置 | обустраивать; украшать; расставлять; поручать | jihozlamoq; bezamoq; joylashtirmoq; topshirmoq
+欺负 | обижать; издеваться; притеснять | xo'rlamoq; zug'um qilmoq
+色彩 | цвет; колорит; оттенок | rang; kolorit; tus
+优先 | иметь приоритет; в первую очередь | ustuvorlik; birinchi navbatda
+吊 | вешать; подвешивать; висеть | osmoq; osib qo'ymoq
+级别 | уровень; ранг; степень | daraja; martaba
+携带 | носить с собой; иметь при себе | o'zi bilan olib yurmoq
+创新 | новаторство; инновация; внедрять новое | yangilik; innovatsiya; yangilik kiritmoq
+指定 | назначать; определять; обозначенный | tayinlamoq; belgilamoq; belgilangan
+癌症 | рак (болезнь) | saraton
+部位 | часть (тела); участок; место | tananing qismi; joy; o'rin
+意志 | воля; сила воли | iroda; matonat
+激励 | воодушевлять; поощрять; стимул | ruhlantirmoq; rag'batlantirmoq; turtki
+坚定 | твёрдый; непоколебимый | qat'iy; mustahkam
+许可 | разрешать; разрешение; допускать | ruxsat bermoq; ruxsat; litsenziya
+灾难 | бедствие; катастрофа | ofat; falokat
+以便 | чтобы; для того чтобы; с тем чтобы | uchun; toki; maqsadida
+定义 | определение; определять | ta'rif; ta'riflamoq
+正当 | как раз; законный; правомерный | aynan paytida; qonuniy; to'g'ri
+修复 | восстанавливать; реставрировать; починить | tiklamoq; ta'mirlamoq
+清除 | устранять; очищать; ликвидировать | tozalamoq; yo'q qilmoq
+挣扎 | бороться; биться; барахтаться | kurashmoq; tipirchilamoq
+依赖 | зависеть; полагаться; зависимость | bog'liq bo'lmoq; tayanmoq; qaramlik
+分散 | рассеивать; рассредоточивать; разбросанный | tarqatmoq; sochmoq; tarqoq
+履行 | выполнять (обязательства); исполнять | bajarmoq; ado etmoq
+竞赛 | соревнование; конкурс; состязаться | musobaqa; tanlov; bellashmoq
+捏 | щипать; зажимать пальцами; лепить | chimchilamoq; qisib ushlamoq; yasamoq
+器官 | орган (тела) | a'zo (tananing)
+争夺 | бороться за; оспаривать; домогаться | talashmoq; kurashmoq
+分裂 | раскалываться; делиться; раскол | bo'linmoq; ajralmoq; parchalanish
+频率 | частота | chastota
+报复 | мстить; отомстить; возмездие | o'ch olmoq; qasos
+纤维 | волокно; клетчатка | tola; ovqat tolasi (kletchatka)
+罐 | банка; кувшин; горшок | banka; ko'za; idish
+提议 | предлагать; предложение | taklif qilmoq; taklif
+保守 | консервативный; хранить; беречь | konservativ; saqlamoq; yashirmoq
+轮胎 | шина; покрышка | shina; g'ildirak qoplamasi
+暗示 | намёк; намекать; внушение | ishora; shama qilmoq; ishontirish
+原始 | первоначальный; первобытный; исходный | dastlabki; ibtidoiy; asl
+监视 | наблюдать; следить; надзор | kuzatmoq; nazorat qilmoq
+搭配 | сочетать; подбирать; сочетание | uyg'unlashtirmoq; juftlamoq; kombinatsiya
+诞生 | рождаться; появиться на свет | tug'ilmoq; dunyoga kelmoq
+场合 | случай; обстановка; ситуация | holat; vaziyat; sharoit
+担保 | гарантировать; поручиться; поручительство | kafolat bermoq; kafil bo'lmoq; kafolat
+擅长 | хорошо владеть; быть мастером в | mohir bo'lmoq; ustasi bo'lmoq
+阴谋 | заговор; интрига; замышлять | fitna; makr; fitna uyushtirmoq
+串 | нанизывать; связка; сч. сл. для связок | tizmoq; bog'lam; bog'lamlar uchun sanoq so'zi
+
+保卫 | защищать; оборонять | himoya qilmoq; mudofaa qilmoq
+磅 | фунт (мера веса); весы; взвешивать | funt (og'irlik o'lchovi); tarozi; tortmoq
+背叛 | предавать; измена | xiyonat qilmoq; xiyonat
+眼光 | взгляд; проницательность; дальновидность | nigoh; farosat; uzoqni ko'ra bilish
+占据 | занимать; захватывать | egallamoq; bosib olmoq
+一流 | первоклассный; высшего класса | birinchi darajali; yuqori sifatli
+股份 | акция; доля (в компании) | aksiya; ulush (kompaniyada)
+凶手 | убийца | qotil
+时装 | модная одежда; мода | zamonaviy kiyim; moda
+辐射 | излучение; радиация | nurlanish; radiatsiya
+掏 | доставать (из кармана); вычерпывать | cho'ntakdan olmoq; olib chiqarmoq
+趴 | лежать на животе; припасть | qorni bilan yotmoq; engashib suyanmoq
+赌博 | играть в азартные игры; азартные игры | qimor o'ynamoq; qimor
+认可 | одобрять; признание | ma'qullamoq; e'tirof
+股东 | акционер | aksiyador
+残酷 | жестокий; жестокость | shafqatsiz; shafqatsizlik
+当前 | в настоящее время; текущий; стоять перед (задачей) | hozirgi; hozirda; (vazifa) oldida turmoq
+曝光 | засветка (фото); разоблачать; предавать огласке | yoritish (suratda); fosh qilmoq; oshkor qilmoq
+家属 | члены семьи; иждивенцы | oila a'zolari; qaramog'idagilar
+浑身 | всем телом; с головы до ног | butun badan; boshdan oyoq
+宪法 | конституция | konstitutsiya
+难得 | редкий; нечасто бывающий; ценный | kam uchraydigan; noyob; qimmatli
+防御 | оборона; обороняться | mudofaa; mudofaa qilmoq
+外表 | внешность; наружность | tashqi ko'rinish; tashqi qiyofa
+人格 | личность; характер; достоинство | shaxs; xarakter; qadr-qimmat
+十足 | полный; стопроцентный; в полной мере | to'liq; yuz foiz; mukammal
+忠诚 | верный; преданный; верность | sodiq; fidoyi; sadoqat
+腐败 | коррупция; разлагаться; прогнивший | korrupsiya; chirimoq; chirigan
+鉴于 | ввиду; учитывая | nazarda tutib; hisobga olib
+局势 | обстановка; положение дел | vaziyat; ahvol
+大厦 | здание; высотное здание (в названиях) | bino; ko'p qavatli bino (nomlarda)
+隧道 | тоннель | tunnel
+势力 | сила; влияние; силы (военные, политические) | kuch; ta'sir; kuchlar (harbiy, siyosiy)
+品质 | качество; нравственные качества | sifat; axloqiy fazilatlar
+设立 | учреждать; создавать | tuzmoq; ta'sis etmoq
+抑制 | подавлять; сдерживать; тормозить | bostirmoq; jilovlamoq; sekinlashtirmoq
+精心 | тщательно; с особым вниманием | sinchkovlik bilan; puxta
+极端 | крайность; крайний | haddan tashqari; ekstremal; chekka
+流氓 | хулиган; бандит | bezori; bandit
+珍贵 | ценный; драгоценный | qimmatli; noyob
+遗产 | наследство; наследие | meros
+竞选 | баллотироваться; участвовать в выборах | saylovda qatnashmoq; nomzod bo'lmoq
+理智 | разум; рассудок; рассудительный | aql; idrok; oqilona
+风暴 | буря; шторм; потрясение | to'fon; bo'ron; ijtimoiy silkinish
+写作 | писать; сочинять; писательство | yozmoq; ijod qilmoq; yozuvchilik
+着手 | приступать; браться за | kirishmoq; boshlamoq
+指望 | рассчитывать; надеяться; надежда | ishonmoq; umid qilmoq; umid
+搭档 | партнёр; напарник; сотрудничать | sherik; hamkor; birga ishlamoq
+使命 | миссия; долг; предназначение | missiya; burch; vazifa
+残忍 | жестокий; безжалостный | shafqatsiz; berahm
+住宅 | жильё; жилой дом | turar joy; uy-joy
+季度 | квартал; сезон (в спорте) | chorak; mavsum (sportda)
+丧失 | терять; лишаться | yo'qotmoq; mahrum bo'lmoq
+保密 | хранить в тайне; держать в секрете | sir saqlamoq; maxfiy tutmoq
+旋转 | вращаться; крутиться | aylanmoq; burilmoq
+反抗 | сопротивляться; бунтовать | qarshilik qilmoq; isyon ko'tarmoq
+等级 | ранг; степень; уровень | daraja; martaba
+资助 | финансировать; поддерживать деньгами; субсидия | moliyalashtirmoq; moddiy yordam bermoq; subsidiya
+赞助 | спонсировать; поддерживать | homiylik qilmoq; qo'llab-quvvatlamoq
+包围 | окружать; обступать | o'rab olmoq; qurshab olmoq
+隔离 | изолировать; разделять | ajratmoq; izolyatsiya qilmoq
+人性 | человеческая природа; человечность | insoniy tabiat; insonparvarlik
+作风 | стиль; манера (работы, поведения) | uslub; ish usuli
+美妙 | чудесный; прекрасный | ajoyib; go'zal
+跪 | становиться на колени; стоять на коленях | tiz cho'kmoq
+举动 | поступок; действие | xatti-harakat; qadam
+细菌 | бактерия; микроб | bakteriya; mikrob
+本事 | умение; способность; мастерство | qobiliyat; mahorat; uquv | běnshi
+纯粹 | чистый; сугубо; исключительно | sof; toza; faqat
+收益 | доход; прибыль | daromad; foyda
+种子 | семя; семена | urug'; urug'lar
+幢 | сч. сл. для зданий | binolar uchun sanoq so'zi | zhuàng
+崇拜 | поклоняться; боготворить | sig'inmoq; sajda qilmoq; hurmat qilmoq
+信念 | убеждение; вера | e'tiqod; ishonch
+保姆 | няня; домработница | enaga; uy xizmatchisi
+更新 | обновлять; обновление | yangilamoq; yangilanish
+模样 | вид; облик; внешность | ko'rinish; qiyofa
+当场 | на месте; тут же | joyida; o'sha zahoti
+特定 | особый; определённый; конкретный | maxsus; belgilangan; muayyan
+刑事 | уголовный | jinoiy
+翘 | приподнимать; задирать; торчать вверх | ko'tarmoq; yuqoriga ko'tarilmoq
+看待 | относиться; рассматривать; смотреть на (что-либо) | munosabatda bo'lmoq; qaramoq (nuqtai nazardan)
+打架 | драться; подраться | urishmoq; mushtlashmoq
+助手 | помощник; ассистент | yordamchi; assistent
+演绎 | развивать (сюжет); исполнять; разыгрывать; дедукция | talqin qilmoq; ijro etmoq; deduksiya
+典礼 | церемония; торжество | marosim; tantana
+生理 | физиология | fiziologiya
+拜托 | очень прошу; пожалуйста (просьба) | juda iltimos qilaman; iltimos
+滋味 | вкус; ощущение; чувство | ta'm; his
+人间 | мир людей; земной мир | odamlar dunyosi; yer yuzi
+脂肪 | жир (в теле, пище) | yog'
+审查 | проверять; рассматривать; цензурировать | tekshirmoq; ko'rib chiqmoq; senzura qilmoq
+港口 | порт; гавань | port; bandargoh
+著作 | сочинение; труд; писать (книги) | asar; ilmiy ish; yozmoq
+放大 | увеличивать; расширять | kattalashtirmoq; kengaytirmoq
+挖掘 | раскапывать; добывать; выявлять | qazib olmoq; ochib bermoq; topmoq
+权威 | авторитет; авторитетный | obro'; nufuzli; obro'li shaxs
+永恒 | вечный; нескончаемый | abadiy; mangu
+覆盖 | покрывать; охватывать | qoplamoq; qamrab olmoq
+渠道 | канал (связи, поставок); оросительная канава | kanal (aloqa, yetkazib berish); ariq
+尊严 | достоинство; честь | qadr-qimmat; sha'n
+宰 | резать (скот); (разг.) обдирать, драть втридорога | so'ymoq; shilmoq (qimmat narx bilan)
+交叉 | пересекаться; перекрещиваться | kesishmoq; o'zaro kesishmoq
+缺陷 | недостаток; дефект; изъян | kamchilik; nuqson
+现状 | нынешнее положение; существующее состояние | hozirgi holat; mavjud ahvol
+酒精 | спирт; алкоголь | spirt; alkogol
+可笑 | смешной; нелепый | kulgili; ahmoqona
+捞 | вылавливать; (разг.) добывать, «срывать» | tutib olmoq; qo'lga kiritmoq
+上级 | начальство; вышестоящие | yuqori tashkilot; boshliqlar
+动脉 | артерия | arteriya
+扩散 | распространяться; расходиться | tarqalmoq; yoyilmoq
+条款 | пункт; статья (договора, закона) | band; modda (shartnoma, qonun)
+贿赂 | подкупать; взятка | pora bermoq; pora
+例外 | исключение | istisno
+沉重 | тяжёлый; серьёзный | og'ir; jiddiy
+仪器 | прибор; инструмент | asbob; qurilma
+封锁 | блокировать; перекрывать; блокада | to'smoq; qamal qilmoq; blokada
+命名 | называть; давать название | nom bermoq; nomlamoq
+部署 | размещать; расставлять; распределять (силы) | joylashtirmoq; taqsimlamoq (kuchlarni)
+严厉 | суровый; строгий | qattiqqo'l; jiddiy
+示范 | показывать на примере; образец | namuna ko'rsatmoq; namuna
+赋予 | наделять; возлагать; придавать | ato etmoq; yuklamoq; bermoq
+封闭 | закрывать; запечатывать; замкнутый | yopmoq; muhrlamoq; yopiq
+血压 | кровяное давление | qon bosimi
+遗传 | наследоваться; наследственность | irsiylanmoq; irsiyat
+识别 | распознавать; опознавать | tanimoq; aniqlamoq
+纠正 | исправлять; поправлять | to'g'rilamoq; tuzatmoq
+饮食 | питание; еда и напитки; диета | ovqatlanish; ovqat-ichimlik; parhez
+溜 | ускользать; скользить; кататься | sirg'alib chiqib ketmoq; sirg'anmoq
+摇滚 | рок-музыка; рок-н-ролл | rok musiqa; rok-n-roll
+魔鬼 | дьявол; демон | iblis; shayton
+期限 | срок; крайний срок | muddat; oxirgi muddat
+外界 | внешний мир; внешняя среда | tashqi dunyo; tashqi muhit
+奉献 | посвящать; отдавать; приносить в дар | bag'ishlamoq; fido qilmoq; taqdim etmoq
+漫长 | очень долгий; бесконечный | juda uzoq; cheksiz
+标记 | знак; метка; пометка | belgi; yorliq
+挨 | по порядку; рядом; (ái) терпеть, подвергаться | ketma-ket; yonida; (ái) chidamoq, duch kelmoq
+辩护 | защищать (в суде, в споре); защита | himoya qilmoq (sudda, bahsda); himoya
+幸好 | к счастью | yaxshiyamki; baxtga
+测量 | измерять; съёмка | o'lchamoq; planga olish
+走廊 | коридор; галерея | yo'lak; koridor
+人质 | заложник | garovga olingan odam; garov
+嘴唇 | губа | lab
+强制 | принуждать; принудительный | majburlamoq; majburiy
+愚蠢 | глупый; тупой | ahmoq; nodon
+盗窃 | воровать; кража | o'g'irlamoq; o'g'rilik
+人工 | искусственный; ручной труд; рабочая сила | sun'iy; qo'l mehnati; ish kuchi
+水泥 | цемент | sement
+警惕 | быть бдительным; настороже | hushyor bo'lmoq; ehtiyot bo'lmoq
+降临 | наступать; приходить; сходить (свыше) | kelmoq; tushmoq; yetib kelmoq

@@ -1,0 +1,46 @@
+# Грубая лексика, раздел 16+. Формат:
+# иероглифы | пиньинь | грубость (1 = грубовато, 2 = грубо, 3 = очень грубо) | по-русски | по-узбекски | по-английски
+# Только ругательства и оскорбления, чтобы понимать их, а не использовать. Откровенной сексуальной лексики здесь нет.
+# Строки с # бот пропускает.
+
+# --- 1: грубовато, говорят и в шутку ---
+靠 | kào | 1 | «Блин!», «Чёрт!»: смягчённая замена более грубого слова, междометие досады или удивления | «Voy!», «Lanat!»: qattiqroq so'zning yumshatilgan shakli, jahl yoki hayrat undovi | "Damn!": a softened stand-in for a stronger swear word, said in annoyance or surprise
+我去 | wǒ qù | 1 | «Ну и ну!», «Ничего себе!»: удивление, часто вместо более грубого выражения | «Voy-bo'!», «Ha-ya!»: hayrat undovi | "Whoa!", "Holy cow!": surprise, often in place of a ruder phrase
+烦死了 | fán sǐ le | 1 | «Бесит!», «Достало!» | «Jonimga tegdi!» | "I'm so annoyed!"
+笨蛋 | bèndàn | 1 | Дурак, тупица (не очень обидно) | Ahmoq, tentak (unchalik haqoratli emas) | Idiot, fool (fairly mild)
+傻瓜 | shǎguā | 1 | Дурачок, глупыш (иногда ласково) | Ahmoq, sodda (ba'zan erkalab) | Silly, fool (sometimes affectionate)
+傻子 | shǎzi | 1 | Дурак, простак | Ahmoq, soddadil | Fool, simpleton
+小气鬼 | xiǎoqìguǐ | 1 | Скряга, жмот | Xasis, ziqna | Cheapskate, miser
+没出息 | méi chūxi | 1 | Никчёмный, «из тебя ничего не выйдет» | Qo'lidan hech narsa kelmaydigan | Good-for-nothing, hopeless
+要你管 | yào nǐ guǎn | 1 | «Не твоё дело!», «Тебя не спрашивали!» | «Senga nima!», «Sendan so'ramadilar!» | "Mind your own business!"
+
+# --- 2: грубо ---
+滚 | gǔn | 2 | «Пошёл вон!», «Катись!» | «Yo'qol!» | "Get lost!", "Scram!"
+闭嘴 | bì zuǐ | 2 | «Заткнись!» | «Jim bo'l!» | "Shut up!"
+少废话 | shǎo fèihuà | 2 | «Хватит болтать!», «Без лишних слов!» | «Gapni ko'paytirma!» | "Cut the crap!", "Enough talk!"
+白痴 | báichī | 2 | Идиот, кретин | Aqli past, tentak | Idiot, moron
+蠢货 | chǔnhuò | 2 | Тупица, болван | Tentak, ahmoq | Blockhead, dummy
+废物 | fèiwù | 2 | Никчёмный человек, «тряпка» | Yaroqsiz odam | Good-for-nothing, loser
+垃圾 | lājī | 2 | Мусор; о человеке или вещи: дрянь, отстой | Axlat; odam yoki narsa haqida: yaroqsiz, past | Trash, garbage; of a person or thing: rubbish
+脑残 | nǎocán | 2 | Придурок (досл. «с повреждённым мозгом») | Ahmoq (so'zma-so'z «miyasi shikastlangan») | Idiot, brain-dead (lit. "brain-damaged")
+白眼狼 | báiyǎnláng | 2 | Неблагодарный человек (досл. «белоглазый волк») | Noshukur odam (so'zma-so'z «oq ko'zli bo'ri») | Ungrateful person (lit. "white-eyed wolf")
+神经病 | shénjīngbìng | 2 | Псих, ненормальный (в запале) | Aqldan ozgan (jahl bilan) | Psycho, nutcase (said in anger)
+有病 | yǒu bìng | 2 | «Ты что, больной?», «У тебя не все дома?» | «Sen kasalmisan?» | "Are you sick in the head?"
+变态 | biàntài | 2 | Извращенец, ненормальный (оскорбление) | Buzuq, g'ayritabiiy (haqorat) | Pervert, freak (insult)
+找死 | zhǎo sǐ | 2 | «Нарываешься!», «Жить надоело?» | «O'lgingiz kelganmi?» | "Asking for trouble!" (lit. "looking for death")
+扯淡 | chědàn | 2 | Чушь, бред; нести чепуху | Bema'ni gap | Nonsense, bullshit
+屁话 | pìhuà | 2 | Пустая болтовня, чушь | Quruq gap, bema'nilik | Crap, nonsense
+放屁 | fàng pì | 2 | «Чушь!», «Враньё!» (досл. «пукнуть») | «Bema'nilik!», «Yolg'on!» | "Bullshit!" (lit. "to fart")
+狗屎 | gǒushǐ | 2 | Дерьмо (досл. «собачье дерьмо») | Axlat (so'zma-so'z «it axlati») | Crap, shit (lit. "dog poop")
+混蛋 | húndàn | 2 | Негодяй, мерзавец | Haromi, pastkash | Jerk, scoundrel
+
+# --- 3: очень грубо, при незнакомых нельзя ---
+滚蛋 | gǔndàn | 3 | «Проваливай!», «Пошёл ты!» | «Yo'qol!» | "Get the hell out!"
+王八蛋 | wángbādàn | 3 | Ублюдок, сволочь (досл. «черепашье яйцо») | Haromi, la'nati (so'zma-so'z «toshbaqa tuxumi») | Bastard, son of a bitch (lit. "turtle egg")
+贱人 | jiànrén | 3 | Подлая, мерзавка (оскорбление, чаще о женщине) | Pastkash (haqorat, ko'pincha ayol haqida) | Bitch, despicable person (insult, mostly of a woman)
+去死 | qù sǐ | 3 | «Сдохни!»: очень жестокое пожелание | «O'l!»: juda shafqatsiz tilak | "Go die!": very harsh
+妈的 | māde | 3 | «Чёрт!», «Блин!»: короткая форма сильного ругательства | «Lanat!»: kuchli so'kinishning qisqa shakli | "Damn!": short form of a strong swear
+他妈的 | tāmāde | 3 | «Чёрт возьми!»: сильное ругательство (досл. «его мать») | «Lanat!»: kuchli so'kinish (so'zma-so'z «uning onasi») | "Damn it!": a strong swear (lit. "his mother")
+卧槽 | wòcáo | 3 | «Ё-моё!», «Офигеть!»: ругательство-междометие | «Voy-bo'!»: so'kinish-undov | "WTF!", "Holy sh*t!": a swearing interjection
+傻逼 | shǎbī | 3 | Очень грубо: дебил, придурок | Juda qo'pol: ahmoq | Very vulgar: moron, idiot
+操 | cào | 3 | Очень грубое ругательство, примерно как русский мат; при незнакомых нельзя | Juda qo'pol so'kinish, ruscha ochiq so'kinishga o'xshash | Extremely vulgar swear word, roughly the f-word

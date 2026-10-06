@@ -1,0 +1,125 @@
+# Слова. Одна строка = одно слово. Формат:
+# иероглифы | пиньинь | уровень HSK (0 = без уровня: сленг, культура) | по-русски | по-узбекски | по-английски
+# Седьмое поле необязательно: slang = интернет-сленг (бот подпишет «Интернет-сленг»).
+# Строки, начинающиеся с #, бот пропускает. Уровни HSK ориентировочные.
+# Эти же слова бот использует как словарь перевода (русский, узбекский и английский → китайский).
+
+# --- HSK 1 ---
+你好 | nǐ hǎo | 1 | Привет, здравствуйте | Salom | Hello
+谢谢 | xièxie | 1 | Спасибо | Rahmat | Thank you
+不客气 | bù kèqi | 1 | Пожалуйста (в ответ на «спасибо») | Arzimaydi | You're welcome
+再见 | zàijiàn | 1 | До свидания | Xayr, ko'rishguncha | Goodbye
+对不起 | duìbuqǐ | 1 | Извините, простите | Kechirasiz | Sorry
+朋友 | péngyou | 1 | Друг | Do'st | Friend
+学习 | xuéxí | 1 | Учиться | O'qimoq | To study
+老师 | lǎoshī | 1 | Учитель | O'qituvchi | Teacher
+喜欢 | xǐhuan | 1 | Нравиться, любить | Yoqtirmoq | To like
+漂亮 | piàoliang | 1 | Красивый | Chiroyli | Pretty, beautiful
+高兴 | gāoxìng | 1 | Радостный, рад | Xursand | Happy, glad
+水 | shuǐ | 1 | Вода | Suv | Water
+吃 | chī | 1 | Есть, кушать | Yemoq | To eat
+喝 | hē | 1 | Пить | Ichmoq | To drink
+家 | jiā | 1 | Дом, семья | Uy, oila | Home, family
+爱 | ài | 1 | Любить, любовь | Sevmoq, sevgi | To love, love
+书 | shū | 1 | Книга | Kitob | Book
+
+# --- HSK 2 ---
+旅游 | lǚyóu | 2 | Путешествовать, туризм | Sayohat qilmoq, turizm | To travel, tourism
+帮助 | bāngzhù | 2 | Помогать, помощь | Yordam bermoq, yordam | To help, help
+健康 | jiànkāng | 2 | Здоровье, здоровый | Sog'liq, sog'lom | Health, healthy
+考试 | kǎoshì | 2 | Экзамен | Imtihon | Exam
+觉得 | juéde | 2 | Считать, ощущать | Deb hisoblamoq | To feel, to think
+告诉 | gàosu | 2 | Сказать, сообщить | Aytmoq | To tell
+运动 | yùndòng | 2 | Спорт, заниматься спортом | Sport, sport bilan shug'ullanmoq | Sports, exercise
+手机 | shǒujī | 2 | Мобильный телефон | Mobil telefon | Mobile phone
+
+# --- HSK 3 ---
+关心 | guānxīn | 3 | Заботиться, интересоваться | G'amxo'rlik qilmoq | To care about
+习惯 | xíguàn | 3 | Привычка; привыкать | Odat; ko'nikmoq | Habit; to get used to
+努力 | nǔlì | 3 | Усердно стараться | Qattiq harakat qilmoq | To work hard
+城市 | chéngshì | 3 | Город | Shahar | City
+特别 | tèbié | 3 | Особенно, особый | Ayniqsa, alohida | Especially, special
+练习 | liànxí | 3 | Тренироваться, упражнение | Mashq qilmoq, mashq | To practice, exercise
+机会 | jīhuì | 3 | Возможность, шанс | Imkoniyat | Opportunity, chance
+
+# --- HSK 4 ---
+文化 | wénhuà | 4 | Культура | Madaniyat | Culture
+坚持 | jiānchí | 4 | Упорно продолжать | Qat'iyat bilan davom etmoq | To persist
+经验 | jīngyàn | 4 | Опыт | Tajriba | Experience
+梦想 | mèngxiǎng | 4 | Мечта | Orzu | Dream
+放弃 | fàngqì | 4 | Бросить, отказаться | Voz kechmoq | To give up
+认真 | rènzhēn | 4 | Серьёзно, добросовестно | Jiddiy | Serious, conscientious
+
+# --- Без уровня: сленг, культура, дорамы ---
+摆烂 | bǎilàn | 0 | Махнуть на всё рукой («гнить лёжа», сленг) | Hamma narsaga qo'l siltash (slang) | To give up and let it all go (slang) | slang
+躺平 | tǎngpíng | 0 | «Лечь плашмя»: выйти из гонки за успехом | «Yotib olish»: muvaffaqiyat poygasidan chiqish | To "lie flat": to opt out of the rat race | slang
+内卷 | nèijuǎn | 0 | Бессмысленная гонка: все стараются всё больше, а результата нет | Ma'nosiz poyga: hamma ko'proq harakat qiladi, natija esa yo'q | Involution: everyone competes harder with no real progress | slang
+缘分 | yuánfèn | 0 | Судьба, которая сводит людей | Odamlarni uchrashtiradigan taqdir | Fate that brings people together
+委屈 | wěiqu | 0 | Чувствовать себя несправедливо обиженным | Nohaq xafa bo'lmoq | To feel wronged
+面子 | miànzi | 0 | «Лицо», репутация в глазах других | Obro', yuz | Face, social prestige
+加油 | jiāyóu | 0 | Давай! Не сдавайся! | Qani, harakat qil! | Go for it! Keep going!
+热闹 | rènao | 0 | Шумно, оживлённо и весело | Gavjum, quvnoq | Lively, bustling
+差不多 | chàbuduō | 0 | Почти, примерно, сойдёт | Taxminan, deyarli | More or less, about the same
+字幕 | zìmù | 0 | Субтитры | Subtitrlar | Subtitles
+电视剧 | diànshìjù | 0 | Телесериал, дорама | Teleserial | TV series
+
+# --- Интернет-сленг (седьмое поле: slang) ---
+打工人 | dǎgōngrén | 0 | «Работяга», наёмный работник (с самоиронией) | Yollanma xodim, ishchi (o'zini mazaq qilib) | Wage worker, office drone (self-ironic) | slang
+社恐 | shèkǒng | 0 | «Социофобия»: шутливо о стеснении в компании | Ijtimoiy qo'rquv (hazil bilan) | Social anxiety (often said jokingly) | slang
+社牛 | shèniú | 0 | «Социальный бык»: очень общительный человек | Juda kirishimli, ochiq odam | Social butterfly, extrovert | slang
+社死 | shèsǐ | 0 | «Социальная смерть»: сгореть со стыда на людях | Odamlar oldida uyatdan yerga kirib ketish | "Social death": dying of embarrassment in public | slang
+破防 | pòfáng | 0 | Не выдержать эмоций, расчувствоваться | His-tuyg'ularga berilib ketish | To be emotionally overwhelmed | slang
+上头 | shàngtóu | 0 | Увлечься так, что не остановиться | Qiziqib ketib, to'xtay olmaslik | To get hooked, unable to stop | slang
+绝绝子 | juéjuézǐ | 0 | Невероятно круто (иногда с иронией) | Juda zo'r (ba'zan kinoya bilan) | Absolutely amazing (sometimes ironic) | slang
+yyds | yǒngyuǎn de shén | 0 | «Вечное божество»: лучший, непревзойдённый | «Abadiy ilohiy»: eng zo'r | "Eternal god": the GOAT | slang
+栓Q | shuān Q | 0 | «Спасибо» (от английского thank you, шутливо) | Rahmat (inglizcha thank you dan, hazil) | "Thank you" (from English, humorous) | slang
+吃瓜 | chīguā | 0 | «Есть арбуз»: наблюдать за сплетнями со стороны | G'iybatni chetdan kuzatish | To watch gossip as a bystander | slang
+凡尔赛 | Fán'ěrsài | 0 | «Версаль»: хвастаться, делая вид, что жалуешься | Shikoyat qilgandek bo'lib maqtanish | "Versailles": humblebragging | slang
+佛系 | fóxì | 0 | «Буддийский стиль»: спокойно относиться ко всему | Hamma narsaga xotirjam munosabat | "Buddha-like": laid-back, going with the flow | slang
+躺赢 | tǎngyíng | 0 | Выиграть без усилий, «лёжа» | Hech qanday harakatsiz yutish | To win without effort | slang
+内耗 | nèihào | 0 | Выматывать себя переживаниями и сомнениями | O'z-o'zini o'ylar bilan toliqtirish | Draining yourself with overthinking | slang
+卷王 | juǎnwáng | 0 | «Король гонки»: тот, кто выкладывается больше всех | Hammadan ko'p mehnat qiladigan odam | "Involution king": the overachiever | slang
+种草 | zhòngcǎo | 0 | «Посадить траву»: захотеть вещь после чужой рекомендации | Birovning tavsiyasidan keyin biror narsani xohlab qolish | To get "planted" with a desire to buy something | slang
+拔草 | bácǎo | 0 | «Выдернуть траву»: наконец купить давно желанное | Uzoq xohlagan narsani nihoyat sotib olish | To finally buy what you've long wanted | slang
+剁手 | duòshǒu | 0 | «Рубить руки»: шутка про неудержимый шопинг | Haddan ortiq xarid qilish (hazil) | "Chop off hands": joke about shopping addiction | slang
+吃土 | chītǔ | 0 | «Есть землю»: остаться без денег после покупок | Xariddan keyin pulsiz qolish (hazil) | "Eat dirt": to be broke after shopping | slang
+打卡 | dǎkǎ | 0 | Отметиться; посетить модное место и выложить фото | Mashhur joyga borib, belgi qoldirish | To clock in; to check in at a popular spot | slang
+安利 | ānlì | 0 | Горячо рекомендовать (от названия Amway) | Qizg'in tavsiya qilish | To enthusiastically recommend | slang
+出圈 | chūquān | 0 | Выйти за пределы узкой аудитории и стать известным всем | Tor doiradan chiqib, hammaga mashhur bo'lish | To break out of a niche into the mainstream | slang
+官宣 | guānxuān | 0 | Официально объявить (о романе, проекте) | Rasman e'lon qilish | To make an official announcement | slang
+网红 | wǎnghóng | 0 | Интернет-знаменитость, блогер | Internet mashhuri | Internet celebrity | slang
+带货 | dàihuò | 0 | Продавать товары через блог или стрим | Blog yoki strim orqali tovar sotish | To sell products through livestream or influence | slang
+点赞 | diǎnzàn | 0 | Поставить лайк | Layk bosish | To give a like | slang
+刷屏 | shuāpíng | 0 | Заполонить ленту: о теме, о которой пишут все | Lentani to'ldirib yuborish | To flood everyone's feed | slang
+脱单 | tuōdān | 0 | Перестать быть одиноким: найти пару | Yolg'izlikdan chiqish, juft topish | To stop being single | slang
+单身狗 | dānshēngǒu | 0 | «Одинокая собака»: шутливо об одиноком человеке | Yolg'iz odam (hazil bilan) | "Single dog": jokingly, a single person | slang
+狗粮 | gǒuliáng | 0 | «Собачий корм»: демонстративные нежности влюблённых | Oshiqlarning ko'rgazmali mehri | "Dog food": couples' public displays of affection | slang
+恋爱脑 | liàn'àinǎo | 0 | Человек, у которого любовь затмевает всё остальное | Sevgi hamma narsani ortda qoldiradigan odam | Someone who puts romance above everything | slang
+海王 | hǎiwáng | 0 | «Аквамен»: тот, кто крутит романы сразу со многими | Bir vaqtda ko'plar bilan munosabatda bo'ladigan odam | "Aquaman": a player dating many at once | slang
+渣男 | zhānán | 0 | «Мусорный парень»: ненадёжный, неверный партнёр | Ishonchsiz, sodiq bo'lmagan yigit | "Trash guy": an unreliable or cheating boyfriend | slang
+颜值 | yánzhí | 0 | «Ценность лица»: степень привлекательности | Tashqi ko'rinish darajasi | Looks, "face value" | slang
+学霸 | xuébà | 0 | «Учёный тиран»: отличник | A'lochi o'quvchi | Top student | slang
+学渣 | xuézhā | 0 | Слабый ученик (шутливо) | Past o'zlashtiradigan o'quvchi (hazil) | Poor student (jokingly) | slang
+学神 | xuéshén | 0 | «Бог учёбы»: гений-отличник | Daho darajasidagi a'lochi | "God of studies": genius student | slang
+上岸 | shàng'àn | 0 | «Выйти на берег»: пройти сложный конкурс или экзамен | Qiyin tanlov yoki imtihondan o'tish | "Reach the shore": to pass a tough exam | slang
+宅 | zhái | 0 | Домосед; сидеть дома | Uyda o'tirishni yaxshi ko'rish | Homebody; to stay at home | slang
+吃货 | chīhuò | 0 | Гурман, тот, кто любит поесть | Yeyishni yaxshi ko'radigan odam | Foodie | slang
+干饭人 | gànfànrén | 0 | Тот, кто живёт ради обеда | Ovqat uchun yashaydigan odam | Someone who lives for mealtimes | slang
+摸鱼 | mōyú | 0 | «Ловить рыбу»: бездельничать на работе | Ish vaqtida dangasalik qilish | To slack off at work | slang
+996 | jiǔ jiǔ liù | 0 | График с 9 утра до 9 вечера, 6 дней в неделю | Haftasiga 6 kun, soat 9 dan 21 gacha ish tartibi | Work schedule of 9am to 9pm, 6 days a week | slang
+小确幸 | xiǎoquèxìng | 0 | Маленькое, но настоящее счастье | Kichik, lekin haqiqiy baxt | Small but certain happiness | slang
+治愈 | zhìyù | 0 | «Исцелять»: о том, что успокаивает и поднимает настроение | Ko'ngilni ko'taradigan, tinchlantiradigan narsa | Healing: something comforting | slang
+emo | emo | 0 | Грустить, хандрить (от английского emo) | Qayg'urmoq, ko'ngli tushmoq | To feel down or melancholy | slang
+真香 | zhēnxiāng | 0 | «И правда вкусно пахнет»: передумать и признать, что нравится | Fikridan qaytib, yoqqanini tan olish | "Actually smells good": admitting you like what you swore off | slang
+无语 | wúyǔ | 0 | Потерять дар речи, «нет слов» | Gapirishga so'z topa olmaslik | Speechless | slang
+绝了 | juéle | 0 | «Это предел»: потрясающе (или ужасно) | Juda ajoyib! (yoki dahshat!) | Incredible! (or awful!) | slang
+给力 | gěilì | 0 | «Дающий силу»: здорово, круто | Zo'r, ajoyib | Awesome, cool | slang
+老铁 | lǎotiě | 0 | «Старое железо»: близкий друг, братан | Yaqin do'st | Buddy, close friend | slang
+小鲜肉 | xiǎoxiānròu | 0 | «Молодое мясо»: юный красавчик-актёр | Yosh va chiroyli yigit (aktyor) | "Fresh meat": a young handsome actor | slang
+追剧 | zhuījù | 0 | «Гоняться за сериалом»: смотреть по мере выхода серий | Serialni chiqqani sari tomosha qilish | To keep up with a TV series | slang
+氪金 | kèjīn | 0 | Донатить в играх | O'yinlarga haqiqiy pul sarflash | To spend real money in games | slang
+肝 | gān | 0 | «Печень»: в играх много играть, «гриндить» | O'yinda uzoq vaqt «chiniqish» | To grind in games (literally "liver") | slang
+双十一 | Shuāng Shíyī | 0 | «Двойная одиннадцать»: 11 ноября, главная распродажа года | 11-noyabr, yilning eng katta chegirmalar kuni | Double 11: the Nov 11 mega shopping festival | slang
+一键三连 | yījiàn sānlián | 0 | Лайк, монета и подписка одним нажатием (Bilibili) | Bilibili'da layk, tanga va obunani bir tugma bilan bosish | One-click triple support: like, coin, favorite (Bilibili) | slang
+打call | dǎ call | 0 | Поддержать, «болеть» за кого-то (из фандомов айдолов) | Birovni qo'llab-quvvatlash (fandomlardan) | To cheer someone on (from idol fandoms) | slang
+蓝瘦香菇 | lán shòu xiāng gū | 0 | Мем 2016 года: исковерканное «грустно, хочется плакать» | 2016-yilgi mem: «xafaman, yig'lagim keladi» so'zlarining buzib aytilishi | 2016 meme: distorted "feeling sad, want to cry" | slang

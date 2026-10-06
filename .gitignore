@@ -1,5 +1,7 @@
 .env
 hanzhu.db
 hanzhu.db-*
+dict.db
+dict.db-*
 __pycache__/
 *.pyc

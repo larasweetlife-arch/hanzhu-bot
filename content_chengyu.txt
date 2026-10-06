@@ -1,0 +1,21 @@
+# Чэнъюй. Формат:
+# иероглифы | пиньинь | по-русски | по-узбекски | по-английски | пример по-китайски
+# Строки с # бот пропускает.
+
+塞翁失马 | sài wēng shī mǎ | Старик потерял коня, а кто знает, не к счастью ли? Неудача может обернуться удачей. | Chol otini yo'qotdi, baxt emasmi, kim biladi? Omadsizlik baxtga aylanishi mumkin. | The old man lost his horse, but who knows if it's a blessing? Misfortune may turn into good luck. | 别灰心，塞翁失马，焉知非福。
+功夫不负有心人 | gōngfu bù fù yǒuxīn rén | Усилия не подведут того, кто вкладывает сердце. | Mehnat chin dildan harakat qilganni aldamaydi. | Hard work never betrays those who put their heart in. | 只要坚持，功夫不负有心人。
+半途而废 | bàn tú ér fèi | Бросить на полпути, не доведя дело до конца. | Ishni yarim yo'lda tashlab qo'yish. | To give up halfway. | 学语言最怕半途而废。
+对牛弹琴 | duì niú tán qín | Играть на цине перед быком: метать бисер перед тем, кто не поймёт. | Ho'kiz oldida chang chalish: tushunmaydiganga gapirish. | Playing the lute to a cow: wasting words on someone who won't understand. | 跟他讲这些简直是对牛弹琴。
+画蛇添足 | huà shé tiān zú | Пририсовать змее ноги: переусердствовать и всё испортить. | Ilonga oyoq chizish: ortiqcha harakat bilan ishni buzish. | Drawing legs on a snake: ruining something by overdoing it. | 别再改了，小心画蛇添足。
+一石二鸟 | yī shí èr niǎo | Одним камнем двух птиц: решить две задачи одним действием. | Bir tosh bilan ikki qush. | Two birds with one stone. | 这个办法一石二鸟。
+守株待兔 | shǒu zhū dài tù | Ждать зайца у пня: надеяться на случайную удачу вместо усилий. | Daraxt ko'nda yonida quyon kutish: harakat qilmay, tasodifga umid qilish. | Waiting by a tree stump for a rabbit: relying on luck instead of effort. | 不能守株待兔，要主动去找机会。
+亡羊补牢 | wáng yáng bǔ láo | Потеряв овцу, чинить загон: исправить ошибку никогда не поздно. | Qo'y yo'qolgach, qo'rani tuzatish: xatoni tuzatish hech qachon kech emas. | Mending the pen after the sheep is lost: it's never too late to fix a mistake. | 亡羊补牢，未为晚也。
+井底之蛙 | jǐng dǐ zhī wā | Лягушка на дне колодца: человек с узким кругозором. | Quduq tubidagi qurbaqa: ko'rish doirasi tor odam. | A frog at the bottom of a well: someone with a narrow view of the world. | 多出去看看，别做井底之蛙。
+画龙点睛 | huà lóng diǎn jīng | Нарисовать дракона и дорисовать глаза: последний штрих, который оживляет целое. | Ajdaho chizib, ko'zini chizish: butun asarni jonlantiruvchi so'nggi zarba. | Painting a dragon and adding the eyes: the finishing touch that brings it to life. | 这句话是全文的画龙点睛之笔。
+杯弓蛇影 | bēi gōng shé yǐng | Принять отражение лука в чаше за змею: пугаться на пустом месте. | Piyoladagi kamon aksini ilon deb bilish: bekorga qo'rqish. | Mistaking a bow's reflection in a cup for a snake: being scared of nothing. | 别杯弓蛇影，那只是风声。
+掩耳盗铃 | yǎn ěr dào líng | Красть колокольчик, заткнув уши: обманывать самого себя. | Quloqni berkitib qo'ng'iroq o'g'irlash: o'zini aldash. | Stealing a bell while covering your ears: fooling yourself. | 不面对问题，只是掩耳盗铃。
+刻舟求剑 | kè zhōu qiú jiàn | Сделать зарубку на лодке, чтобы найти упавший меч: не учитывать, что всё изменилось. | Qilichni topish uchun qayiqqa belgi qo'yish: o'zgarishlarni hisobga olmaslik. | Marking the boat to find a dropped sword: ignoring that things have changed. | 时代变了，不要刻舟求剑。
+胸有成竹 | xiōng yǒu chéng zhú | В груди уже вырос бамбук: иметь готовый план и быть уверенным. | Ko'ksida bambuk o'sib bo'lgan: puxta rejaga ega bo'lib, ishonchli bo'lish. | Having the bamboo already in your chest: having a clear plan and feeling confident. | 他对这次考试胸有成竹。
+入乡随俗 | rù xiāng suí sú | В чужом селе следуй его обычаям. | Boshqa qishloqda uning odatlariga amal qil. | When in a village, follow its customs. | 到了中国，要入乡随俗。
+熟能生巧 | shú néng shēng qiǎo | Мастерство рождается из практики. | Mahorat mashqdan tug'iladi. | Practice makes perfect. | 多练习，熟能生巧。
+三人行必有我师 | sān rén xíng bì yǒu wǒ shī | Среди трёх путников всегда найдётся мой учитель (Конфуций). | Uch kishi yursa, albatta, ularning orasida mening ustozim bor (Konfutsiy). | Among any three people walking, there is always one I can learn from (Confucius). | 三人行必有我师，大家都值得学习。

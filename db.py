@@ -38,7 +38,7 @@ def init():
         CREATE TABLE IF NOT EXISTS users (
             user_id INTEGER PRIMARY KEY, name TEXT, username TEXT,
             lang TEXT DEFAULT 'ru', level TEXT, source TEXT,
-            is_student INTEGER DEFAULT 0, zoom_link TEXT, created_at TEXT
+            is_student INTEGER DEFAULT 0, zoom_link TEXT, created_at TEXT, adult_ok INTEGER DEFAULT 0
         );
         CREATE TABLE IF NOT EXISTS lessons (
             id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL,
@@ -67,6 +67,13 @@ def init():
         CREATE TABLE IF NOT EXISTS events (
             id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, kind TEXT, date TEXT
         );
+        CREATE TABLE IF NOT EXISTS seen (
+            user_id INTEGER NOT NULL, kind TEXT NOT NULL, key TEXT NOT NULL,
+            PRIMARY KEY (user_id, kind, key)
+        );
+        CREATE TABLE IF NOT EXISTS missing (
+            query TEXT PRIMARY KEY, n INTEGER NOT NULL, last_date TEXT NOT NULL
+        );
         CREATE TABLE IF NOT EXISTS stickers (
             name TEXT PRIMARY KEY, file_id TEXT NOT NULL
         );
@@ -78,6 +85,8 @@ def init():
         cols = {r["name"] for r in c.execute("PRAGMA table_info(users)")}
         if "zoom_link" not in cols:
             c.execute("ALTER TABLE users ADD COLUMN zoom_link TEXT")
+        if "adult_ok" not in cols:      # 1 = подтвердил 16+, -1 = раздел закрыт преподавателем, 0 = не подтверждал
+            c.execute("ALTER TABLE users ADD COLUMN adult_ok INTEGER DEFAULT 0")
 
 
 # ─── ПОЛЬЗОВАТЕЛИ ─────────────────────────────────────────────────────────────
@@ -294,7 +303,7 @@ def sticker_names():
 def delete_user(uid):
     """Стирает всё, что бот знает об этом человеке. Данные других людей не трогает."""
     with _conn() as c:
-        for table in ("lessons", "payments", "tests", "schedule", "attendance", "events", "sent"):
+        for table in ("lessons", "payments", "tests", "schedule", "attendance", "events", "sent", "seen"):
             c.execute(f"DELETE FROM {table} WHERE user_id=?", (uid,))
         c.execute("DELETE FROM inbox WHERE user_id=?", (uid,))
         c.execute("DELETE FROM users WHERE user_id=?", (uid,))
@@ -320,4 +329,44 @@ def export_user(uid):
             "schedule": rows("SELECT weekday, time FROM schedule WHERE user_id=? ORDER BY weekday, time"),
             "attendance": rows("SELECT lesson, status, reason, date FROM attendance WHERE user_id=? ORDER BY id"),
             "button_usage": usage,
+            "already_shown": {k: [r["key"] for r in c.execute(
+                "SELECT key FROM seen WHERE user_id=? AND kind=?", (uid, k))]
+                for k in ("word", "chengyu", "fact")},
         }
+
+
+# ─── ЧТО УЖЕ ПОКАЗЫВАЛИ (чтобы не повторяться) ────────────────────────────────
+
+def seen_keys(uid, kind):
+    with _conn() as c:
+        return {r["key"] for r in c.execute("SELECT key FROM seen WHERE user_id=? AND kind=?", (uid, kind))}
+
+
+def mark_seen(uid, kind, key):
+    with _conn() as c:
+        c.execute("INSERT OR IGNORE INTO seen (user_id, kind, key) VALUES (?,?,?)", (uid, kind, key))
+
+
+def reset_seen(uid, kind):
+    with _conn() as c:
+        c.execute("DELETE FROM seen WHERE user_id=? AND kind=?", (uid, kind))
+
+
+# ─── СЛОВА, КОТОРЫХ НЕ НАШЛОСЬ ────────────────────────────────────────────────
+
+def log_missing(query):
+    q = " ".join(query.lower().split())[:60]
+    if not q:
+        return
+    with _conn() as c:
+        c.execute("INSERT INTO missing (query, n, last_date) VALUES (?,1,?) "
+                  "ON CONFLICT(query) DO UPDATE SET n=n+1, last_date=excluded.last_date", (q, today()))
+
+
+def top_missing(since=None, limit=20):
+    with _conn() as c:
+        if since:
+            rows = c.execute("SELECT query, n FROM missing WHERE last_date>=? ORDER BY n DESC, query LIMIT ?", (since, limit))
+        else:
+            rows = c.execute("SELECT query, n FROM missing ORDER BY n DESC, query LIMIT ?", (limit,))
+        return [dict(r) for r in rows]

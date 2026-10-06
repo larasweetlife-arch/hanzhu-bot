@@ -24,6 +24,8 @@ import io
 import json
 import hashlib
 import random
+import re
+from urllib.parse import quote
 import logging
 import threading
 from datetime import datetime, timedelta
@@ -33,6 +35,7 @@ from telebot import types
 
 import db
 import scheduler
+import dictionary
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
 
@@ -49,7 +52,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)s  %(me
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
 db.init()
 
-esc = html.escape                      # всё, что вводит человек, экранируем перед отправкой
+esc = lambda s: html.escape(str(s), quote=False)   # только < > &: апострофы узбекского (o', g') не трогаем                      # всё, что вводит человек, экранируем перед отправкой
 STATE = {}                             # диалоги: {user_id: {"step": ..., "data": {...}}}
 ONBOARD_STEPS = {"name", "source", "level"}
 
@@ -101,8 +104,10 @@ def kb_main(uid):
     k = types.ReplyKeyboardMarkup(resize_keyboard=True)
     k.row(t(lang, "b_word"), t(lang, "b_chengyu"))
     k.row(t(lang, "b_fact"), t(lang, "b_tr"))
-    k.row(t(lang, "b_progress"), t(lang, "b_lang"))
-    k.row(t(lang, "b_channel"), t(lang, "b_help"))
+    k.row(t(lang, "b_grammar"), t(lang, "b_texts"))
+    k.row(t(lang, "b_progress"), t(lang, "b_adult"))
+    k.row(t(lang, "b_lang"), t(lang, "b_channel"))
+    k.row(t(lang, "b_help"))
     return k
 
 def kb_langs():
@@ -249,22 +254,98 @@ def progress_text(uid, lang):
 
 # ─── КОНТЕНТ ──────────────────────────────────────────────────────────────────
 
+def user_hsk(uid):
+    m = re.search(r"\d", (db.get_user(uid) or {}).get("level") or "")
+    return int(m.group()) if m else 0
+
+
+def pick(uid, kind, items, key, allow=None, prefer=None):
+    """Выбирает то, что человеку ещё не показывали. Когда всё показано, начинает круг заново.
+    prefer: что показывать в первую очередь (например, то, что переведено на его язык)."""
+    seen = db.seen_keys(uid, kind)
+    pool = [i for i in items if allow is None or allow(i)]
+    fresh = [i for i in pool if key(i) not in seen]
+    if not fresh:                                    # подходящее по уровню кончилось: берём любое новое
+        fresh = [i for i in items if key(i) not in seen]
+    if not fresh:                                    # показано вообще всё: круг заново
+        db.reset_seen(uid, kind)
+        fresh = pool or items
+    if prefer:
+        fresh = [i for i in fresh if prefer(i)] or fresh
+    item = random.choice(fresh)
+    db.mark_seen(uid, kind, key(item))
+    return item
+
+
+BKRS_URL = "https://bkrs.info/slovo.php?ch={q}"      # если ссылка перестанет открываться, поменяй только эту строку
+
+
+def bkrs_url(q):
+    return BKRS_URL.format(q=quote(q, safe=""))
+
+
+def bkrs_line(lang, q):
+    """Строка со ссылкой на БКРС (только для русско- и узбекоязычных): там значения по-русски."""
+    text = t(lang, "bkrs_more", url=html.escape(bkrs_url(q), quote=True))
+    return ("\n\n" + text) if text and text != "bkrs_more" else ""
+
+
+def bkrs_button(lang, q):
+    label = t(lang, "bkrs_btn")
+    if not label or label == "bkrs_btn" or not q:
+        return None
+    k = types.InlineKeyboardMarkup()
+    k.add(types.InlineKeyboardButton(label, url=bkrs_url(q)))
+    return k
+
+
+def has_own(lang):
+    """Что считать «переведено на язык человека»: узбекскому сойдёт и русский."""
+    if lang == "uz":
+        return lambda x: bool(x.get("uz") or x.get("ru"))
+    if lang == "ru":
+        return lambda x: bool(x.get("ru"))
+    return None
+
+
 def send_word(uid):
     db.log_event(uid, "word"); lang = lang_of(uid)
-    w = random.choice(C.WORDS)
-    bot.send_message(uid, f"{t(lang,'word')}\n\n<b>{w['zh']}</b>\n🔊 <code>{w['py']}</code>\n"
-                          f"📖 {esc(w.get(lang, w['ru']))}")
+    n = user_hsk(uid)
+    lo, hi = max(1, n - 1), max(2, n + 1)           # слова вокруг уровня человека; сленг и культура (0) подходят всем
+    w = pick(uid, "word", C.WORDS, key=lambda x: x["zh"],
+             allow=lambda x: x["hsk"] == 0 or lo <= x["hsk"] <= hi, prefer=has_own(lang))
+    if w.get("tag") == "slang":
+        mark = t(lang, "slang_label")
+    elif w["hsk"]:
+        mark = f"🏷 HSK {w['hsk']}" + ("+" if w["hsk"] >= 7 else "") + (f" ({w['scheme']})" if w.get("scheme") else "")
+    else:
+        mark = ""
+    pos = f" <i>({esc(w['pos'])})</i>" if w.get("pos") and lang in ("ru", "uz") else ""
+    ex = ""
+    if w.get("examples") and lang in ("ru", "uz"):
+        ex = "\n💬 <i>" + esc(w["examples"][0]) + "</i>"
+    shown_en = C.meaning_lang(w, lang) == "en"
+    extra = bkrs_line(lang, w["zh"]) if lang in ("ru", "uz") and shown_en else ""
+    bot.send_message(uid, f"{t(lang,'word')}\n\n<b>{esc(w['zh'])}</b>\n🔊 <code>{esc(w['py'])}</code>\n"
+                          f"📖 {esc(C.meaning(w, lang))}{pos}" + (f"\n{mark}" if mark else "") + ex + extra,
+                     disable_web_page_preview=True)
 
 def send_chengyu(uid):
     db.log_event(uid, "chengyu"); lang = lang_of(uid)
-    c = random.choice(C.CHENGYU)
-    bot.send_message(uid, f"{t(lang,'chengyu')}\n\n<b>{c['zh']}</b>\n🔊 <code>{c['py']}</code>\n\n"
-                          f"{esc(c.get(lang, c['ru']))}\n\n<i>{c['ex']}</i>")
+    n = user_hsk(uid)
+    hi = max(2, n + 1)                               # чэнъюй из знаков, которые человек уже мог встретить
+    c = pick(uid, "chengyu", C.CHENGYU, key=lambda x: x["zh"],
+             allow=lambda x: x["hsk"] == 0 or x["hsk"] <= hi, prefer=has_own(lang))
+    ex = f"\n\n<i>{esc(c['ex'])}</i>" if c.get("ex") else ""
+    shown_en = C.meaning_lang(c, lang) == "en"
+    extra = bkrs_line(lang, c["zh"]) if lang in ("ru", "uz") and shown_en else ""
+    bot.send_message(uid, f"{t(lang,'chengyu')}\n\n<b>{esc(c['zh'])}</b>\n🔊 <code>{esc(c['py'])}</code>\n\n"
+                          f"{esc(C.meaning(c, lang))}{ex}{extra}", disable_web_page_preview=True)
 
 def send_fact(uid):
     db.log_event(uid, "fact"); lang = lang_of(uid)
-    f = random.choice(C.FACTS)
-    bot.send_message(uid, f"{t(lang,'fact')}\n\n{esc(f.get(lang, f['ru']))}")
+    f = pick(uid, "fact", C.FACTS, key=lambda x: x["ru"][:40])
+    bot.send_message(uid, f"{t(lang,'fact')}\n\n{esc(C.meaning(f, lang))}")
 
 def ask_translate(uid):
     STATE[uid] = {"step": "translate", "data": {}}
@@ -297,6 +378,15 @@ def cmd_translate(m): ask_translate(m.from_user.id)
 
 @bot.message_handler(commands=["progress"])
 def cmd_progress(m): send_progress(m.from_user.id)
+
+@bot.message_handler(commands=["grammar"])
+def cmd_grammar(m): send_grammar(m.from_user.id)
+
+@bot.message_handler(commands=["texts"])
+def cmd_texts(m): send_texts(m.from_user.id)
+
+@bot.message_handler(commands=["adult"])
+def cmd_adult(m): send_adult(m.from_user.id)
 
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
@@ -348,6 +438,208 @@ def cb_delete(c):
 @bot.message_handler(commands=["help"])
 def cmd_help(m):
     bot.send_message(m.chat.id, t(lang_of(m.from_user.id), "help"))
+
+
+
+# ─── ГРАММАТИКА ───────────────────────────────────────────────────────────────
+
+def grammar_level_for(uid):
+    levels = sorted(C.GRAMMAR)
+    if not levels:
+        return None, False
+    n = user_hsk(uid) or 1
+    if n in levels:
+        return n, False
+    return (max(levels), True) if n > max(levels) else (min(levels), False)
+
+
+def grammar_view(lang, lvl, idx, note=""):
+    models = C.GRAMMAR[lvl]
+    m = models[idx]
+    out = [t(lang, "gr_title", lvl=lvl, n=idx + 1, total=len(models)), "", f"<b>{esc(m['title'])}</b>"]
+    if m["text"]:
+        out += ["", "\n".join(esc(x) for x in m["text"])]
+    if m["formula"]:
+        out += ["", f"🧩 {t(lang, 'gr_formula')}: <code>" + esc(" / ".join(m["formula"])) + "</code>"]
+    for zh, py, ru in m["examples"]:
+        out += ["", esc(zh), f"<code>{esc(py)}</code>", f"<i>{esc(ru)}</i>"]
+    if m["note"]:
+        out += ["", "💡 " + esc(" ".join(m["note"]))]
+    if note:
+        out += ["", "<i>" + esc(note) + "</i>"]
+    if t(lang, "ru_only"):
+        out += ["", "<i>" + t(lang, "ru_only") + "</i>"]
+    kb = types.InlineKeyboardMarkup(row_width=3)
+    total = len(models)
+    kb.row(types.InlineKeyboardButton("⬅️", callback_data=f"gr:{lvl}:{(idx - 1) % total}"),
+           types.InlineKeyboardButton(f"{idx + 1}/{total}", callback_data=f"gr:{lvl}:{idx}"),
+           types.InlineKeyboardButton("➡️", callback_data=f"gr:{lvl}:{(idx + 1) % total}"))
+    kb.row(*[types.InlineKeyboardButton(("• " if L == lvl else "") + f"HSK {L}", callback_data=f"gr:{L}:0")
+             for L in sorted(C.GRAMMAR)])
+    return "\n".join(out), kb
+
+
+def send_grammar(uid):
+    db.log_event(uid, "grammar"); lang = lang_of(uid)
+    lvl, fallback = grammar_level_for(uid)
+    if lvl is None:
+        return bot.send_message(uid, t(lang, "tx_empty"))
+    models = C.GRAMMAR[lvl]
+    seen = db.seen_keys(uid, "grammar")
+    idx = next((i for i, m in enumerate(models) if f"{lvl}:{m['num']}" not in seen), None)
+    if idx is None:                                  # весь уровень просмотрен: начинаем заново
+        db.reset_seen(uid, "grammar"); idx = 0
+    db.mark_seen(uid, "grammar", f"{lvl}:{models[idx]['num']}")
+    note = t(lang, "gr_fallback", lvl=lvl) if fallback else ""
+    text, kb = grammar_view(lang, lvl, idx, note)
+    bot.send_message(uid, text, reply_markup=kb, disable_web_page_preview=True)
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("gr:"))
+def cb_grammar(c):
+    uid = c.from_user.id
+    bot.answer_callback_query(c.id)
+    try:
+        _, lvl, idx = c.data.split(":")
+        lvl, idx = int(lvl), int(idx)
+        models = C.GRAMMAR[lvl]
+        model = models[idx]
+    except (ValueError, KeyError, IndexError):
+        return
+    db.mark_seen(uid, "grammar", f"{lvl}:{model['num']}")
+    text, kb = grammar_view(lang_of(uid), lvl, idx)
+    try:
+        bot.edit_message_text(text, uid, c.message.message_id, reply_markup=kb, disable_web_page_preview=True)
+    except Exception:
+        pass                                         # «сообщение не изменилось»: та же страница
+
+
+# ─── ТЕКСТЫ ДЛЯ ЧТЕНИЯ ────────────────────────────────────────────────────────
+
+def texts_list(kind, lvl):
+    return [x for x in C.TEXTS if x["kind"] == kind and (kind == "classic" or x["level"] == lvl)]
+
+
+def text_view(lang, kind, lvl, idx):
+    items = texts_list(kind, lvl)
+    x = items[idx]
+    level_label = t(lang, "tx_lvl_any") if kind == "classic" else f"HSK {lvl}"
+    out = [t(lang, "tx_title", kind=t(lang, "tx_" + kind), lvl=level_label, n=idx + 1, total=len(items)),
+           "", f"<b>{esc(x['title'])}</b>", ""]
+    for zh, py in zip(x["zh"], x["py"] + [""] * len(x["zh"])):
+        out += [esc(zh)] + ([f"<code>{esc(py)}</code>"] if py else [])
+    if x["ru"]:
+        out += ["", f"🔎 {t(lang, 'tx_translation')}: <tg-spoiler>{esc(x['ru'])}</tg-spoiler>"]
+    if t(lang, "ru_only"):
+        out += ["", "<i>" + t(lang, "ru_only") + "</i>"]
+    total = len(items)
+    kb = types.InlineKeyboardMarkup(row_width=3)
+    kb.row(types.InlineKeyboardButton("⬅️", callback_data=f"tx:{kind}:{lvl}:{(idx - 1) % total}"),
+           types.InlineKeyboardButton(f"{idx + 1}/{total}", callback_data=f"tx:{kind}:{lvl}:{idx}"),
+           types.InlineKeyboardButton("➡️", callback_data=f"tx:{kind}:{lvl}:{(idx + 1) % total}"))
+    if kind == "adapted":
+        levels = sorted({y["level"] for y in C.TEXTS if y["kind"] == "adapted"})
+        kb.row(*[types.InlineKeyboardButton(("• " if L == lvl else "") + f"HSK {L}", callback_data=f"tx:adapted:{L}:0")
+                 for L in levels])
+    other = "classic" if kind == "adapted" else "adapted"
+    if any(y["kind"] == other for y in C.TEXTS):
+        first_lvl = lvl if other == "adapted" else 0
+        kb.row(types.InlineKeyboardButton("🏛 " + t(lang, "tx_classic") if other == "classic" else "📖 " + t(lang, "tx_adapted"),
+                                          callback_data=f"tx:{other}:{first_lvl}:0"))
+    return "\n".join(out), kb, x
+
+
+def send_text_item(chat_id, lang, kind, lvl, idx):
+    text, kb, x = text_view(lang, kind, lvl, idx)
+    img = os.path.join(os.path.dirname(os.path.abspath(__file__)), x["image"]) if x.get("image") else None
+    if img and os.path.exists(img) and len(text) <= 1000:
+        with open(img, "rb") as f:
+            return bot.send_photo(chat_id, f, caption=text, reply_markup=kb)
+    return bot.send_message(chat_id, text, reply_markup=kb)
+
+
+def send_texts(uid):
+    db.log_event(uid, "texts"); lang = lang_of(uid)
+    adapted_levels = sorted({y["level"] for y in C.TEXTS if y["kind"] == "adapted"})
+    if not adapted_levels:
+        return bot.send_message(uid, t(lang, "tx_empty"))
+    n = max(user_hsk(uid), 1)
+    lvl = n if n in adapted_levels else (max(adapted_levels) if n > max(adapted_levels) else min(adapted_levels))
+    items = texts_list("adapted", lvl)
+    seen = db.seen_keys(uid, "text")
+    idx = next((i for i, x in enumerate(items) if x["id"] not in seen), None)
+    if idx is None:
+        db.reset_seen(uid, "text"); idx = 0
+    db.mark_seen(uid, "text", items[idx]["id"])
+    send_text_item(uid, lang, "adapted", lvl, idx)
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("tx:"))
+def cb_text(c):
+    uid = c.from_user.id
+    bot.answer_callback_query(c.id)
+    try:
+        _, kind, lvl, idx = c.data.split(":")
+        lvl, idx = int(lvl), int(idx)
+        items = texts_list(kind, lvl)
+        x = items[idx]
+    except (ValueError, IndexError):
+        return
+    db.mark_seen(uid, "text", x["id"])
+    try:
+        bot.delete_message(uid, c.message.message_id)
+    except Exception:
+        pass
+    send_text_item(uid, lang_of(uid), kind, lvl, idx)
+
+
+# ─── РАЗДЕЛ 16+ ───────────────────────────────────────────────────────────────
+
+def adult_item_view(lang, uid):
+    it = pick(uid, "adult", C.ADULT, key=lambda x: x["zh"])
+    out = [t(lang, "adult_head"), "", f"<b>{esc(it['zh'])}</b>", f"🔊 <code>{esc(it['py'])}</code>",
+           f"📖 {esc(C.meaning(it, lang))}", f"{t(lang, 'adult_rude')}: {t(lang, 'adult_lv' + str(it['rude']))}",
+           "", t(lang, "adult_foot")]
+    kb = types.InlineKeyboardMarkup()
+    kb.add(types.InlineKeyboardButton(t(lang, "adult_more"), callback_data="ad:more"))
+    return "\n".join(out), kb
+
+
+def send_adult(uid):
+    db.log_event(uid, "adult"); lang = lang_of(uid)
+    status = (db.get_user(uid) or {}).get("adult_ok") or 0
+    if status == -1:
+        return bot.send_message(uid, t(lang, "adult_closed"))
+    if status != 1:
+        kb = types.InlineKeyboardMarkup(row_width=2)
+        kb.add(types.InlineKeyboardButton(t(lang, "adult_yes"), callback_data="ad:yes"),
+               types.InlineKeyboardButton(t(lang, "adult_no"), callback_data="ad:no"))
+        return bot.send_message(uid, t(lang, "adult_gate"), reply_markup=kb)
+    text, kb = adult_item_view(lang, uid)
+    bot.send_message(uid, text, reply_markup=kb)
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("ad:"))
+def cb_adult(c):
+    uid = c.from_user.id
+    lang = lang_of(uid)
+    bot.answer_callback_query(c.id)
+    status = (db.get_user(uid) or {}).get("adult_ok") or 0
+    if status == -1:
+        return bot.send_message(uid, t(lang, "adult_closed"))
+    action = c.data.split(":")[1]
+    if action == "no":
+        return bot.edit_message_text(t(lang, "adult_declined"), uid, c.message.message_id)
+    if action == "yes":
+        db.save_user(uid, adult_ok=1)
+        status = 1
+    if status != 1:                                  # «ещё» без подтверждения: сначала подтверждение
+        return send_adult(uid)
+    text, kb = adult_item_view(lang, uid)
+    try:
+        bot.edit_message_text(text, uid, c.message.message_id, reply_markup=kb)
+    except Exception:
+        bot.send_message(uid, text, reply_markup=kb)
 
 
 # ─── НАПОМИНАНИЯ И ПОДТВЕРЖДЕНИЕ ЗАНЯТИЙ ──────────────────────────────────────
@@ -420,7 +712,7 @@ def send_weekly(now):
     absent = db.absences_since(since)
     top = db.top_events_since(since)
     labels = {"word": "Слово дня", "chengyu": "Чэнъюй", "fact": "Факт", "progress": "Прогресс",
-              "translate": "Перевод"}
+              "translate": "Перевод", "grammar": "Грамматика", "texts": "Тексты", "adult": "Раздел 16+"}
     low = []
     for s in db.students():
         _, _, left = db.balance(s["user_id"])
@@ -432,6 +724,9 @@ def send_weekly(now):
     if top:
         txt += ["", "<b>Чем пользуются чаще всего</b>"]
         txt += [f"· {labels.get(e['kind'], e['kind'])}: {e['n']}" for e in top]
+    miss = db.top_missing(since, 5)
+    if miss:
+        txt += ["", "<b>Искали в переводчике и не нашли</b>"] + [f"· {esc(r['query'])}: {r['n']}" for r in miss]
     if low:
         txt += ["", "<b>Пора напомнить об оплате</b>"] + low
     notify_owner("\n".join(txt))
@@ -455,6 +750,18 @@ def cmd_admin(m):
           types.InlineKeyboardButton("📊 Статистика бота", callback_data="a:stats"))
     bot.send_message(m.chat.id, f"<b>Панель преподавателя</b>\n\nВсего в боте: {len(db.all_users())}\n"
                                 f"Учеников: {len(db.students())}", reply_markup=k)
+
+
+@bot.message_handler(commands=["missing"])
+def cmd_missing(m):
+    if not is_owner(m.from_user.id):
+        return
+    rows = db.top_missing(limit=25)
+    if not rows:
+        return bot.send_message(m.chat.id, "Пока все запросы в переводчике находились 🎉")
+    lines = [f"· {esc(r['query'])}: {r['n']}" for r in rows]
+    bot.send_message(m.chat.id, "<b>Что искали и не нашли</b>\n\n" + "\n".join(lines) +
+                     "\n\nПополнить можно, дописав строки в <code>content_words.txt</code>.")
 
 
 @bot.message_handler(commands=["backup"])
@@ -539,7 +846,8 @@ def student_card(uid):
              f"Уровень: {esc(u['level'] or '—')}", "",
              f"Проведено: <b>{done}</b>", f"Оплачено: <b>{paid}</b>",
              f"Остаток: <b>{left}</b>" if left >= 0 else f"⚠️ Долг: <b>{abs(left)}</b>", "",
-             f"Расписание: {days}", f"Zoom: {'есть' if u.get('zoom_link') else 'не задан'}"]
+             f"Расписание: {days}", f"Zoom: {'есть' if u.get('zoom_link') else 'не задан'}",
+             "Раздел 16+: " + {1: "подтвердил(а) возраст", -1: "закрыт тобой"}.get(u.get("adult_ok") or 0, "не открывал(а)")]
     if p:
         lines += ["", f"Тестов: {p['count']}",
                   f"Было {p['first']:.0f}% → стало {p['last']:.0f}% ({p['delta']:+.0f} п.п.)"]
@@ -557,7 +865,8 @@ def cb_student(c):
           types.InlineKeyboardButton("↩️ Отменить урок", callback_data=f"undo:{uid}"),
           types.InlineKeyboardButton("🗓 Расписание", callback_data=f"sch:{uid}"),
           types.InlineKeyboardButton("🔗 Ссылка Zoom", callback_data=f"zm:{uid}"))
-    k.add(types.InlineKeyboardButton("💬 Напомнить об оплате", callback_data=f"nd:{uid}"))
+    k.add(types.InlineKeyboardButton("💬 Напомнить об оплате", callback_data=f"nd:{uid}"),
+          types.InlineKeyboardButton("🔞 Закрыть / открыть 16+", callback_data=f"adx:{uid}"))
     bot.send_message(c.message.chat.id, student_card(uid), reply_markup=k)
     bot.answer_callback_query(c.id)
 
@@ -623,6 +932,16 @@ def lesson_balance_alert(sid):
         notify_owner("🟡 Оплаченные уроки закончились. Пора напомнить об оплате.")
     elif left == 1:
         notify_owner("ℹ️ Остался 1 оплаченный урок.")
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("adx:"))
+@owner_only
+def cb_adult_toggle(c):
+    uid = int(c.data.split(":")[1])
+    cur = (db.get_user(uid) or {}).get("adult_ok") or 0
+    db.save_user(uid, adult_ok=0 if cur == -1 else -1)
+    bot.answer_callback_query(c.id, "Раздел 16+ закрыт" if cur != -1 else "Раздел 16+ снова доступен")
+    bot.send_message(c.message.chat.id, student_card(uid))
 
 
 # ─── ТЕКСТОВЫЕ СООБЩЕНИЯ ──────────────────────────────────────────────────────
@@ -694,15 +1013,13 @@ def on_text(m):
         if step == "translate":
             STATE.pop(uid, None)
             db.log_event(uid, "translate")
-            r = C.DICT.get(txt.lower())
-            if not r:
-                bot.send_message(uid, t(lang, "tr_none"), reply_markup=kb_main(uid))
+            answer, bq = dictionary.translate_ex(txt, lang)
+            if not answer:
+                db.log_missing(txt)
+                kb = bkrs_button(lang, txt) if re.search(r"[\u4e00-\u9fff\u0400-\u04ff]", txt) else None
+                bot.send_message(uid, t(lang, "tr_none", q=esc(txt[:60])), reply_markup=kb)
                 return send_sticker(uid, "thinking")
-            if "zh" in r:
-                out = f"🔤 {esc(txt)} → <b>{r['zh']}</b>\n🔊 <code>{r['py']}</code>"
-            else:
-                out = f"🔤 <b>{esc(txt)}</b>\n🔊 <code>{r['py']}</code>\n📖 {esc(r.get(lang, r.get('ru', '')))}"
-            return bot.send_message(uid, out, reply_markup=kb_main(uid))
+            return bot.send_message(uid, answer, reply_markup=bkrs_button(lang, bq))
 
         if step == "absent_reason":
             STATE.pop(uid, None)
@@ -785,7 +1102,8 @@ def on_text(m):
     lang = lang_of(uid)
     actions = {t(lang, "b_word"): send_word, t(lang, "b_chengyu"): send_chengyu,
                t(lang, "b_fact"): send_fact, t(lang, "b_tr"): ask_translate,
-               t(lang, "b_progress"): send_progress, t(lang, "b_lang"): ask_language}
+               t(lang, "b_progress"): send_progress, t(lang, "b_lang"): ask_language,
+               t(lang, "b_grammar"): send_grammar, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult}
     if txt in actions:
         return actions[txt](uid)
     if txt == t(lang, "b_channel"):
@@ -833,12 +1151,14 @@ def apply_profile():
 # ─── ЗАПУСК ───────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    dictionary.ensure()
     apply_profile()
     try:
         bot.set_my_commands([
             types.BotCommand("menu", "меню"), types.BotCommand("word", "слово дня"),
             types.BotCommand("chengyu", "чэнъюй"), types.BotCommand("fact", "факт о Китае"),
-            types.BotCommand("progress", "мой прогресс"), types.BotCommand("lang", "язык"), types.BotCommand("about", "что я умею"),
+            types.BotCommand("progress", "мой прогресс"),
+            types.BotCommand("grammar", "грамматика"), types.BotCommand("texts", "тексты"), types.BotCommand("lang", "язык"), types.BotCommand("about", "что я умею"),
             types.BotCommand("privacy", "конфиденциальность"),
             types.BotCommand("mydata", "копия моих данных")])
     except Exception as e:

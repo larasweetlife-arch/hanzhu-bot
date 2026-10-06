@@ -1,0 +1,1094 @@
+# Тексты для чтения. Формат: блок на текст, блоки через пустую строку.
+# @id, @kind (adapted = адаптированный, classic = подлинная классика), @level (1-4; 0 = любой),
+# @title, @image (необязательно: файл в папке images), затем @zh, @py, @ru построчно.
+# Адаптированные тексты проверены: не менее 90% их иероглифов входят в списки HSK 3.0 до заявленного уровня.
+
+@id h1-01
+@kind adapted
+@level 1
+@title 我的家
+@zh 我家有四口人：爸爸、妈妈、哥哥和我。
+@zh 爸爸是老师，妈妈是医生。我是学生。
+@zh 我们都喜欢吃米饭。
+@py Wǒ jiā yǒu sì kǒu rén: bàba, māma, gēge hé wǒ.
+@py Bàba shì lǎoshī, māma shì yīshēng. Wǒ shì xuésheng.
+@py Wǒmen dōu xǐhuan chī mǐfàn.
+@ru В моей семье четыре человека: папа, мама, старший брат и я. Папа — учитель, мама — врач. Я студент. Мы все любим рис.
+
+@id h1-02
+@kind adapted
+@level 1
+@title 今天
+@zh 今天天气很好。我和朋友去商店。
+@zh 我们买水果，也喝茶。我们很高兴。
+@py Jīntiān tiānqì hěn hǎo. Wǒ hé péngyou qù shāngdiàn.
+@py Wǒmen mǎi shuǐguǒ, yě hēchá. Wǒmen hěn gāoxìng.
+@ru Сегодня хорошая погода. Мы с другом идём в магазин. Мы покупаем фрукты и пьём чай. Мы очень рады.
+
+@id h1-03
+@kind adapted
+@level 1
+@title 我的老师
+@zh 我学习汉语。我的老师很漂亮。
+@zh 她说：“你好！”我说：“老师好！”
+@zh 我爱学汉语。
+@py Wǒ xuéxí Hànyǔ. Wǒ de lǎoshī hěn piàoliang.
+@py Tā shuō: "Nǐ hǎo!" Wǒ shuō: "Lǎoshī hǎo!"
+@py Wǒ ài xué Hànyǔ.
+@ru Я учу китайский. Моя учительница очень красивая. Она говорит: «Привет!» Я говорю: «Здравствуйте, учитель!» Я люблю учить китайский.
+
+@id h2-01
+@kind adapted
+@level 2
+@title 在饭店
+@zh 昨天晚上，我和朋友去饭店吃饭。
+@zh 饭店里人很多。我们点了一个鱼和一个菜。
+@zh 鱼很好吃，可是有点儿贵。
+@py Zuótiān wǎnshang, wǒ hé péngyou qù fàndiàn chī fàn.
+@py Fàndiàn lǐ rén hěn duō. Wǒmen diǎn le yí gè yú hé yí gè cài.
+@py Yú hěn hǎochī, kěshì yǒudiǎnr guì.
+@ru Вчера вечером мы с другом пошли поужинать в ресторан. В ресторане было много людей. Мы заказали рыбу и одно овощное блюдо. Рыба была очень вкусной, но немного дорогой.
+
+@id h2-02
+@kind adapted
+@level 2
+@title 周末
+@zh 这个周末我不想在家。
+@zh 我想去公园玩儿，还想给妈妈打电话。
+@zh 今天不太冷，我穿了一件红色的衣服。
+@py Zhège zhōumò wǒ bùxiǎng zài jiā.
+@py Wǒ xiǎng qù gōngyuán wánr, hái xiǎng gěi māma dǎdiànhuà.
+@py Jīntiān bú tài lěng, wǒ chuān le yí jiàn hóngsè de yīfu.
+@ru В эти выходные я не хочу сидеть дома. Я хочу пойти погулять в парк и ещё позвонить маме. Сегодня не очень холодно, я надела красную одежду.
+
+@id h2-03
+@kind adapted
+@level 2
+@title 我生病了
+@zh 我今天不舒服，头有点儿疼。
+@zh 我去医院看病，医生说我要多休息，多喝水。
+@py Wǒ jīntiān bù shūfu, tóu yǒudiǎnr téng.
+@py Wǒ qù yīyuàn kànbìng, yīshēng shuō wǒ yào duō xiūxi, duō hē shuǐ.
+@ru Сегодня мне нехорошо, немного болит голова. Я пошла в больницу, и врач сказал, что мне нужно больше отдыхать и пить больше воды.
+
+@id h3-01
+@kind adapted
+@level 3
+@title 找不到路
+@zh 我第一次来这个城市，不知道怎么去火车站。
+@zh 我问了一个女孩，她热情地告诉我：先往前走，然后在红绿灯那儿向右拐。
+@py Wǒ dìyīcì lái zhège chéngshì, bù zhīdào zěnme qù huǒchēzhàn.
+@py Wǒ wèn le yí gè nǚhái, tā rèqíng de gàosù wǒ: xiān wǎngqián zǒu, ránhòu zài hónglǜdēng nàr xiàng yòu guǎi.
+@ru Я впервые в этом городе и не знаю, как пройти к вокзалу. Я спросила одну девочку, и она радушно подсказала: сначала идти прямо, потом на светофоре повернуть направо.
+
+@id h3-02
+@kind adapted
+@level 3
+@title 怎么学汉语
+@zh 我觉得学汉语最重要的是每天练习。
+@zh 我每天听三十分钟，读一小篇文章，还和朋友用汉语聊天。
+@zh 虽然有时候会说错，但是我的汉语越来越好。
+@py Wǒ juéde xué Hànyǔ zuì zhòngyào de shì měitiān liànxí.
+@py Wǒ měitiān tīng sānshí fēnzhōng, dú yì xiǎo piān wénzhāng, hái hé péngyou yòng Hànyǔ liáotiān.
+@py Suīrán yǒushíhou huì shuō cuò, dànshì wǒ de Hànyǔ yuèláiyuè hǎo.
+@ru Мне кажется, главное в изучении китайского — заниматься каждый день. Я каждый день слушаю тридцать минут, читаю небольшую статью и болтаю с друзьями по-китайски. Хотя иногда я ошибаюсь, мой китайский становится всё лучше.
+
+@id h3-03
+@kind adapted
+@level 3
+@title 下雨了
+@zh 早上出门的时候天气很好，所以我没带雨伞。
+@zh 可是下午突然下起了大雨，我只好在咖啡馆等雨停。
+@py Zǎoshang chūmén de shíhou tiānqì hěn hǎo, suǒyǐ wǒ méi dài yǔsǎn.
+@py Kěshì xiàwǔ tūrán xià qǐ le dàyǔ, wǒ zhǐhǎo zài kāfēiguǎn děng yǔ tíng.
+@ru Утром, когда я выходила, погода была хорошая, поэтому я не взяла зонт. Но днём вдруг пошёл сильный дождь, и мне пришлось ждать в кафе, пока он закончится.
+
+@id h4-01
+@kind adapted
+@level 4
+@title 参加面试
+@zh 昨天我参加了一家公司的面试。
+@zh 虽然我很紧张，但是回答得还不错。
+@zh 经理说，他们更看重经验和态度，而不是成绩。
+@py Zuótiān wǒ cānjiā le yì jiā gōngsī de miànshì.
+@py Suīrán wǒ hěn jǐnzhāng, dànshì huídá de hái búcuò.
+@py Jīnglǐ shuō, tāmen gèng kànzhòng jīngyàn hé tàidu, ér bú shì chéngjì.
+@ru Вчера я проходила собеседование в одной компании. Хотя я очень волновалась, отвечала неплохо. Менеджер сказал, что они больше ценят опыт и отношение к делу, а не оценки.
+
+@id h4-02
+@kind adapted
+@level 4
+@title 从小事做起
+@zh 保护环境不一定要做大事。
+@zh 既然每个人每天都要用水、用电，那就从节约开始吧：
+@zh 出门带自己的杯子，随手关灯，尽量坐公共汽车。
+@py Bǎohù huánjìng bù yídìng yào zuò dàshì.
+@py Jìrán měi gè rén měitiān dōu yào yòng shuǐ, yòng diàn, nà jiù cóng jiéyuē kāishǐ ba:
+@py Chūmén dài zìjǐ de bēizi, suíshǒu guān dēng, jǐnliàng zuò gōnggòngqìchē.
+@ru Защищать окружающую среду необязательно большими делами. Раз уж каждый человек каждый день пользуется водой и электричеством, давайте начнём с экономии: брать с собой свою кружку, выключать за собой свет, по возможности ездить на автобусе.
+
+@id h4-03
+@kind adapted
+@level 4
+@title 旅行的意义
+@zh 旅行不但能让我们看到不同的风景，而且能让我们了解不同的生活。
+@zh 有时候，一次小小的意外反而会成为最难忘的回忆。
+@py Lǚxíng búdàn néng ràng wǒmen kàndào bùtóng de fēngjǐng, érqiě néng ràng wǒmen liǎojiě bùtóng de shēnghuó.
+@py Yǒushíhou, yí cì xiǎoxiǎo de yìwài fǎn'ér huì chéngwéi zuì nánwàng de huíyì.
+@ru Путешествие не только позволяет увидеть разные пейзажи, но и помогает узнать разную жизнь. Иногда небольшая неожиданность, наоборот, становится самым незабываемым воспоминанием.
+
+@id c-01
+@kind classic
+@level 0
+@title 静夜思 · 李白
+@zh 床前明月光，疑是地上霜。
+@zh 举头望明月，低头思故乡。
+@py Chuáng qián míng yuè guāng, yí shì dì shang shuāng.
+@py Jǔ tóu wàng míng yuè, dī tóu sī gù xiāng.
+@ru Перед кроватью — яркий лунный свет, кажется, это иней на земле. Поднимаю голову — смотрю на луну; опускаю — и думаю о родном крае.
+
+@id c-02
+@kind classic
+@level 0
+@title 春晓 · 孟浩然
+@zh 春眠不觉晓，处处闻啼鸟。
+@zh 夜来风雨声，花落知多少。
+@py Chūn mián bù jué xiǎo, chù chù wén tí niǎo.
+@py Yè lái fēng yǔ shēng, huā luò zhī duō shǎo.
+@ru Весной спишь и не замечаешь рассвета, повсюду слышно пение птиц. Ночью были шум ветра и дождя — сколько же цветов опало?
+
+@id c-03
+@kind classic
+@level 0
+@title 登鹳雀楼 · 王之涣
+@zh 白日依山尽，黄河入海流。
+@zh 欲穷千里目，更上一层楼。
+@py Bái rì yī shān jǐn, Huáng hé rù hǎi liú.
+@py Yù qióng qiān lǐ mù, gèng shàng yì céng lóu.
+@ru Белое солнце заходит за горы, Жёлтая река течёт в море. Хочешь увидеть дальше, на тысячу ли, — поднимись ещё на этаж выше.
+
+@id h1-04
+@kind adapted
+@level 1
+@title 我的一天
+@zh 我早上七点起床。
+@zh 八点我去学校学习汉语。
+@zh 晚上我在家看电视，十点睡觉。
+@py Wǒ zǎoshang qī diǎn qǐchuáng.
+@py Bā diǎn wǒ qù xuéxiào xuéxí Hànyǔ.
+@py Wǎnshang wǒ zài jiā kàn diànshì, shí diǎn shuìjiào.
+@ru Я встаю в семь утра. В восемь иду в школу учить китайский. Вечером смотрю дома телевизор, в десять ложусь спать.
+
+@id h1-05
+@kind adapted
+@level 1
+@title 在商店
+@zh “你好，这个多少钱？”
+@zh “五块。”
+@zh “太贵了！三块可以吗？”
+@zh “好吧。”
+@py "nǐ hǎo, zhège duōshǎo qián?"
+@py "wǔ kuài."
+@py "tài guì le! Sān kuài kěyǐ ma?"
+@py "hǎo ba."
+@ru — Здравствуйте, сколько это стоит? — Пять юаней. — Слишком дорого! Три юаня можно? — Ну хорошо.
+
+@id h1-06
+@kind adapted
+@level 1
+@title 我的朋友
+@zh 我有一个朋友，他叫小明。
+@zh 他是中国人，会说汉语，也会说英语。
+@zh 我们常常一起吃饭。
+@py Wǒ yǒu yí gè péngyou, tā jiào xiǎo míng.
+@py Tā shì Zhōngguó rén, huì shuō Hànyǔ, yě huì shuō Yīngyǔ.
+@py Wǒmen chángcháng yìqǐ chī fàn.
+@ru У меня есть друг, его зовут Сяо Мин. Он китаец, говорит по-китайски и по-английски. Мы часто вместе обедаем.
+
+@id h1-07
+@kind adapted
+@level 1
+@title 天气很冷
+@zh 今天很冷，我不去学校。
+@zh 我在家喝热茶，看书。
+@py Jīntiān hěn lěng, wǒ bú qù xuéxiào.
+@py Wǒ zài jiā hē rèchá, kànshū.
+@ru Сегодня очень холодно, я не иду в школу. Я дома пью горячий чай и читаю.
+
+@id h1-08
+@kind adapted
+@level 1
+@title 我的猫
+@zh 我有一只猫。它很大，也很漂亮。
+@zh 它喜欢喝水，不喜欢吃米饭。
+@py Wǒ yǒu yì zhī māo. Tā hěn dà, yě hěn piàoliang.
+@py Tā xǐhuan hē shuǐ, bù xǐhuan chī mǐfàn.
+@ru У меня есть кошка. Она большая и красивая. Она любит пить воду и не любит рис.
+
+@id h1-09
+@kind adapted
+@level 1
+@title 星期六
+@zh 今天是星期六。
+@zh 我和妈妈去超市买东西。
+@zh 我们买了苹果、水和面包。
+@py Jīntiān shì Xīngqīliù.
+@py Wǒ hé māma qù chāoshì mǎi dōngxi.
+@py Wǒmen mǎi le píngguǒ, shuǐ huó miànbāo.
+@ru Сегодня суббота. Мы с мамой идём в супермаркет за покупками. Мы купили яблоки, воду и хлеб.
+
+@id h1-10
+@kind adapted
+@level 1
+@title 打电话
+@zh “喂，你好！我是小明。你在哪儿？”
+@zh “我在家。”
+@zh “我现在去你家，可以吗？”
+@zh “可以，你来吧。”
+@py "wèi, nǐ hǎo! Wǒ shì xiǎo míng. Nǐ zài nǎr?"
+@py "wǒ zài jiā."
+@py "wǒ xiànzài qù nǐ jiā, kěyǐ ma?"
+@py "kěyǐ, nǐ lái ba."
+@ru — Алло, здравствуйте! Это Сяо Мин. Где ты? — Я дома. — Я сейчас приду к тебе, можно? — Можно, приходи.
+
+@id h2-04
+@kind adapted
+@level 2
+@title 姐姐和我
+@zh 姐姐比我大三岁，也比我高。
+@zh 可是我跑得比她快。
+@zh 我们都喜欢吃苹果。
+@py Jiějie bǐ wǒ dà sān suì, yě bǐ wǒ gāo.
+@py Kěshì wǒ pǎo de bǐ tā kuài.
+@py Wǒmen dōu xǐhuan chī píngguǒ.
+@ru Старшая сестра на три года старше меня и выше. Но я бегаю быстрее неё. Мы обе любим яблоки.
+
+@id h2-05
+@kind adapted
+@level 2
+@title 去过中国
+@zh 我去过中国一次。
+@zh 那儿的天气很冷，可是我觉得很有意思。
+@zh 我还吃过中国的饺子。
+@py Wǒ qù guo Zhōngguó yí cì.
+@py Nàr de tiānqì hěn lěng, kěshì wǒ juéde hěn yǒu yìsi.
+@py Wǒ hái chī guo Zhōngguó de jiǎozi.
+@ru Я один раз был в Китае. Там очень холодно, но мне было очень интересно. Я там ещё пробовал китайские пельмени.
+
+@id h2-06
+@kind adapted
+@level 2
+@title 下雨了
+@zh 因为今天下雨，所以我没去公园。
+@zh 我在家看电影，也给朋友打了电话。
+@py Yīnwèi jīntiān xiàyǔ, suǒyǐ wǒ méi qù gōngyuán.
+@py Wǒ zài jiā kàn diànyǐng, yě gěi péngyou dǎ le diànhuà.
+@ru Из-за того что сегодня идёт дождь, я не пошёл в парк. Я дома смотрел фильм и ещё позвонил другу.
+
+@id h2-07
+@kind adapted
+@level 2
+@title 我家离学校很近
+@zh 我家离学校很近，走路十分钟就到。
+@zh 每天早上我和妹妹一起去学校。
+@py Wǒ jiā lí xuéxiào hěn jìn, zǒulù shí fēnzhōng jiù dào.
+@py Měitiān zǎoshang wǒ hé mèimei yìqǐ qù xuéxiào.
+@ru Мой дом очень близко от школы, пешком идти десять минут. Каждое утро мы с младшей сестрой идём в школу вместе.
+
+@id h2-08
+@kind adapted
+@level 2
+@title 快要放假了
+@zh 快要放假了，大家都很高兴。
+@zh 我想和朋友去旅游，你呢？
+@py Kuàiyào fàngjià le, dàjiā dōu hěn gāoxìng.
+@py Wǒ xiǎng hé péngyou qù lǚyóu, nǐ ne?
+@ru Скоро каникулы, все очень рады. Я хочу поехать с другом путешествовать, а ты?
+
+@id h2-09
+@kind adapted
+@level 2
+@title 她很会唱歌
+@zh 我的同学很会唱歌，跳舞也跳得不错。
+@zh 每次有活动，大家都请她表演。
+@py Wǒ de tóngxué hěn huì chànggē, tiàowǔ yě tiào de búcuò.
+@py Měi cì yǒu huódòng, dàjiā dōu qǐng tā biǎoyǎn.
+@ru Моя одноклассница отлично поёт и неплохо танцует. Каждый раз, когда проходит мероприятие, все просят её выступить.
+
+@id h2-10
+@kind adapted
+@level 2
+@title 门开着
+@zh 房间的门开着，灯也开着，可是里面没有人。
+@zh 桌子上放着一杯茶。
+@py Fángjiān de mén kāi zhe, dēng yě kāi zhe, kěshì lǐmiàn méiyǒu rén.
+@py Zhuōzi shàng fàng zhe yì bēi chá.
+@ru Дверь комнаты открыта, свет тоже горит, но внутри никого нет. На столе стоит чашка чая.
+
+@id h3-04
+@kind adapted
+@level 3
+@title 弟弟的画
+@zh 我把书放在桌子上，准备明天还给图书馆。
+@zh 可是今天我发现，书被弟弟画了很多画。
+@py Wǒ bǎ shū fàng zài zhuōzi shàng, zhǔnbèi míngtiān huángěi túshūguǎn.
+@py Kěshì jīntiān wǒ fāxiàn, shū bèi dìdi huà le hěn duō huà.
+@ru Я положила книгу на стол, чтобы завтра вернуть в библиотеку. Но сегодня я обнаружила, что младший брат нарисовал в ней много рисунков.
+
+@id h3-05
+@kind adapted
+@level 3
+@title 一边听音乐一边做作业
+@zh 我喜欢一边听音乐一边做作业。
+@zh 妈妈说这样不好，应该先认真做完作业，再听音乐。
+@py Wǒ xǐhuan yìbiān tīng yīnyuè yìbiān zuò zuòyè.
+@py Māma shuō zhèyàng bùhǎo, yīnggāi xiān rènzhēn zuòwán zuòyè, zài tīng yīnyuè.
+@ru Я люблю делать уроки и слушать музыку одновременно. Мама говорит, что так нехорошо: надо сначала внимательно доделать уроки, а потом слушать музыку.
+
+@id h3-06
+@kind adapted
+@level 3
+@title 越来越好
+@zh 来中国以后，我的汉语越来越好，朋友也越来越多。
+@zh 以前我不敢说话，现在常常和别人聊天。
+@py Lái Zhōngguó yǐhòu, wǒ de Hànyǔ yuèláiyuè hǎo, péngyou yě yuèláiyuè duō.
+@py Yǐqián wǒ bù gǎn shuōhuà, xiànzài chángcháng hé biéren liáotiān.
+@ru С тех пор как я приехала в Китай, мой китайский становится всё лучше, а друзей всё больше. Раньше я боялась говорить, а теперь часто болтаю с людьми.
+
+@id h3-07
+@kind adapted
+@level 3
+@title 我的课
+@zh 除了汉语以外，我还学习英语。
+@zh 这个星期我一共有六节课，除了星期天，每天都有课。
+@py Chúle Hànyǔ yǐwài, wǒ hái xuéxí Yīngyǔ.
+@py Zhège xīngqī wǒ yígòng yǒu liù jié kè, chúle Xīngqītiān, měitiān dōu yǒu kè.
+@ru Кроме китайского, я ещё учу английский. На этой неделе у меня всего шесть занятий: кроме воскресенья, занятия каждый день.
+
+@id h3-08
+@kind adapted
+@level 3
+@title 周末的打算
+@zh 如果明天不下雨，我们就去公园玩儿。
+@zh 如果下雨，我们就在家看电影，做好吃的。
+@py Rúguǒ míngtiān búxià yǔ, wǒmen jiù qù gōngyuán wánr.
+@py Rúguǒ xiàyǔ, wǒmen jiù zài jiā kàn diànyǐng, zuò hǎochī de.
+@ru Если завтра не будет дождя, мы пойдём гулять в парк. Если пойдёт дождь, будем дома смотреть кино и готовить что-нибудь вкусное.
+
+@id h3-09
+@kind adapted
+@level 3
+@title 找工作
+@zh 小王毕业了，正在找工作。
+@zh 他不但会说英语，而且会用电脑，所以很多公司都想要他。
+@py Xiǎo wáng bìyè le, zhèngzài zhǎo gōngzuò.
+@py Tā búdàn huì shuō Yīngyǔ, érqiě huì yòng diànnǎo, suǒyǐ hěn duō gōngsī dōu xiǎngyào tā.
+@ru Сяо Ван окончил учёбу и ищет работу. Он не только говорит по-английски, но и умеет работать на компьютере, поэтому многие компании хотят его взять.
+
+@id h3-10
+@kind adapted
+@level 3
+@title 一张旧照片
+@zh 我在书架后面找到一张旧照片。
+@zh 照片上是十年前的我们一家人。
+@zh 看着它，我想起了很多事。
+@py Wǒ zài shūjià hòumian zhǎodào yì zhāng jiù zhàopiàn.
+@py Zhàopiàn shàng shì shí nián qián de wǒmen yìjiārén.
+@py Kàn zhe tā, wǒ xiǎngqǐ le hěn duō shì.
+@ru За книжной полкой я нашла старую фотографию. На ней наша семья десять лет назад. Глядя на неё, я вспомнила многое.
+
+@id h4-04
+@kind adapted
+@level 4
+@title 再忙也要运动
+@zh 即使工作再忙，他每天也要运动半个小时。
+@zh 他说，身体是最重要的。
+@py Jíshǐ gōngzuò zài máng, tā měitiān yě yào yùndòng bàn gè xiǎoshí.
+@py Tā shuō, shēntǐ shì zuì zhòngyào de.
+@ru Даже если работы очень много, он каждый день занимается спортом полчаса. Он говорит, что здоровье — самое важное.
+
+@id h4-05
+@kind adapted
+@level 4
+@title 小面馆
+@zh 无论天气好不好，这家小面馆门口都有很多人排队。
+@zh 老板说，生意好的办法其实很简单：味道好，价格也合适。
+@py Wúlùn tiānqì hǎobùhǎo, zhè jiā xiǎo miàn guǎn ménkǒu dōu yǒu hěn duō rén páiduì.
+@py Lǎobǎn shuō, shēngyì hǎo de bànfǎ qíshí hěn jiǎndān: wèidao hǎo, jiàgé yě héshì.
+@ru Независимо от того, хорошая ли погода, у входа в эту маленькую лапшичную всегда много людей в очереди. Хозяин говорит, что секрет успешной торговли прост: вкусно и по подходящей цене.
+
+@id h4-06
+@kind adapted
+@level 4
+@title 别怕说错
+@zh 只要认真练习，你就一定能提高口语。
+@zh 不要怕说错，每个人都是这样一步一步学会的。
+@py Zhǐyào rènzhēn liànxí, nǐ jiù yídìng néng tígāo kǒuyǔ.
+@py Búyào pà shuō cuò, měi gè rén dōu shì zhèyàng yí bù yí bù xuéhuì de.
+@ru Если усердно заниматься, обязательно улучшишь разговорную речь. Не бойся ошибаться: все учатся именно так, шаг за шагом.
+
+@id h4-07
+@kind adapted
+@level 4
+@title 越看越有精神
+@zh 我发现一件有意思的事：不想看书的时候，越想越觉得累。
+@zh 可是一开始看，就越看越有精神。
+@py Wǒ fāxiàn yí jiàn yǒuyìsi de shì: bùxiǎng kànshū de shíhou, yuè xiǎng yuè juéde lèi.
+@py Kěshì yì kāishǐ kàn, jiù yuè kàn yuè yǒu jīngshén.
+@ru Я заметил любопытную вещь: когда не хочется читать, чем больше думаешь об этом, тем сильнее устаёшь. Но стоит начать — и чем дальше читаешь, тем бодрее себя чувствуешь.
+
+@id h4-08
+@kind adapted
+@level 4
+@title 网上购物
+@zh 现在很多人习惯在网上买东西，又方便又便宜。
+@zh 不过买以前最好看看别人的评价，免得买到不好的东西。
+@py Xiànzài hěn duō rén xíguàn zài wǎngshàng mǎi dōngxi, yòu fāngbiàn yòu piányi.
+@py Búguò mǎi yǐqián zuìhǎo kànkan biéren de píngjià, miǎnde mǎi dào bùhǎo de dōngxi.
+@ru Сейчас многие привыкли покупать вещи в интернете: и удобно, и дёшево. Но перед покупкой лучше посмотреть отзывы других, чтобы не купить плохую вещь.
+
+@id h4-09
+@kind adapted
+@level 4
+@title 一次误会
+@zh 昨天我给同事发了一条消息，没想到他理解错了。
+@zh 结果我们都很不高兴。后来见面聊了聊，才发现原来是个误会。
+@py Zuótiān wǒ gěi tóngshì fā le yì tiáo xiāoxi, méixiǎngdào tā lǐjiě cuò le.
+@py Jiéguǒ wǒmen dōu hěn bù gāoxìng. Hòulái jiànmiàn liáo le liáo, cái fāxiàn yuánlái shì gè wùhuì.
+@ru Вчера я отправил коллеге сообщение, а он, как я не ожидал, понял его неверно. В итоге оба расстроились. Потом мы встретились, поговорили и поняли, что это было недоразумение.
+
+@id h4-10
+@kind adapted
+@level 4
+@title 坚持跑步
+@zh 我从去年开始跑步，刚开始连一公里都跑不了。
+@zh 我没有放弃，每天多跑一点儿。
+@zh 现在，我已经能一口气跑五公里了。
+@py Wǒ cóng qùnián kāishǐ pǎobù, gāng kāishǐ lián yì gōnglǐ dōu pǎo bùliǎo.
+@py Wǒ méiyǒu fàngqì, měitiān duō pǎo yìdiǎnr.
+@py Xiànzài, wǒ yǐjīng néng yìkǒuqì pǎo wǔ gōnglǐ le.
+@ru Я начал бегать в прошлом году, сначала не мог пробежать и километра. Я не сдался и каждый день пробегал чуть больше. Теперь я уже могу пробежать пять километров на одном дыхании.
+
+@id h5-01
+@kind adapted
+@level 5
+@title 越劝越糟
+@zh 医生让他多休息，他却没有听，反而每天晚上工作到很晚。
+@zh 结果病没有好，反而更严重了。
+@py Yīshēng ràng tā duō xiūxi, tā què méiyǒu tīng, fǎn'ér měitiān wǎnshang gōngzuò dào hěn wǎn.
+@py Jiéguǒ bìng méiyǒu hǎo, fǎn'ér gèng yánzhòng le.
+@ru Врач велел ему больше отдыхать, но он не послушался и, наоборот, каждый вечер работал допоздна. В итоге болезнь не прошла, а стала ещё серьёзнее.
+
+@id h5-02
+@kind adapted
+@level 5
+@title 老同学
+@zh 我居然在地铁上遇到了十年没见的老同学。
+@zh 这座城市这么大，毕竟能再见面的机会不多，真是难得的缘分。
+@py Wǒ jūrán zài dìtiě shàng yùdào le shí nián méi jiàn de lǎo tóngxué.
+@py Zhè zuò chéngshì zhème dà, bìjìng néng zài jiànmiàn de jīhuì bù duō, zhēnshi nándé de yuánfèn.
+@ru Надо же, в метро я встретила одноклассника, которого не видела десять лет. Город такой большой, шансов снова встретиться как-никак немного, это поистине редкое совпадение судьбы.
+
+@id h5-03
+@kind adapted
+@level 5
+@title 认真的人
+@zh 他一旦决定做一件事，就会认真地做到最后。
+@zh 同事们都说，和他合作，一点儿也不用担心。
+@py Tā yídàn juédìng zuò yí jiàn shì, jiù huì rènzhēn de zuòdào zuìhòu.
+@py Tóngshìmen dōu shuō, hé tā hézuò, yìdiǎnr yě búyòng dānxīn.
+@ru Если он решил что-то сделать, то обязательно доведёт до конца. Коллеги говорят, что с ним совсем не о чем беспокоиться, работая вместе.
+
+@id h5-04
+@kind adapted
+@level 5
+@title 散步
+@zh 自从搬到这座城市以来，我养成了早起散步的习惯。
+@zh 走着走着，我发现了很多以前没有注意过的小店。
+@py Zìcóng bān dào zhè zuò chéngshì yǐlái, wǒ yǎngchéng le zǎoqǐ sànbù de xíguàn.
+@py Zǒu zhe zǒu zhe, wǒ fāxiàn le hěn duō yǐqián méiyǒu zhùyì guo de xiǎodiàn.
+@ru С тех пор как я переехала в этот город, у меня появилась привычка рано вставать и гулять. Идя и идя, я обнаружила много маленьких магазинов, на которые раньше не обращала внимания.
+
+@id h5-05
+@kind adapted
+@level 5
+@title 在家办公
+@zh 从最近的情况来看，越来越多的年轻人选择在家工作。
+@zh 这样既节省了时间，从而也减少了交通费用。
+@py Cóng zuìjìn de qíngkuàng lái kàn, yuèláiyuè duō de niánqīngrén xuǎnzé zài jiā gōngzuò.
+@py Zhèyàng jì jiéshěng le shíjiān, cóng'ér yě jiǎnshǎo le jiāotōng fèiyòng.
+@ru Судя по недавней ситуации, всё больше молодых людей выбирают работать из дома. Так экономится время, а значит, снижаются и расходы на транспорт.
+
+@id c-04
+@kind classic
+@level 0
+@title 相思 · 王维
+@zh 红豆生南国，春来发几枝。
+@zh 愿君多采撷，此物最相思。
+@py Hóng dòu shēng nán guó, chūn lái fā jǐ zhī.
+@py Yuàn jūn duō cǎi xié, cǐ wù zuì xiāng sī.
+@ru Красный горошек растёт на юге, весной сколько веточек выпустит? Прошу тебя, собери побольше: эта вещь больше всего напоминает о тоске по любимым.
+
+@id c-05
+@kind classic
+@level 0
+@title 悯农 · 李绅
+@zh 锄禾日当午，汗滴禾下土。
+@zh 谁知盘中餐，粒粒皆辛苦。
+@py Chú hé rì dāng wǔ, hàn dī hé xià tǔ.
+@py Shéi zhī pán zhōng cān, lì lì jiē xīn kǔ.
+@ru Полют посевы под полуденным солнцем, пот капает на землю под колосьями. Кто знает, что каждая крупинка в миске — это тяжкий труд?
+
+@id c-06
+@kind classic
+@level 0
+@title 咏鹅 · 骆宾王
+@zh 鹅，鹅，鹅，曲项向天歌。
+@zh 白毛浮绿水，红掌拨清波。
+@py É, é, é, qū xiàng xiàng tiān gē.
+@py Bái máo fú lǜ shuǐ, hóng zhǎng bō qīng bō.
+@ru Гусь, гусь, гусь — изогнув шею, поёт небу. Белые перья плывут по зелёной воде, красные лапы разгоняют чистую волну.
+
+@id h1-11
+@kind adapted
+@level 1
+@title 我家的狗
+@zh 我家有一只狗。
+@zh 它很大，也很可爱。
+@zh 我每天和它玩。
+@py Wǒ jiā yǒu yì zhī gǒu.
+@py Tā hěn dà, yě hěn kě'ài.
+@py Wǒ měitiān hé tā wán.
+@ru У нас дома есть собака. Она большая и очень милая. Я каждый день с ней играю.
+
+@id h1-12
+@kind adapted
+@level 1
+@title 星期六
+@zh 今天是星期六。
+@zh 我不学习，也不工作。
+@zh 我和朋友去看电影，然后去饭店吃饭。
+@py Jīntiān shì Xīngqīliù.
+@py Wǒ bù xuéxí, yě bù gōngzuò.
+@py Wǒ hé péngyou qù kàn diànyǐng, ránhòu qù fàndiàn chī fàn.
+@ru Сегодня суббота. Я не учусь и не работаю. Мы с другом идём в кино, а потом в ресторан поесть.
+
+@id h1-13
+@kind adapted
+@level 1
+@title 买水果
+@zh “你好，这个苹果多少钱？”
+@zh “两块。”
+@zh “我要三个。”
+@zh “好的，六块。”
+@py "nǐ hǎo, zhège píngguǒ duōshǎo qián?"
+@py "liǎng kuài."
+@py "wǒ yào sān gè."
+@py "hǎo de, liù kuài."
+@ru — Здравствуйте, сколько стоит это яблоко? — Два юаня. — Мне три. — Хорошо, шесть юаней.
+
+@id h1-14
+@kind adapted
+@level 1
+@title 我的学校
+@zh 我在大学学习。
+@zh 我的学校很大，有很多学生。
+@zh 我的汉语老师是中国人，她很好。
+@py Wǒ zài dàxué xuéxí.
+@py Wǒ de xuéxiào hěn dà, yǒu hěn duō xuésheng.
+@py Wǒ de Hànyǔ lǎoshī shì Zhōngguó rén, tā hěn hǎo.
+@ru Я учусь в университете. Моя школа большая, в ней много студентов. Моя учительница китайского — китаянка, она очень хорошая.
+
+@id h1-15
+@kind adapted
+@level 1
+@title 打电话
+@zh “喂，你在哪儿？”
+@zh “我在家。”
+@zh “你现在能来吗？”
+@zh “能，我现在就去。”
+@py "wèi, nǐ zài nǎr?"
+@py "wǒ zài jiā."
+@py "nǐ xiànzài néng lái ma?"
+@py "néng, wǒ xiànzài jiù qù."
+@ru — Алло, ты где? — Я дома. — Ты можешь сейчас прийти? — Могу, сейчас выхожу.
+
+@id h2-11
+@kind adapted
+@level 2
+@title 我的爱好
+@zh 我喜欢唱歌，也喜欢跑步。
+@zh 每个星期六我都去公园跑步。
+@zh 跑完步以后，我觉得很高兴。
+@py Wǒ xǐhuan chànggē, yě xǐhuan pǎobù.
+@py Měi gè Xīngqīliù wǒ dōu qù gōngyuán pǎobù.
+@py Pǎo wán bù yǐhòu, wǒ juéde hěn gāoxìng.
+@ru Я люблю петь и бегать. Каждую субботу я бегаю в парке. После пробежки я чувствую себя очень радостно.
+
+@id h2-12
+@kind adapted
+@level 2
+@title 坐地铁
+@zh 我家离学校不远，我坐地铁去学校。
+@zh 地铁很快，可是人太多了。
+@zh 我常常没有座位。
+@py Wǒ jiā lí xuéxiào bù yuǎn, wǒ zuò dìtiě qù xuéxiào.
+@py Dìtiě hěn kuài, kěshì rén tài duō le.
+@py Wǒ chángcháng méiyǒu zuòwèi.
+@ru Мой дом недалеко от учёбы, я езжу на метро. Метро быстрое, но людей слишком много. Мне часто не хватает места, чтобы сесть.
+
+@id h2-13
+@kind adapted
+@level 2
+@title 过生日
+@zh 昨天是我的生日。
+@zh 朋友们给我买了蛋糕。
+@zh 我们唱了生日歌，吃了很多好吃的东西。
+@py Zuótiān shì wǒ de shēngrì.
+@py Péngyǒumen gěi wǒ mǎi le dàngāo.
+@py Wǒmen chàng le shēngrì gē, chī le hěn duō hǎochī de dōngxi.
+@ru Вчера был мой день рождения. Друзья купили мне торт. Мы спели песню на день рождения и съели много вкусного.
+
+@id h2-14
+@kind adapted
+@level 2
+@title 学做饭
+@zh 我想学做中国菜。
+@zh 老师说，先买菜，再洗菜，然后才能做。
+@zh 今天我做了西红柿鸡蛋，很好吃。
+@py Wǒ xiǎng xué zuò Zhōngguó cài.
+@py Lǎoshī shuō, xiān mǎi cài, zài xǐ cài, ránhòu cáinéng zuò.
+@py Jīntiān wǒ zuò le xīhóngshì jīdàn, hěn hǎochī.
+@ru Я хочу научиться готовить китайские блюда. Учитель сказал: сначала купить овощи, потом помыть, и только после этого можно готовить. Сегодня я приготовила помидоры с яйцом, было очень вкусно.
+
+@id h2-15
+@kind adapted
+@level 2
+@title 下雪了
+@zh 早上起床的时候，外面下雪了。
+@zh 我穿上新衣服出去玩。
+@zh 雪很白，天气很冷，可是我很高兴。
+@py Zǎoshang qǐchuáng de shíhou, wàimiàn xiàxuě le.
+@py Wǒ chuān shàng xīn yīfu chūqù wán.
+@py Xuě hěn bái, tiānqì hěn lěng, kěshì wǒ hěn gāoxìng.
+@ru Утром, когда я встала, на улице шёл снег. Я надела новую одежду и вышла погулять. Снег очень белый, погода холодная, но мне очень радостно.
+
+@id h3-11
+@kind adapted
+@level 3
+@title 网上学习
+@zh 现在很多人在网上学汉语。
+@zh 他们用手机看视频、做练习，还可以和老师聊天。
+@zh 这样学习又方便又便宜，可是需要自己多努力。
+@py Xiànzài hěn duō rén zài wǎngshàng xué Hànyǔ.
+@py Tāmen yòng shǒujī kàn shìpín, zuò liànxí, hái kěyǐ hé lǎoshī liáotiān.
+@py Zhèyàng xuéxí yòu fāngbiàn yòu piányi, kěshì xūyào zìjǐ duō nǔlì.
+@ru Сейчас многие учат китайский онлайн. Они смотрят видео и делают упражнения на телефоне, а ещё могут общаться с преподавателем. Такая учёба удобна и недорога, но требует собственных усилий.
+
+@id h3-12
+@kind adapted
+@level 3
+@title 迟到了
+@zh 今天早上我起晚了，所以上课迟到了二十分钟。
+@zh 老师没有生气，只是让我下次早一点儿来。
+@zh 我觉得很不好意思。
+@py Jīntiān zǎoshang wǒ qǐ wǎn le, suǒyǐ shàngkè chídào le èrshí fēnzhōng.
+@py Lǎoshī méiyǒu shēngqì, zhǐshì ràng wǒ xiàcì zǎo yìdiǎnr lái.
+@py Wǒ juéde hěn bùhǎoyìsi.
+@ru Сегодня утром я проспала и опоздала на урок на двадцать минут. Учитель не рассердился, только попросил в следующий раз приходить пораньше. Мне было очень неловко.
+
+@id h3-13
+@kind adapted
+@level 3
+@title 一次旅行
+@zh 去年夏天，我去了北京。
+@zh 我爬了长城，还吃了北京烤鸭。
+@zh 虽然很累，但是我玩得非常开心，希望明年还能去。
+@py Qùnián xiàtiān, wǒ qù le Běijīng.
+@py Wǒ pá le Chángchéng, hái chī le Běijīngkǎoyā.
+@py Suīrán hěn lèi, dànshì wǒ wán de fēicháng kāixīn, xīwàng míngnián hái néng qù.
+@ru Прошлым летом я ездила в Пекин. Я поднялась на Великую стену и попробовала утку по-пекински. Хоть я и устала, мне было очень весело, и я надеюсь поехать снова в следующем году.
+
+@id h3-14
+@kind adapted
+@level 3
+@title 新同学
+@zh 我们班来了一个新同学，她从上海来。
+@zh 她汉语说得很好，英语也不错。
+@zh 大家都想和她做朋友。
+@py Wǒmen bān lái le yí gè xīn tóngxué, tā cóng Shànghǎi lái.
+@py Tā Hànyǔ shuō de hěn hǎo, Yīngyǔ yě búcuò.
+@py Dàjiā dōu xiǎng hé tā zuò péngyou.
+@ru В нашем классе появилась новая одноклассница, она приехала из Шанхая. Она очень хорошо говорит по-китайски, а английский у неё тоже неплохой. Все хотят с ней подружиться.
+
+@id h3-15
+@kind adapted
+@level 3
+@title 好习惯
+@zh 医生说，早睡早起、多喝水、多运动对身体很好。
+@zh 我现在每天晚上十点睡觉，早上六点起床。
+@zh 我觉得身体比以前好多了。
+@py Yīshēng shuō, zǎoshuìzǎoqǐ, duō hē shuǐ, duō yùndòng duì shēntǐ hěn hǎo.
+@py Wǒ xiànzài měitiān wǎnshang shí diǎn shuìjiào, zǎoshang liù diǎn qǐchuáng.
+@py Wǒ juéde shēntǐ bǐ yǐqián hǎoduō le.
+@ru Врач сказал, что рано ложиться и рано вставать, пить больше воды и больше двигаться очень полезно для здоровья. Теперь я каждый день ложусь в десять вечера и встаю в шесть. Мне кажется, моё здоровье стало намного лучше, чем раньше.
+
+@id h4-11
+@kind adapted
+@level 4
+@title 学习计划
+@zh 学外语需要有计划。
+@zh 我每天花一个小时背单词，周末再复习一遍。
+@zh 刚开始觉得很无聊，但是坚持了三个月以后，我发现自己进步了很多。
+@py Xué wàiyǔ xūyào yǒu jìhuà.
+@py Wǒ měitiān huā yí gè xiǎoshí bèi dāncí, zhōumò zài fùxí yí biàn.
+@py Gāng kāishǐ juéde hěn wúliáo, dànshì jiānchí le sān gè yuè yǐhòu, wǒ fāxiàn zìjǐ jìnbù le hěn duō.
+@ru Чтобы учить иностранный язык, нужен план. Каждый день я трачу час на заучивание слов, а в выходные повторяю ещё раз. Сначала было скучно, но после трёх месяцев упорства я заметила, что очень продвинулась.
+
+@id h4-12
+@kind adapted
+@level 4
+@title 垃圾分类
+@zh 我们小区去年开始垃圾分类。
+@zh 一开始大家都不习惯，经常放错。
+@zh 现在越来越多的人养成了好习惯，小区也变得干净多了。
+@py Wǒmen xiǎoqū qùnián kāishǐ lājī fēnlèi.
+@py Yì kāishǐ dàjiā dōu bù xíguàn, jīngcháng fàng cuò.
+@py Xiànzài yuèláiyuè duō de rén yǎngchéng le hǎo xíguàn, xiǎoqū yě biànde gānjìng duō le.
+@ru В нашем жилом комплексе в прошлом году начали сортировать мусор. Сначала все не привыкли и часто клали не туда. Теперь всё больше людей приобретают хорошую привычку, и двор стал намного чище.
+
+@id h4-13
+@kind adapted
+@level 4
+@title 遇到困难
+@zh 做事情的时候遇到困难是很正常的。
+@zh 重要的是不要放弃，而是想办法解决。
+@zh 有时候请别人帮忙，也是一种聪明的办法。
+@py Zuò shìqing de shíhou yùdào kùnnan shì hěn zhèngcháng de.
+@py Zhòngyào de shì búyào fàngqì, érshì xiǎng bànfǎ jiějué.
+@py Yǒushíhou qǐng biéren bāngmáng, yě shì yì zhǒng cōngming de bànfǎ.
+@ru Столкнуться с трудностями, когда делаешь дело, совершенно нормально. Важно не сдаваться, а искать способ решить проблему. Иногда попросить помощи у других — тоже умный способ.
+
+@id h4-14
+@kind adapted
+@level 4
+@title 一部电影
+@zh 昨天我看了一部很感人的电影。
+@zh 故事讲的是一位父亲为了孩子努力工作。
+@zh 看完以后，我给爸爸打了电话，告诉他我很想他。
+@py Zuótiān wǒ kàn le yí bù hěn gǎnrén de diànyǐng.
+@py Gùshì jiǎng de shì yí wèi fùqīn wèile háizi nǔlì gōngzuò.
+@py Kàn wán yǐhòu, wǒ gěi bàba dǎ le diànhuà, gàosù tā wǒ hěn xiǎng tā.
+@ru Вчера я посмотрела очень трогательный фильм. В нём рассказывается об отце, который усердно работает ради ребёнка. После фильма я позвонила папе и сказала, что очень по нему скучаю.
+
+@id h4-15
+@kind adapted
+@level 4
+@title 城市和乡村
+@zh 有的人喜欢城市的热闹，有的人喜欢乡村的安静。
+@zh 其实没有好坏之分。
+@zh 关键是选择适合自己的生活。
+@py Yǒu de rén xǐhuan chéngshì de rènao, yǒu de rén xǐhuan xiāngcūn de ānjìng.
+@py Qíshí méiyǒu hǎohuài zhī fēn.
+@py Guānjiàn shì xuǎnzé shìhé zìjǐ de shēnghuó.
+@ru Одним нравится оживлённость города, другим тишина деревни. На самом деле тут нет «хорошего» и «плохого». Главное — выбрать жизнь, которая подходит именно тебе.
+
+@id h5-06
+@kind adapted
+@level 5
+@title 第一次做饭
+@zh 毕竟是第一次给父母做饭，我特别紧张。
+@zh 可是爸爸尝了一口，说：“味道居然不错！”
+@zh 妈妈在旁边笑了，说我以后可以经常做。
+@py Bìjìng shì dìyīcì gěi fùmǔ zuòfàn, wǒ tèbié jǐnzhāng.
+@py Kěshì bàba cháng le yì kǒu, shuō: "Wèidao jūrán búcuò!"
+@py Māma zài pángbiān xiào le, shuō wǒ yǐhòu kěyǐ jīngcháng zuò.
+@ru Всё-таки я впервые готовила для родителей и очень волновалась. Но папа попробовал и сказал: «Вкус, надо же, неплохой!» Мама рядом улыбнулась и сказала, что в будущем я могу готовить почаще.
+
+@id h5-07
+@kind adapted
+@level 5
+@title 春节团圆
+@zh 春节是中国最重要的传统节日。
+@zh 不管在哪里工作，人们都会尽量回家和家人团聚。
+@zh 年夜饭的桌子上，饺子和鱼象征着对新一年的美好愿望。
+@py Chūnjié shì Zhōngguó zuì zhòngyào de chuántǒng jiérì.
+@py Bùguǎn zài nǎlǐ gōngzuò, rénmen dōu huì jǐnliàng huíjiā hé jiārén tuánjù.
+@py Niányèfàn de zhuōzi shàng, jiǎozi hé yú xiàngzhēng zhe duì xīn yì nián de měihǎo yuànwàng.
+@ru Праздник Весны — самый важный традиционный праздник в Китае. Где бы люди ни работали, они стараются вернуться домой и собраться всей семьёй. Пельмени и рыба на новогоднем столе символизируют добрые пожелания на новый год.
+
+@id h5-08
+@kind adapted
+@level 5
+@title 手机依赖
+@zh 如今，手机几乎成了生活的一部分。
+@zh 我们用它聊天、购物、看新闻，甚至叫外卖。
+@zh 但是如果过分依赖它，就会减少和身边的人面对面交流的机会。
+@py Rújīn, shǒujī jīhū chéng le shēnghuó de yíbùfen.
+@py Wǒmen yòng tā liáotiān, gòuwù, kàn xīnwén, shènzhì jiào wàimài.
+@py Dànshì rúguǒ guòfèn yīlài tā, jiù huì jiǎnshǎo hé shēnbiān de rén miànduìmiàn jiāoliú de jīhuì.
+@ru Сегодня телефон стал почти частью жизни. Мы общаемся с его помощью, делаем покупки, читаем новости и даже заказываем еду. Но если слишком от него зависеть, станет меньше возможностей для живого общения с теми, кто рядом.
+
+@id h5-09
+@kind adapted
+@level 5
+@title 志愿者
+@zh 暑假里，我参加了一次志愿者活动，帮助社区里的老人学习使用智能手机。
+@zh 起初他们很害怕按错，后来慢慢熟练起来，还主动教别的老人。
+@zh 这让我觉得自己的付出很有意义。
+@py Shǔjià lǐ, wǒ cānjiā le yí cì zhìyuànzhě huódòng, bāngzhù shèqū lǐ de lǎorén xuéxí shǐyòng zhìnéngshǒujī.
+@py Qǐchū tāmen hěn hàipà àn cuò, hòulái mànmàn shúliàn qǐlai, hái zhǔdòng jiào biéde lǎorén.
+@py Zhè ràng wǒ juéde zìjǐ de fùchū hěn yǒu yìyì.
+@ru Летом на каникулах я участвовала в волонтёрской акции: помогала пожилым людям в районе научиться пользоваться смартфоном. Сначала они боялись нажать не туда, потом постепенно освоились и даже сами стали учить других. Это показало мне, что мои усилия не напрасны.
+
+@id h5-10
+@kind adapted
+@level 5
+@title 茶文化
+@zh 中国人喝茶已有几千年的历史。
+@zh 不同的茶有不同的泡法：绿茶的水温不宜太高，红茶则可以用开水。
+@zh 喝茶不只是为了解渴，更是一种放松和交流的方式。
+@py Zhōngguó rén hēchá yǐ yǒu jǐqiān nián de lìshǐ.
+@py Bùtóng de chá yǒu bùtóng de pào fǎ: lǜchá de shuǐwēn bùyí tài gāo, hóngchá zé kěyǐ yòng kāishuǐ.
+@py Hēchá bù zhǐshì wèile jiěkě, gèngshì yì zhǒng fàngsōng hé jiāoliú de fāngshì.
+@ru Китайцы пьют чай уже несколько тысяч лет. У разных чаёв свои способы заваривания: для зелёного чая вода не должна быть слишком горячей, а красный можно заливать кипятком. Чай пьют не только чтобы утолить жажду, но и как способ расслабиться и пообщаться.
+
+@id h6-01
+@kind adapted
+@level 6
+@title 城市的节奏
+@zh 大城市的生活节奏很快，人们每天奔波于地铁和办公室之间。
+@zh 然而，越来越多的年轻人开始意识到，适当放慢脚步，反而能提高工作效率。
+@zh 他们也更容易感受到生活的乐趣。
+@py Dàchéngshì de shēnghuó jiézòu hěn kuài, rénmen měitiān bēnbō yú dìtiě hé bàngōngshì zhījiān.
+@py Rán'ér, yuèláiyuè duō de niánqīngrén kāishǐ yìshí dào, shìdàng fàngmàn jiǎobù, fǎn'ér néng tígāo gōngzuò xiàolǜ.
+@py Tāmen yě gèng róngyì gǎnshòu dào shēnghuó de lèqù.
+@ru Жизнь в большом городе идёт быстро: люди каждый день мечутся между метро и офисом. Однако всё больше молодых начинают понимать, что если немного сбавить темп, то эффективность работы, наоборот, повысится. И радость от жизни они ощущают легче.
+
+@id h6-02
+@kind adapted
+@level 6
+@title 阅读的价值
+@zh 在信息爆炸的时代，我们每天接触大量零碎的内容，却很少静下心来读完一本书。
+@zh 其实，深度阅读能培养我们的思考能力。
+@zh 这样，面对复杂的问题时，我们就不容易被表面现象迷惑。
+@py Zài xìnxī bàozhà de shídài, wǒmen měitiān jiēchù dàliàng língsuì de nèiróng, què hěn shǎo jìng xià xīn lái dú wán yì běn shū.
+@py Qíshí, shēndù yuèdú néng péiyǎng wǒmen de sīkǎo nénglì.
+@py Zhèyàng, miànduì fùzá de wèntí shí, wǒmen jiù bù róngyì bèi biǎomiàn xiànxiàng míhuo.
+@ru В эпоху информационного взрыва мы каждый день сталкиваемся с огромным количеством обрывочного контента, но редко находим покой, чтобы дочитать книгу до конца. На самом деле вдумчивое чтение развивает способность мыслить. Благодаря этому перед сложными проблемами нас труднее сбить с толку внешними явлениями.
+
+@id h6-03
+@kind adapted
+@level 6
+@title 语言与文化
+@zh 学习一门语言，绝不仅仅是记住词汇和语法。
+@zh 语言背后蕴含着一个民族的历史、习惯和思维方式。
+@zh 只有真正了解这些，才能做到准确而得体地交流。
+@py Xuéxí yì mén yǔyán, jué bùjǐnjǐn shì jìzhu cíhuì hé yǔfǎ.
+@py Yǔyán bèihòu yùnhán zhe yí gè mínzú de lìshǐ, xíguàn hé sīwéi fāngshì.
+@py Zhǐyǒu zhēnzhèng liǎojiě zhèxiē, cáinéng zuòdào zhǔnquè ér détǐ de jiāoliú.
+@ru Изучение языка — это далеко не только запоминание слов и грамматики. За языком стоят история, привычки и образ мышления народа. Только по-настоящему поняв это, можно общаться точно и уместно.
+
+@id h6-04
+@kind adapted
+@level 6
+@title 失败的意义
+@zh 没有人愿意失败，但失败往往是最好的老师。
+@zh 许多成功的人都曾在挫折中反思自己，调整方向，最终找到属于自己的道路。
+@zh 重要的是，不要因为一次失败就否定全部努力。
+@py Méiyǒu rén yuànyì shībài, dàn shībài wǎngwǎng shì zuìhǎo de lǎoshī.
+@py Xǔduō chénggōng de rén dōu céng zài cuòzhé zhōng fǎnsī zìjǐ, tiáozhěng fāngxiàng, zuìzhōng zhǎodào shǔyú zìjǐ de dàolù.
+@py Zhòngyào de shì, búyào yīnwèi yí cì shībài jiù fǒudìng quánbù nǔlì.
+@ru Никто не хочет терпеть неудачи, но неудача часто оказывается лучшим учителем. Многие успешные люди в трудные времена переосмысливали себя, меняли направление и в конце концов находили собственный путь. Важно не отрицать все усилия из-за одной неудачи.
+
+@id h6-05
+@kind adapted
+@level 6
+@title 环保行动
+@zh 保护环境需要每个人的参与。
+@zh 从减少一次性用品、节约用水用电，到选择公共交通，这些看似微小的行为，积累起来就会产生巨大的影响。
+@zh 改变，往往就是从身边的小事开始的。
+@py Bǎohù huánjìng xūyào měi gè rén de cānyù.
+@py Cóng jiǎnshǎo yícìxìng yòngpǐn, jiéyuē yòng shuǐ yòng diàn, dào xuǎnzé gōnggòngjiāotōng, zhèxiē kànsì wēixiǎo de xíngwéi, jīlěi qǐlai jiù huì chǎnshēng jùdà de yǐngxiǎng.
+@py Gǎibiàn, wǎngwǎng jiù shì cóng shēnbiān de xiǎoshì kāishǐ de.
+@ru Охрана окружающей среды требует участия каждого. От сокращения одноразовых вещей и экономии воды и электричества до выбора общественного транспорта: эти на вид мелкие поступки, накапливаясь, дают огромный эффект. Перемены чаще всего начинаются с мелочей рядом с нами.
+
+@id h5-11
+@kind adapted
+@level 5
+@title 早餐店
+@zh 我家楼下有一家早餐店，老板是个热情的中年人。
+@zh 他记得每个常客的口味，连我不吃辣这件事都没忘。
+@zh 每天早上喝一碗热豆浆，我就觉得新的一天有了好的开始。
+@py Wǒ jiā lóuxià yǒu yì jiā zǎocān diàn, lǎobǎn shì gè rèqíng de zhōngnián rén.
+@py Tā jìde měi gè chángkè de kǒuwèi, lián wǒ bù chī là zhè jiàn shì dōu méi wàng.
+@py Měitiān zǎoshang hē yì wǎn rè dòujiāng, wǒ jiù juéde xīn de yì tiān yǒu le hǎo de kāishǐ.
+@ru Внизу в нашем доме есть завтрачная, хозяин — радушный человек средних лет. Он помнит вкус каждого постоянного клиента, даже то, что я не ем острое, не забыл. Когда я каждое утро пью чашку горячего соевого молока, мне кажется, что новый день начался хорошо.
+
+@id h5-12
+@kind adapted
+@level 5
+@title 找工作
+@zh 毕业以后，我投了很多份简历，可是一直没有回音。
+@zh 起初我很着急，后来朋友劝我先调整心态，再认真修改简历。
+@zh 几个星期后，我终于收到了面试通知。
+@py Bìyè yǐhòu, wǒ tóu le hěn duō fèn jiǎnlì, kěshì yìzhí méiyǒu huíyīn.
+@py Qǐchū wǒ hěn zháojí, hòulái péngyou quàn wǒ xiān tiáozhěng xīntài, zài rènzhēn xiūgǎi jiǎnlì.
+@py Jǐ gè xīngqī hòu, wǒ zhōngyú shōudào le miànshì tōngzhī.
+@ru После выпуска я разослала много резюме, но ответа всё не было. Сначала я сильно нервничала, потом подруга посоветовала сперва настроиться, а затем тщательно переделать резюме. Через несколько недель я наконец получила приглашение на собеседование.
+
+@id h5-13
+@kind adapted
+@level 5
+@title 租房
+@zh 刚到一个陌生的城市，租房是最让人头疼的事。
+@zh 我看了十几套房子，不是价格太高，就是环境太差。
+@zh 最后我选了一套离地铁站很近的小房子，虽然不大，但还算舒服。
+@py Gāng dào yí gè mòshēng de chéngshì, zūfáng shì zuì ràng rén tóuténg de shì.
+@py Wǒ kàn le shíjǐ tào fángzi, bú shì jiàgé tài gāo, jiùshì huánjìng tài chà.
+@py Zuìhòu wǒ xuǎn le yí tào lí dìtiězhàn hěn jìn de xiǎo fángzi, suīrán bú dà, dàn hái suàn shūfu.
+@ru Только приехав в незнакомый город, аренда жилья — самая большая головная боль. Я посмотрела больше десятка квартир: то цена слишком высокая, то обстановка слишком плохая. В итоге я выбрала небольшую квартиру рядом с метро: пусть и не просторная, но вполне удобная.
+
+@id h5-14
+@kind adapted
+@level 5
+@title 网购的烦恼
+@zh 网购虽然方便，但也有不少麻烦。
+@zh 有时候收到的东西和图片完全不一样，退货又很费时间。
+@zh 所以我现在买东西以前，总会先仔细看一看评价。
+@py Wǎnggòu suīrán fāngbiàn, dàn yě yǒu bùshǎo máfan.
+@py Yǒushíhou shōudào de dōngxi hé túpiàn wánquán bù yíyàng, tuìhuò yòu hěn fèi shíjiān.
+@py Suǒyǐ wǒ xiànzài mǎi dōngxi yǐqián, zǒng huì xiān zǐxì kànyíkàn píngjià.
+@ru Онлайн-покупки хоть и удобны, но хлопот тоже хватает. Иногда полученная вещь совсем не похожа на картинку, а возврат отнимает много времени. Поэтому теперь, прежде чем что-то купить, я всегда внимательно читаю отзывы.
+
+@id h5-15
+@kind adapted
+@level 5
+@title 运动的好处
+@zh 坚持运动不但能增强体质，还能缓解压力。
+@zh 我以前总觉得没时间锻炼，后来每天抽出半小时快走。
+@zh 几个月后，我发现自己睡得更好，工作效率也提高了。
+@py Jiānchí yùndòng búdàn néng zēngqiáng tǐzhì, hái néng huǎnjiě yālì.
+@py Wǒ yǐqián zǒng juéde méi shíjiān duànliàn, hòulái měitiān chōuchū bàn xiǎoshí kuài zǒu.
+@py Jǐ gè yuè hòu, wǒ fāxiàn zìjǐ shuì de gèng hǎo, gōngzuò xiàolǜ yě tígāo le.
+@ru Регулярные занятия спортом не только укрепляют организм, но и снимают стресс. Раньше мне всегда казалось, что нет времени на тренировки, а потом я стала выделять полчаса в день на быструю ходьбу. Через несколько месяцев я заметила, что сплю лучше и работаю эффективнее.
+
+@id h6-06
+@kind adapted
+@level 6
+@title 文化遗产
+@zh 故宫是中国最珍贵的文化遗产之一。
+@zh 为了让这座古老的建筑得到更好的保护，工作人员精心修复每一处细节。
+@zh 游客越多，保护的压力就越大，因此参观的人数需要合理控制。
+@py Gùgōng shì Zhōngguó zuì zhēnguì de wénhuàyíchǎn zhīyī.
+@py Wèile ràng zhè zuò gǔlǎo de jiànzhù dédào gèng hǎo de bǎohù, gōngzuò rényuán jīngxīn xiūfù měi yí chù xìjié.
+@py Yóukè yuè duō, bǎohù de yālì jiù yuè dà, yīncǐ cānguān de rénshù xūyào hélǐ kòngzhì.
+@ru Императорский дворец Гугун — одно из самых ценных культурных наследий Китая. Чтобы это древнее здание лучше сохранялось, сотрудники тщательно реставрируют каждую деталь. Чем больше туристов, тем больше нагрузка на охрану, поэтому число посетителей нужно разумно ограничивать.
+
+@id h6-07
+@kind adapted
+@level 6
+@title 尊严与尊重
+@zh 每个人都有自己的尊严，无论他从事什么职业。
+@zh 尊重别人，不仅是一种礼貌，更体现了一个人的修养。
+@zh 当我们学会站在对方的立场看问题时，许多矛盾就会迎刃而解。
+@py Měi gè rén dōu yǒu zìjǐ de zūnyán, wúlùn tā cóngshì shénme zhíyè.
+@py Zūnzhòng biéren, bùjǐn shì yì zhǒng lǐmào, gèng tǐxiàn le yí gè rén de xiūyǎng.
+@py Dāng wǒmen xuéhuì zhàn zài duìfāng de lìchǎng kàn wèntí shí, xǔduō máodùn jiù huì yíngrèn'érjiě.
+@ru У каждого человека есть собственное достоинство, кем бы он ни работал. Уважать других — это не только вежливость, но и проявление воспитанности. Когда мы учимся смотреть на проблему с позиции другого, многие противоречия разрешаются сами собой.
+
+@id h6-08
+@kind adapted
+@level 6
+@title 理智的选择
+@zh 鉴于公司目前的现状，经理决定暂时不扩大规模，而是把精力放在提高产品质量上。
+@zh 有人认为这样太保守，也有人觉得这是难得的理智选择。
+@zh 最终的结果还要靠时间来证明。
+@py Jiànyú gōngsī mùqián de xiànzhuàng, jīnglǐ juédìng zànshí bú kuòdà guīmó, érshì bǎ jīnglì fàng zài tígāo chǎnpǐn zhìliàng shàng.
+@py Yǒurén rènwéi zhèyàng tài bǎoshǒu, yě yǒurén juéde zhè shì nándé de lǐzhì xuǎnzé.
+@py Zuìzhōng de jiéguǒ hái yào kào shíjiān lái zhèngmíng.
+@ru Учитывая нынешнее положение компании, менеджер решил пока не расширять масштабы, а сосредоточиться на повышении качества продукции. Одни считают это слишком осторожным, другие видят в этом редкий разумный выбор. Окончательный результат покажет время.
+
+@id h6-09
+@kind adapted
+@level 6
+@title 信息的渠道
+@zh 如今获取信息的渠道越来越多，但真假混杂的内容也随之增加。
+@zh 面对网上的各种说法，我们既不能盲目相信，也不应一概否定。
+@zh 要学会比较不同的来源，保持清醒的判断。
+@py Rújīn huòqǔ xìnxī de qúdào yuèláiyuè duō, dàn zhēnjiǎ hùnzá de nèiróng yě suízhī zēngjiā.
+@py Miànduì wǎngshàng de gèzhǒng shuōfǎ, wǒmen jì bùnéng mángmù xiāngxìn, yě bù yīng yígài fǒudìng.
+@py Yào xuéhuì bǐjiào bùtóng de láiyuán, bǎochí qīngxǐng de pànduàn.
+@ru Сегодня каналов получения информации всё больше, но вместе с ними растёт и доля смеси правды и лжи. Сталкиваясь с самыми разными утверждениями в сети, нельзя ни слепо верить, ни огульно отрицать. Нужно учиться сравнивать разные источники и сохранять трезвость суждений.
+
+@id h6-10
+@kind adapted
+@level 6
+@title 使命
+@zh 对医生来说，救死扶伤不仅是一种职业，更是一种使命。
+@zh 在最紧张的时候，许多医护人员主动留在岗位上，没有一个人退缩。
+@zh 他们的奉献让整个社会深受感动。
+@py Duì yīshēng lái shuō, jiùsǐfúshāng bùjǐn shì yì zhǒng zhíyè, gèngshì yì zhǒng shǐmìng.
+@py Zài zuì jǐnzhāng de shíhou, xǔduō yīhùrényuán zhǔdòng liú zài gǎngwèi shàng, méiyǒu yí gè rén tuìsuō.
+@py Tāmen de fèngxiàn ràng zhěnggè shèhuì shēnshòu gǎndòng.
+@ru Для врача спасать жизни — это не только профессия, но и призвание. В самый напряжённый момент многие медики сами остались на своих постах, и никто не отступил. Их самоотверженность глубоко тронула всё общество.
+
+@id h6-11
+@kind adapted
+@level 6
+@title 睡眠与健康
+@zh 现代人常常熬夜，却忽视了睡眠对健康的重要性。
+@zh 长期睡眠不足会导致注意力下降、情绪不稳，甚至增加患病的风险。
+@zh 养成规律的作息，是保护身体最简单也最有效的办法。
+@py Xiàndài rén chángcháng áoyè, què hūshì le shuìmián duì jiànkāng de zhòngyàoxìng.
+@py Chángqī shuìmián bùzú huì dǎozhì zhùyìlì xiàjiàng, qíngxù bù wěn, shènzhì zēngjiā huànbìng de fēngxiǎn.
+@py Yǎngchéng guīlǜ de zuòxī, shì bǎohù shēntǐ zuì jiǎndān yě zuì yǒuxiào de bànfǎ.
+@ru Современные люди часто засиживаются допоздна, не замечая, насколько сон важен для здоровья. Хроническое недосыпание приводит к снижению внимания, неустойчивому настроению и даже повышает риск заболеваний. Привычка ложиться и вставать по режиму — самый простой и самый действенный способ беречь здоровье.
+
+@id h6-12
+@kind adapted
+@level 6
+@title 科技的两面
+@zh 人工智能的发展给生活带来了极大的便利，但同时也带来了新的担忧。
+@zh 比如，个人信息的保密和就业岗位的变化。
+@zh 如何在发展和保护之间找到平衡，是整个社会需要认真思考的问题。
+@py Réngōng zhìnéng de fāzhǎn gěi shēnghuó dàilái le jídà de biànlì, dàn tóngshí yě dàilái le xīn de dānyōu.
+@py Bǐrú, gèrén xìnxī de bǎomì hé jiùyè gǎngwèi de biànhuà.
+@py Rúhé zài fāzhǎn hé bǎohù zhījiān zhǎodào pínghéng, shì zhěnggè shèhuì xūyào rènzhēn sīkǎo de wèntí.
+@ru Развитие искусственного интеллекта принесло в жизнь огромное удобство, но вместе с тем и новые опасения: например, сохранность личных данных и перемены на рынке труда. Как найти баланс между развитием и защитой — вопрос, над которым всему обществу нужно серьёзно подумать.
+
+@id h6-13
+@kind adapted
+@level 6
+@title 老城的改造
+@zh 许多城市在更新的过程中拆除了老街区，建起了高楼大厦。
+@zh 然而，这样做也让不少居民失去了熟悉的生活环境。
+@zh 有专家提出，应该在发展的同时，尽量保留有历史价值的建筑。
+@py Xǔduō chéngshì zài gēngxīn de guòchéng zhōng chāichú le Lǎojiē qū, jiàn qǐ le gāolóudàshà.
+@py Rán'ér, zhèyàng zuò yě ràng bùshǎo jūmín shīqù le shúxī de shēnghuó huánjìng.
+@py Yǒu zhuānjiā tíchū, yīnggāi zài fāzhǎn de tóngshí, jǐnliàng bǎoliú yǒu lìshǐ jiàzhí de jiànzhù.
+@ru Во многих городах при обновлении сносили старые кварталы и возводили высотные здания. Однако это лишило немало жителей привычной среды. Некоторые специалисты предлагают, развивая город, по возможности сохранять здания, имеющие историческую ценность.
+
+@id h6-14
+@kind adapted
+@level 6
+@title 友谊的考验
+@zh 真正的友谊不是在顺利时彼此夸奖，而是在对方遇到困难时伸出援手。
+@zh 有的人平时说得很好听，一旦出现问题就悄悄离开。
+@zh 这样的关系是经不起考验的。
+@py Zhēnzhèng de yǒuyì bú shì zài shùnlì shí bǐcǐ kuājiǎng, érshì zài duìfāng yùdào kùnnan shí shēnchū yuánshǒu.
+@py Yǒu de rén píngshí shuō de hěn hǎotīng, yídàn chūxiàn wèntí jiù qiāoqiāo líkāi.
+@py Zhèyàng de guānxi shì jīngbùqǐ kǎoyàn de.
+@ru Настоящая дружба — это не взаимные похвалы, когда всё гладко, а протянутая рука, когда у другого беда. Некоторые люди красиво говорят в обычное время, но стоит появиться проблеме, тихо уходят. Такие отношения не выдерживают испытаний.
+
+@id h6-15
+@kind adapted
+@level 6
+@title 学会放手
+@zh 父母总是希望把孩子保护得好好的，但过度的保护反而会限制孩子的成长。
+@zh 适当放手，让孩子独立面对挫折，才能培养他们的责任感和自信心。
+@zh 这对父母来说，也是一种成长。
+@py Fùmǔ zǒngshì xīwàng bǎ háizi bǎohù de hǎohǎo de, dàn guòdù de bǎohù fǎn'ér huì xiànzhì háizi de chéngzhǎng.
+@py Shìdàng fàngshǒu, ràng háizi dúlì miànduì cuòzhé, cáinéng péiyǎng tāmen de zérèngǎn hé zìxìnxīn.
+@py Zhè duì fùmǔ lái shuō, yě shì yì zhǒng chéngzhǎng.
+@ru Родители всегда хотят оградить ребёнка от всего, но чрезмерная опека, наоборот, ограничивает его рост. Только если вовремя отпустить и позволить ребёнку самому справляться с неудачами, можно воспитать в нём ответственность и уверенность в себе. Для родителей это тоже рост.
