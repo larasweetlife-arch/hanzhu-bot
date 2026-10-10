@@ -29,36 +29,63 @@
   }
 
   // ── части героя ──
+  const OL = "#5a2d3a";             // тот же тёплый вишнёвый контур, что у стикеров 茶茶
+  const HAIRS = ["#2b2230", "#6b4430", "#a0693c", "#d3a24a", "#c0553a", "#3c4f8f"];   // цвет волос героя (6)
+  const hs = (c, a) => ` stroke="${OL}" stroke-width="${a || 2.2}" stroke-linejoin="round" stroke-linecap="round"`;
+
   function hairBack(style, c) {
-    if (style === "long") return `<path d="M22 60 C16 24 104 24 98 60 L100 122 Q60 136 20 122 Z" fill="${c}"/>`;
-    if (style === "bun") return `<circle cx="60" cy="15" r="13" fill="${c}"/><circle cx="60" cy="15" r="5" fill="rgba(255,255,255,.2)"/>`;
-    if (style === "buns2") return `<circle cx="26" cy="34" r="12" fill="${c}"/><circle cx="94" cy="34" r="12" fill="${c}"/>`;
+    const S = hs(0, 2.2);
+    if (style === "long") return `<path d="M20 62 C12 22 108 22 100 62 L105 140 Q101 152 86 147 L84 102 L36 102 L34 147 Q19 152 15 140 Z" fill="${c}"${S}/>`;
+    if (style === "bob") return `<path d="M20 64 C13 22 107 22 100 64 L102 100 Q100 110 88 108 L32 108 Q20 110 18 100 Z" fill="${c}"${S}/>`;
+    if (style === "bun" || style === "knot") return `<circle cx="60" cy="14" r="12" fill="${c}"${S}/><circle cx="55" cy="10" r="4" fill="#fff" opacity=".28"/><path d="M52 20 Q60 25 68 20" fill="none" stroke="${drk(c, .4)}" stroke-width="1.6" stroke-linecap="round" opacity=".6"/>`;
+    if (style === "buns2") return `<g${S}><circle cx="23" cy="33" r="14" fill="${c}"/><circle cx="97" cy="33" r="14" fill="${c}"/></g><g fill="#fff" opacity=".26"><circle cx="18" cy="28" r="4"/><circle cx="92" cy="28" r="4"/></g><g fill="none" stroke="${drk(c, .4)}" stroke-width="1.6" stroke-linecap="round" opacity=".6"><path d="M16 36 Q23 42 30 36"/><path d="M90 36 Q97 42 104 36"/></g>`;
     return "";
   }
+  function strands(c, d) { return `<path d="${d}" fill="none" stroke="${drk(c, .42)}" stroke-width="1.5" stroke-linecap="round" opacity=".55"/>`; }
   function hairFront(style, c) {
+    const S = hs(0, 2.2), shine = `<path d="M33 36 Q46 20 64 21" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="3.6" stroke-linecap="round"/>`;
     switch (style) {
-      case "short": return `<path d="M25 64 C19 26 44 20 60 20 C78 20 101 27 95 64 C92 50 84 42 72 40 C64 47 44 47 36 41 C30 46 26 54 25 64Z" fill="${c}"/>`;
-      case "bob": return `<path d="M23 62 C17 24 44 19 60 19 C78 19 103 26 97 62 L99 90 Q90 94 84 86 L84 58 C76 50 66 45 60 40 C54 47 44 52 36 58 L36 86 Q30 94 21 90 Z" fill="${c}"/>`;
-      case "long": return `<path d="M24 66 C18 26 44 20 60 20 C78 20 102 27 96 66 C92 48 80 40 66 38 C62 46 40 50 30 56 C27 58 25 62 24 66Z" fill="${c}"/>`;
-      case "bun": case "buns2": return `<path d="M25 64 C21 28 44 22 60 22 C78 22 99 29 95 64 C90 50 80 44 70 41 C62 47 44 47 36 41 C30 46 26 54 25 64Z" fill="${c}"/>`;
-      case "white": return `<path d="M25 62 C21 28 44 22 60 22 C78 22 99 29 95 62 C92 50 84 44 72 42 C64 47 44 47 36 42 C30 46 26 54 25 62Z" fill="#f1efe8" stroke="#d9d5c8" stroke-width="1.2"/>`;
+      case "short": case "spiky": return `<path d="M24 68 C17 34 36 15 60 15 C84 15 103 34 96 68 C94 56 91 48 86 44 L81 55 L73 42 L65 54 L58 41 L50 54 L42 43 L36 53 L31 46 C27 52 25 60 24 68Z" fill="${c}"${S}/>${strands(c, "M45 24 Q50 32 52 40 M66 21 Q68 30 65 38 M81 27 Q84 33 83 40")}${shine}<path d="M58 16 C55 4 68 0 71 8" fill="none"${hs(0, 5.4)}/><path d="M58 16 C55 4 68 0 71 8" fill="none" stroke="${c}" stroke-width="2.8" stroke-linecap="round"/>`;
+      case "swoop": return `<path d="M24 70 C13 32 38 13 62 13 C87 13 107 34 96 70 C95 60 92 52 86 48 C76 58 58 57 44 46 C36 48 29 58 24 70Z" fill="${c}"${S}/>${strands(c, "M52 20 Q60 30 54 40 M72 20 Q78 30 70 40 M88 30 Q92 38 91 46")}${shine}`;
+      case "knot": return `<path d="M25 66 C19 30 40 16 60 16 C80 16 101 30 95 66 C92 53 84 46 74 44 C66 50 54 50 46 44 C36 46 28 54 25 66Z" fill="${c}"${S}/>${strands(c, "M47 23 Q52 31 53 38 M68 22 Q70 30 67 37")}${shine}`;
+      case "bun": return `<path d="M25 64 C21 28 44 21 60 21 C78 21 99 28 95 64 C90 50 80 44 70 41 C62 47 44 47 36 41 C30 46 26 54 25 64Z" fill="${c}"${S}/>${strands(c, "M48 26 Q53 33 52 39")}${shine}`;
+      case "long": return `<path d="M23 70 C13 30 38 14 60 14 C84 14 107 30 97 70 C95 56 88 46 78 42 C72 50 66 52 60 43 C54 52 46 50 41 42 C32 46 26 58 23 70Z" fill="${c}"${S}/>`
+        + `<path d="M23 66 C18 92 22 122 31 140 C38 124 39 96 36 70 C31 68 27 66 23 66Z" fill="${c}"${S}/><path d="M97 66 C102 92 98 122 89 140 C82 124 81 96 84 70 C89 68 93 66 97 66Z" fill="${c}"${S}/>`
+        + `${strands(c, "M47 22 Q52 32 49 42 M72 22 Q70 32 74 42 M27 82 Q27 106 32 128 M93 82 Q93 106 88 128")}${shine}`;
+      case "buns2": return `<path d="M24 68 C17 30 38 15 60 15 C82 15 103 30 96 68 C93 56 88 46 80 43 C72 49 48 49 40 43 C32 46 27 56 24 68Z" fill="${c}"${S}/>`
+        + `<path d="M24 66 C21 80 23 92 28 99 C33 90 35 78 35 68Z" fill="${c}"${S}/><path d="M96 66 C99 80 97 92 92 99 C87 90 85 78 85 68Z" fill="${c}"${S}/>${strands(c, "M48 22 Q52 31 50 40 M70 22 Q70 31 73 40")}${shine}`;
+      case "bob": return `<path d="M23 66 C17 26 42 16 60 16 C80 16 103 26 97 66 L99 102 Q92 106 85 100 L84 60 C84 52 80 49 74 48 Q60 53 46 48 C40 49 36 52 36 60 L35 100 Q28 106 21 102 Z" fill="${c}"${S}/>${strands(c, "M50 22 Q55 32 52 44 M70 22 Q70 32 73 44 M27 70 L28 96 M93 70 L92 96")}${shine}`;
+      case "white": return `<path d="M25 62 C21 28 44 22 60 22 C78 22 99 29 95 62 C92 50 84 44 72 42 C64 47 44 47 36 42 C30 46 26 54 25 62Z" fill="#f4f2ec"${hs(0, 1.8).replace(OL, "#a79e92")}/>${strands("#f4f2ec", "M46 28 Q52 34 52 40")}`;
     }
     return "";
   }
 
-  function face(mood, glasses, nobrows) {
-    const eyes = mood === "happy"
-      ? `<path d="M41 67 Q47 59 53 67" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/><path d="M67 67 Q73 59 79 67" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/>`
-      : `<g class="qblink"><ellipse cx="47" cy="66" rx="4.6" ry="5.8" fill="${INK}"/><ellipse cx="73" cy="66" rx="4.6" ry="5.8" fill="${INK}"/><circle cx="48.8" cy="63.6" r="1.9" fill="#fff"/><circle cx="74.8" cy="63.6" r="1.9" fill="#fff"/><circle cx="45.6" cy="68.4" r=".9" fill="#fff" opacity=".8"/><circle cx="71.6" cy="68.4" r=".9" fill="#fff" opacity=".8"/></g>`;
+  // лицо в стиле 茶茶: большие блестящие карие глаза, румянец, маленькая улыбка
+  function face(mood, glasses, nobrows, hair, g) {
+    const bc = drk(hair || "#2b2230", 0.15);
+    const eye = (cx) => {
+      const out = cx < 60;
+      return `<g class="qblink" style="transform-origin:${cx}px 69px">
+        <ellipse cx="${cx}" cy="69" rx="8.6" ry="9.8" fill="#fffdf8"/>
+        <ellipse cx="${cx}" cy="70.4" rx="6.6" ry="8.2" fill="url(#${g}i)"/>
+        <ellipse cx="${cx}" cy="70.8" rx="3.3" ry="4.6" fill="#24110c"/>
+        <circle cx="${cx - 2.6}" cy="66.2" r="2.9" fill="#fff"/><circle cx="${cx + 2.8}" cy="73.6" r="1.4" fill="#fff" opacity=".9"/>
+        <path d="M${cx - 9.4} 66.5 Q${cx} 56.6 ${cx + 9.4} 66.5" fill="none" stroke="${OL}" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M${out ? cx - 9.4 : cx + 9.4} 66.5 l${out ? -3 : 3} -2.2" stroke="${OL}" stroke-width="2.2" stroke-linecap="round"/>
+      </g>`;
+    };
+    const closed = (cx) => `<path d="M${cx - 8} 70 Q${cx} 59 ${cx + 8} 70" fill="none" stroke="${OL}" stroke-width="3.2" stroke-linecap="round"/><path d="M${cx < 60 ? cx - 8 : cx + 8} 70 l${cx < 60 ? -2.6 : 2.6} -2" stroke="${OL}" stroke-width="2.2" stroke-linecap="round"/>`;
+    const eyes = mood === "happy" ? closed(46.5) + closed(73.5) : eye(46.5) + eye(73.5);
+    const nose = `<path d="M58.6 78.4 Q60 79.8 61.4 78.4" fill="none" stroke="${OL}" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/>`;
     const mouth = mood === "open"
-      ? `<g class="qmouth"><path d="M52 77 Q60 90 68 77 Z" fill="#8a2f2f"/><path d="M55 83 Q60 87 65 83 Q60 80 55 83Z" fill="#f08a84"/></g>`
+      ? `<g class="qmouth"><path d="M52.5 82 Q60 96 67.5 82 Q60 85 52.5 82Z" fill="#8a2f3a" stroke="${OL}" stroke-width="1.6" stroke-linejoin="round"/><path d="M55.5 89 Q60 93.4 64.5 89 Q60 86.6 55.5 89Z" fill="#f4908c"/></g>`
       : mood === "sad"
-        ? `<path d="M53 83 Q60 76 67 83" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>`
-        : `<path d="M52 78 Q60 85 68 78" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"/>`;
-    const bw = mood === "sad" ? "M39 54 Q45 55 53 58 M81 54 Q75 55 67 58" : mood === "happy" || mood === "open" ? "M39 54 Q46 47 53 52 M81 54 Q74 47 67 52" : "M39 55 Q46 50 53 54 M81 55 Q74 50 67 54";
-    const brows = nobrows ? "" : `<path d="${bw}" fill="none" stroke="${INK}" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round"/>`;
-    const gl = glasses ? `<g fill="rgba(255,255,255,.25)" stroke="#4a3b35" stroke-width="2"><circle cx="47" cy="66" r="9"/><circle cx="73" cy="66" r="9"/><path d="M56 66 H64" fill="none"/></g>` : "";
-    return `${brows}${eyes}${mouth}${gl}`;
+        ? `<path d="M54 87 Q60 81.6 66 87" fill="none" stroke="${OL}" stroke-width="2.6" stroke-linecap="round"/>`
+        : `<path d="M53.4 82.6 Q60 89.4 66.6 82.6" fill="none" stroke="${OL}" stroke-width="2.6" stroke-linecap="round"/>`;
+    const bw = mood === "sad" ? "M37 56 Q43 56 53 60 M83 56 Q77 56 67 60" : mood === "happy" || mood === "open" ? "M37 54 Q45 47 54 52 M83 54 Q75 47 66 52" : "M37 55 Q45 50 54 53 M83 55 Q75 50 66 53";
+    const brows = nobrows ? "" : `<path d="${bw}" fill="none" stroke="${bc}" stroke-width="2.6" stroke-linecap="round"/>`;
+    const gl = glasses ? `<g fill="rgba(255,255,255,.22)" stroke="#4a3b35" stroke-width="2.2"><circle cx="46.5" cy="69" r="12"/><circle cx="73.5" cy="69" r="12"/><path d="M58.5 67 Q60 65 61.5 67" fill="none"/></g>` : "";
+    return `${brows}${eyes}${nose}${mouth}${gl}`;
   }
 
   function acc(list, o) {
@@ -81,7 +108,8 @@
         case "towel": before += `<path d="M36 96 Q60 112 84 96 L86 106 Q60 122 34 106Z" fill="#fff" stroke="#d9d5c8" stroke-width="1.2"/><path d="M42 102 L44 116 M78 102 L76 116" stroke="#3a8fb7" stroke-width="2"/>`; break;
         case "cane": behind += `<path d="M96 120 L102 182" stroke="#8a5a2f" stroke-width="5" stroke-linecap="round"/><path d="M92 122 Q96 114 102 120" fill="none" stroke="#8a5a2f" stroke-width="5" stroke-linecap="round"/>`; break;
         case "flower": after += `<g><circle cx="86" cy="36" r="5" fill="#f2a6bd"/><circle cx="92" cy="40" r="5" fill="#f2a6bd"/><circle cx="90" cy="46" r="5" fill="#f2a6bd"/><circle cx="83" cy="44" r="5" fill="#f2a6bd"/><circle cx="87" cy="41" r="3.6" fill="#f6d36b"/></g>`; break;
-        case "bow": after += `<path d="M84 34 L98 28 L98 46Z M84 34 L70 28 L70 46Z" fill="${o.bow || "#d9473f"}" transform="translate(0 -2)"/><circle cx="84" cy="34" r="4" fill="${o.bow || "#d9473f"}"/>`; break;
+        case "ribbon2": after += `<g fill="${o.bow || "#d9473f"}" stroke="${OL}" stroke-width="1.4" stroke-linejoin="round"><path d="M23 40 L8 34 L9 48Z M23 40 L38 34 L37 48Z"/><circle cx="23" cy="40" r="4.2"/><path d="M97 40 L82 34 L83 48Z M97 40 L112 34 L111 48Z"/><circle cx="97" cy="40" r="4.2"/></g>`; break;
+        case "bow": after += `<g fill="${o.bow || "#d9473f"}" stroke="${OL}" stroke-width="1.5" stroke-linejoin="round"><path d="M86 32 L102 24 L102 44Z M86 32 L70 24 L70 44Z"/><circle cx="86" cy="33" r="4.6"/></g>`; break;
       }
     }
     return { before, after, behind };
@@ -91,99 +119,78 @@
   const hx = (c) => { c = String(c || "").trim(); if (/^#[0-9a-f]{3}$/i.test(c)) c = "#" + c[1] + c[1] + c[2] + c[2] + c[3] + c[3]; return /^#[0-9a-f]{6}$/i.test(c) ? [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)) : null; };
   const mixc = (c, t, a) => { const r = hx(c), q = hx(t); return r && q ? "#" + r.map((v, i) => Math.round(v + (q[i] - v) * a).toString(16).padStart(2, "0")).join("") : c; };
   const lit = (c, a) => mixc(c, "#ffffff", a), drk = (c, a) => mixc(c, "#1a0d08", a);
-  const OL = "#4a2c20";             // мягкий тёплый контур
   let GID = 0;
 
-  /* person: o = { hair, style, top, top2, motif, skirt, acc[], wide, mood, bottom, skin, shoes, flip } */
+  /* person: o = { hair, style, top, top2, motif, skirt, acc[], wide, mood, bottom, skin, shoes } */
   function person(o) {
-    o = Object.assign({ hair: INK, style: "short", top: "#3f8f77", top2: "#f4ecd6", bottom: "#3b4a63", shoes: "#2a2220", skin: SKIN, mood: "smile", acc: [], motif: "", skirt: false, wide: false }, o || {});
+    o = Object.assign({ hair: "#2b2230", style: "short", top: "#3f8f77", top2: "#f4ecd6", bottom: "#3b4a63", shoes: "#3a2a28", skin: SKIN, mood: "smile", acc: [], motif: "", skirt: false, wide: false, halo: true }, o || {});
     const g = "p" + (++GID), a = acc(o.acc, o), w = o.wide ? 1.16 : 1;
-    const stk = `stroke="${OL}" stroke-opacity=".5" stroke-width="1.5" stroke-linejoin="round"`;
+    const S = hs(0, 2), S1 = hs(0, 1.5);
     const defs = `<defs>
-      <radialGradient id="${g}k" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="${lit(o.skin, 0.4)}"/><stop offset=".55" stop-color="${o.skin}"/><stop offset="1" stop-color="${drk(o.skin, 0.1)}"/></radialGradient>
-      <linearGradient id="${g}t" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="${lit(o.top, 0.28)}"/><stop offset=".5" stop-color="${o.top}"/><stop offset="1" stop-color="${drk(o.top, 0.22)}"/></linearGradient>
+      <radialGradient id="${g}k" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="${lit(o.skin, 0.45)}"/><stop offset=".55" stop-color="${o.skin}"/><stop offset="1" stop-color="${drk(o.skin, 0.1)}"/></radialGradient>
+      <linearGradient id="${g}t" x1="0" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="${lit(o.top, 0.3)}"/><stop offset=".5" stop-color="${o.top}"/><stop offset="1" stop-color="${drk(o.top, 0.22)}"/></linearGradient>
       <linearGradient id="${g}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lit(o.bottom, 0.15)}"/><stop offset="1" stop-color="${drk(o.bottom, 0.2)}"/></linearGradient>
-      <linearGradient id="${g}h" x1="0" y1="0" x2=".7" y2="1"><stop offset="0" stop-color="${lit(o.hair, 0.3)}"/><stop offset=".5" stop-color="${o.hair}"/><stop offset="1" stop-color="${drk(o.hair, 0.25)}"/></linearGradient>
-      <radialGradient id="${g}c"><stop offset="0" stop-color="${BLUSH}" stop-opacity=".75"/><stop offset="1" stop-color="${BLUSH}" stop-opacity="0"/></radialGradient>
+      <linearGradient id="${g}h" x1="0" y1="0" x2=".7" y2="1"><stop offset="0" stop-color="${lit(o.hair, 0.28)}"/><stop offset=".5" stop-color="${o.hair}"/><stop offset="1" stop-color="${drk(o.hair, 0.25)}"/></linearGradient>
+      <radialGradient id="${g}i" cx=".5" cy=".3" r=".85"><stop offset="0" stop-color="#b0764a"/><stop offset=".55" stop-color="#7a4a2c"/><stop offset="1" stop-color="#4a2a1a"/></radialGradient>
+      <radialGradient id="${g}c"><stop offset="0" stop-color="${BLUSH}" stop-opacity=".85"/><stop offset="1" stop-color="${BLUSH}" stop-opacity="0"/></radialGradient>
+      <filter id="${g}f" x="-8%" y="-6%" width="116%" height="112%"><feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d"/><feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/><feMerge><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     </defs>`;
     const HAIR = o.style === "white" ? o.hair : `url(#${g}h)`;
     const TOP = `url(#${g}t)`, SK = `url(#${g}k)`;
+    const sash = o.skirt ? `<path d="M34 118 Q60 126 86 118" fill="none" stroke="${o.top2}" stroke-width="5" stroke-linecap="round" opacity=".95"/>` : `<path d="M33.6 128 Q60 136 86.4 128" fill="none" stroke="${o.top2}" stroke-width="5" stroke-linecap="round" opacity=".95"/>`;
     const torso = o.skirt
-      ? `<path d="M40 98 Q60 90 80 98 L98 154 Q60 164 22 154 Z" fill="${TOP}" ${stk}/><path d="M26 140 Q60 150 94 140" fill="none" stroke="${o.top2}" stroke-width="3" opacity=".8"/><path d="M40 100 Q36 130 28 150" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="5" stroke-linecap="round"/>`
-      : `<path d="M38 98 Q60 90 82 98 L89 150 Q60 158 31 150 Z" fill="${TOP}" ${stk}/><path d="M41 102 Q38 128 35 146" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="5" stroke-linecap="round"/>`;
+      ? `<path d="M40 98 Q60 90 80 98 L98 154 Q60 164 22 154 Z" fill="${TOP}"${S}/><path d="M26 142 Q60 152 94 142" fill="none" stroke="${o.top2}" stroke-width="3.4" opacity=".9"/><path d="M41 102 Q36 130 28 150" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="5" stroke-linecap="round"/>`
+      : `<path d="M38 98 Q60 90 82 98 L89 150 Q60 158 31 150 Z" fill="${TOP}"${S}/><path d="M41 102 Q38 128 35 146" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="5" stroke-linecap="round"/>`;
+    const collar = `<path d="M50 94 L61 117 M70 94 L59 114" fill="none" stroke="${o.top2}" stroke-width="3.6" stroke-linecap="round"/><circle cx="60.4" cy="108" r="2.2" fill="${o.top2}" stroke="${OL}" stroke-opacity=".5" stroke-width=".8"/>`;
+    const shoe = (cx, side, y) => `<path d="M${cx - 9 + (side === "l" ? -2 : 0)} ${y} Q${cx} ${y - 5} ${cx + 9 + (side === "l" ? 0 : 2)} ${y} Q${cx + 11} ${y + 7} ${cx} ${y + 7} Q${cx - 11} ${y + 7} ${cx - 9 + (side === "l" ? -2 : 0)} ${y}Z" fill="${o.shoes}"${S1}/><path d="M${cx - 5} ${y - 1} Q${cx - 1} ${y - 3} ${cx + 3} ${y - 1}" stroke="#fff" stroke-opacity=".3" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
     const leg = (x, side) => (o.skirt
-      ? `<g class="qleg ${side}" style="transform-origin:${x + 5}px 152px"><rect x="${x}" y="150" width="10" height="28" rx="5" fill="${SK}" ${stk}/><ellipse cx="${x + 5 + (side === "l" ? -1 : 1)}" cy="180" rx="9" ry="5" fill="${o.shoes}"/><ellipse cx="${x + 3 + (side === "l" ? -1 : 1)}" cy="178" rx="4" ry="1.8" fill="#fff" opacity=".18"/></g>`
-      : `<g class="qleg ${side}" style="transform-origin:${x + 7}px 148px"><rect x="${x}" y="144" width="14" height="36" rx="6" fill="url(#${g}b)" ${stk}/><ellipse cx="${x + 7 + (side === "l" ? -1 : 1)}" cy="180" rx="9" ry="5" fill="${o.shoes}"/><ellipse cx="${x + 5 + (side === "l" ? -1 : 1)}" cy="178" rx="4" ry="1.8" fill="#fff" opacity=".18"/></g>`);
+      ? `<g class="qleg ${side}" style="transform-origin:${x + 5}px 152px"><rect x="${x}" y="150" width="10" height="28" rx="5" fill="${SK}"${S1}/>${shoe(x + 5, side, 178)}</g>`
+      : `<g class="qleg ${side}" style="transform-origin:${x + 7}px 148px"><rect x="${x}" y="144" width="14" height="36" rx="6" fill="url(#${g}b)"${S1}/>${shoe(x + 7, side, 178)}</g>`);
     const sleeve = o.sleeve || o.top;
     const arm = (side) => {
       const l = side === "l";
       const d = l ? "M38 102 Q26 120 28 138" : "M82 102 Q94 120 92 138";
       const hx_ = l ? 28 : 92;
-      return `<g class="qarm ${side}" style="transform-origin:${l ? 38 : 82}px 103px"><path d="${d}" fill="none" stroke="${drk(sleeve, 0.4)}" stroke-width="14" stroke-linecap="round" opacity=".55"/><path d="${d}" fill="none" stroke="${sleeve}" stroke-width="12" stroke-linecap="round"/><circle cx="${hx_}" cy="141" r="6.4" fill="${SK}" ${stk}/></g>`;
+      return `<g class="qarm ${side}" style="transform-origin:${l ? 38 : 82}px 103px"><path d="${d}" fill="none" stroke="${OL}" stroke-width="15.4" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${sleeve}" stroke-width="11.4" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="3" stroke-linecap="round" transform="translate(${l ? -2 : 2} 0)"/><circle cx="${hx_}" cy="141" r="6.6" fill="${SK}"${S1}/></g>`;
     };
     return `<svg class="qperson" viewBox="0 0 120 190" aria-hidden="true">${defs}
-      <ellipse cx="60" cy="184" rx="32" ry="5" fill="rgba(34,48,43,.25)"/>
+      <ellipse cx="60" cy="184" rx="32" ry="5" fill="rgba(34,28,40,.25)"/>
+      <g${o.halo ? ` filter="url(#${g}f)"` : ""}>
       ${a.behind}
       <g class="qbody">
-      <g ${stk}>${hairBack(o.style, HAIR)}</g>
+      ${hairBack(o.style, HAIR)}
       <g transform="translate(60 0) scale(${w} 1) translate(-60 0)">
-        ${leg(43, "l").replace("{x}", "")}${leg(o.skirt ? 64 : 63, "r")}
+        ${leg(43, "l")}${leg(o.skirt ? 64 : 63, "r")}
         ${arm("l")}${arm("r")}
-        ${torso}
-        <path d="M50 96 Q60 106 70 96 L66 92 Q60 98 54 92Z" fill="${o.top2}"/>
+        ${torso}${sash}${collar}
         ${motif(o.motif, o.top2)}
         ${a.before}
       </g>
-      <ellipse cx="60" cy="97" rx="14" ry="5" fill="rgba(60,30,20,.16)"/>
-      <circle cx="25" cy="66" r="6.5" fill="${SK}" ${stk}/><circle cx="95" cy="66" r="6.5" fill="${SK}" ${stk}/>
+      <ellipse cx="60" cy="98" rx="13" ry="5.5" fill="${drk(o.skin, 0.18)}" opacity=".5"/>
+      <circle cx="25" cy="68" r="6.5" fill="${SK}"${S1}/><circle cx="95" cy="68" r="6.5" fill="${SK}"${S1}/>
       <g class="qhead">
-      <circle cx="60" cy="62" r="35" fill="${SK}" ${stk}/>
-      <ellipse cx="46" cy="40" rx="11" ry="5.5" fill="#fff" opacity=".2" transform="rotate(-24 46 40)"/>
-      <ellipse cx="37" cy="76" rx="9" ry="6" fill="url(#${g}c)"/><ellipse cx="83" cy="76" rx="9" ry="6" fill="url(#${g}c)"/>
-      ${face(o.mood, (o.acc || []).includes("glasses"), (o.acc || []).includes("brows"))}
-      <g ${stk}>${hairFront(o.style, HAIR)}</g>
-      <path d="M40 30 Q52 24 66 27" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="3.2" stroke-linecap="round"/>
+      <circle cx="60" cy="62" r="35" fill="${SK}"${S}/>
+      <ellipse cx="60" cy="46" rx="29" ry="11" fill="${drk(o.skin, 0.22)}" opacity=".22"/>
+      <ellipse cx="38" cy="79" rx="9.5" ry="6" fill="url(#${g}c)"/><ellipse cx="82" cy="79" rx="9.5" ry="6" fill="url(#${g}c)"/>
+      <g stroke="#fff" stroke-opacity=".7" stroke-width="1.2" stroke-linecap="round"><path d="M33.5 79 l1.8 -2.4 M37.5 80 l1.8 -2.4"/><path d="M78.5 80 l1.8 -2.4 M82.5 79 l1.8 -2.4"/></g>
+      ${face(o.mood, (o.acc || []).includes("glasses"), (o.acc || []).includes("brows"), o.hair, g)}
+      ${hairFront(o.style, HAIR)}
       ${a.after}
+      </g>
       </g>
       </g>
     </svg>`;
   }
 
-  // ── 茶茶: маленький чайный дух-мальчуган в гайвани, с красным шарфиком и чубчиком-листочком ──
+  // ── 茶茶: настоящий талисман Лары (стикеры в /static/chacha/), три позы под настроение ──
+  const CC_POSE = { happy: "wave", smile: "wave", open: "read", sad: "think" };
+  const CC_URL = (k) => `/static/chacha/chacha_${k}.webp`;
+  try { ["wave", "read", "think"].forEach((k) => { const i = new Image(); i.src = CC_URL(k); }); } catch (e) { /* без предзагрузки тоже работает */ }
   function chacha(mood) {
-    const g = "c" + (++GID), D = "#22302b";
-    const eyes = mood === "happy"
-      ? `<path d="M39 82 Q46 73 53 82" fill="none" stroke="${D}" stroke-width="3.6" stroke-linecap="round"/><path d="M67 82 Q74 73 81 82" fill="none" stroke="${D}" stroke-width="3.6" stroke-linecap="round"/>`
-      : `<g class="qblink"><ellipse cx="46" cy="81" rx="5" ry="5.6" fill="${D}"/><ellipse cx="74" cy="81" rx="5" ry="5.6" fill="${D}"/><circle cx="47.6" cy="78.8" r="1.9" fill="#fff"/><circle cx="75.6" cy="78.8" r="1.9" fill="#fff"/><circle cx="44.8" cy="83.4" r=".9" fill="#fff" opacity=".8"/><circle cx="72.8" cy="83.4" r=".9" fill="#fff" opacity=".8"/></g>`;
-    const brows = mood === "sad"
-      ? `<path d="M38 71 Q45 71 53 75 M82 71 Q75 71 67 75" fill="none" stroke="#3a5a4c" stroke-width="3.4" stroke-linecap="round"/>`
-      : `<path d="M38 72 Q46 66 54 70 M82 72 Q74 66 66 70" fill="none" stroke="#3a5a4c" stroke-width="3.6" stroke-linecap="round"/>`;
-    const mouth = mood === "sad" ? `<path d="M53 94 Q60 87 67 94" fill="none" stroke="${D}" stroke-width="3" stroke-linecap="round"/>`
-      : mood === "open" ? `<g class="qmouth"><path d="M51 88 Q60 103 69 88 Z" fill="#7a2a2a"/><path d="M54 95 Q60 99 66 95 Q60 92 54 95Z" fill="#f08a84"/></g>`
-        : `<path d="M52 88 Q60 96 68 88" fill="none" stroke="${D}" stroke-width="3" stroke-linecap="round"/><path d="M57 91.4 l2.6 4 l2.6 -4" fill="#fff" stroke="none" opacity=".95"/>`;
-    return `<svg class="qperson qcha" viewBox="0 0 120 130" aria-hidden="true"><defs>
-        <radialGradient id="${g}u" cx=".34" cy=".3" r=".9"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#fbf6e6"/><stop offset="1" stop-color="#e3d9bd"/></radialGradient>
-        <radialGradient id="${g}t" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#b9dcae"/><stop offset="1" stop-color="#7fb08e"/></radialGradient>
-        <linearGradient id="${g}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5483f"/><stop offset="1" stop-color="#a8231c"/></linearGradient>
-        <radialGradient id="${g}c"><stop offset="0" stop-color="#f2958c" stop-opacity=".7"/><stop offset="1" stop-color="#f2958c" stop-opacity="0"/></radialGradient>
-      </defs>
-      <g class="qsteam" fill="none" stroke="#fffcf4" stroke-width="3" stroke-linecap="round" opacity=".85"><path d="M30 34 C24 24 36 20 30 8"/><path d="M90 34 C84 24 96 20 90 8"/></g>
-      <ellipse cx="60" cy="122" rx="38" ry="5.5" fill="rgba(34,48,43,.25)"/>
-      <g class="qleg l" style="transform-origin:46px 108px"><rect x="40" y="106" width="13" height="13" rx="6" fill="#7fb08e" stroke="${OL}" stroke-opacity=".45" stroke-width="1.4"/></g>
-      <g class="qleg r" style="transform-origin:74px 108px"><rect x="67" y="106" width="13" height="13" rx="6" fill="#7fb08e" stroke="${OL}" stroke-opacity=".45" stroke-width="1.4"/></g>
-      <path d="M98 64 C118 62 118 90 94 92" fill="none" stroke="${OL}" stroke-opacity=".4" stroke-width="9" stroke-linecap="round"/>
-      <path d="M98 64 C116 62 116 88 94 90" fill="none" stroke="#fbf6e6" stroke-width="6" stroke-linecap="round"/>
-      <g class="qarm l" style="transform-origin:22px 84px"><path d="M23 82 Q10 86 8 98" fill="none" stroke="#7fb08e" stroke-width="9" stroke-linecap="round"/><circle cx="8" cy="100" r="6" fill="#fbf6e6" stroke="${OL}" stroke-opacity=".45" stroke-width="1.4"/></g>
-      <path d="M20 58 H100 C100 92 84 110 60 110 C36 110 20 92 20 58 Z" fill="url(#${g}u)" stroke="${OL}" stroke-opacity=".45" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M26 66 C24 82 28 94 38 102" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55"/>
-      <path d="M20 58 H100 C100 64 99 70 97 75 C80 70 40 70 23 75 C21 70 20 64 20 58 Z" fill="#e9e2cf" opacity=".7"/>
-      <ellipse cx="60" cy="58" rx="40" ry="9" fill="#8db39a" stroke="${OL}" stroke-opacity=".4" stroke-width="1.4"/><ellipse cx="60" cy="57" rx="34" ry="6" fill="url(#${g}t)"/>
-      <g class="qtuft" style="transform-origin:60px 56px"><path d="M60 56 C59 46 61 38 58 30" fill="none" stroke="#2c6c5b" stroke-width="3.2" stroke-linecap="round"/><path d="M58 33 C46 34 40 24 42 17 C52 17 58 24 58 33Z" fill="#3f9a78" stroke="#245a4b" stroke-width="1.2"/><path d="M59 38 C70 38 78 30 76 22 C66 22 60 30 59 38Z" fill="#56b58d" stroke="#245a4b" stroke-width="1.2"/></g>
-      <ellipse cx="38" cy="90" rx="9" ry="6" fill="url(#${g}c)"/><ellipse cx="82" cy="90" rx="9" ry="6" fill="url(#${g}c)"/>
-      ${brows}${eyes}${mouth}
-      <path d="M26 99 Q60 114 94 99 L91 108 Q60 121 29 108 Z" fill="url(#${g}s)" stroke="#6d1410" stroke-opacity=".5" stroke-width="1.2"/>
-      <g class="qscarf" style="transform-origin:86px 106px"><path d="M84 106 L100 112 L96 120 L82 112Z" fill="#c9302a" stroke="#6d1410" stroke-opacity=".5" stroke-width="1.2"/><circle cx="85" cy="106" r="4.4" fill="#e5483f" stroke="#6d1410" stroke-opacity=".5" stroke-width="1.2"/></g>
-      <g class="qarm r ${mood === "happy" ? "wave" : ""}" style="transform-origin:98px 84px"><path d="M97 82 Q110 84 112 98" fill="none" stroke="#7fb08e" stroke-width="9" stroke-linecap="round"/><circle cx="112" cy="100" r="6" fill="#fbf6e6" stroke="${OL}" stroke-opacity=".45" stroke-width="1.4"/></g>
+    const k = CC_POSE[mood] || "wave";
+    return `<svg class="qperson qcha pose-${k}" viewBox="0 0 120 130" aria-hidden="true">
+      <ellipse class="qcsh" cx="60" cy="125" rx="33" ry="4.4" fill="rgba(34,28,40,.28)"/>
+      <image class="qchi" href="${CC_URL(k)}" x="4" y="0" width="112" height="126" preserveAspectRatio="xMidYMax meet"/>
     </svg>`;
   }
 
@@ -200,12 +207,19 @@
     old:    { hair: "#f1efe8", style: "white", skin: SKIN2, top: "#8d7f74", top2: "#e9c96d", motif: "frog", acc: ["beard", "brows", "cane"], bottom: "#4a3f38" },
   };
 
+  const BOY_STYLES = ["spiky", "swoop", "knot"], GIRL_STYLES = ["long", "buns2", "bob"];
   function heroOpts(ch, mood) {
     const sk = SKINS[(ch && ch.skin) || 0] || SKINS[0];
     const girl = ch && ch.gender === "f";
-    return girl
-      ? { hair: "#2f241f", style: "long", top: sk.top, top2: sk.top2, motif: sk.motif, skirt: true, acc: ["bow"], bow: sk.top2 === "#ffffff" ? sk.top : sk.top2, mood }
-      : { hair: "#2f241f", style: "short", top: sk.top, top2: sk.top2, motif: sk.motif, bottom: "#3b4a63", mood };
+    const hair = HAIRS[(ch && ch.hair) || 0] || HAIRS[0];
+    const hi = Math.max(0, Math.min(2, (ch && ch.hstyle) || 0));
+    const accent = sk.top2 === "#ffffff" ? sk.top : sk.top2;
+    if (girl) {
+      const style = GIRL_STYLES[hi];
+      return { hair, style, top: sk.top, top2: sk.top2, motif: sk.motif, skirt: true, mood, bow: accent,
+        acc: style === "buns2" ? ["ribbon2"] : style === "bob" ? ["flower"] : ["bow"] };
+    }
+    return { hair, style: BOY_STYLES[hi], top: sk.top, top2: sk.top2, motif: sk.motif, bottom: "#3b4a63", mood };
   }
 
   function figure(id, ch, mood) {
@@ -214,7 +228,7 @@
     return person(Object.assign({ mood }, NPC[id] || {}));
   }
   function avatarOf(id, ch) {   // голова и плечи любого персонажа
-    if (id === "cc") return chacha("smile").replace('class="qperson qcha"', 'class="qperson qcha qavatar"');
+    if (id === "cc") return chacha("smile").replace('class="qperson qcha pose-wave" viewBox="0 0 120 130"', 'class="qperson qcha qavatar" viewBox="6 0 108 112"');
     return figure(id, ch, "smile").replace('class="qperson" viewBox="0 0 120 190"', 'class="qperson qavatar" viewBox="14 12 92 104"');
   }
   const avatar = (ch) => avatarOf("me", ch);
@@ -369,5 +383,5 @@
     </svg>`;
   }
 
-  window.QART = { person, chacha, figure, avatar, avatarOf, bg, mapBackdrop, SKINS, NPC, sign, cloud, lantern };
+  window.QART = { person, chacha, figure, avatar, avatarOf, bg, mapBackdrop, SKINS, HAIRS, NPC, sign, cloud, lantern };
 })();

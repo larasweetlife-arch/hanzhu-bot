@@ -30,7 +30,7 @@
       q_shop_title: "Магазин", q_ward_title: "Гардероб", q_wear: "Надеть", q_worn: "Надето", q_buy: "Купить",
       q_lives: "Жизни", q_coins: "Монеты", q_howmuch: "За задание: {a} 🪙, за сцену: {b} 🪙",
       q_hero_edit: "Изменить героя", q_save: "Сохранить", q_lang_tr: "Перевод", q_hint_tr: "Подсказка",
-      q_sk0: "Чайный", q_sk1: "Красный фонарик", q_sk2: "Небесный", q_sk3: "Золотой дракон", q_sk4: "Сакура", q_sk5: "Тушь",
+      q_hair: "Цвет волос", q_hstyle: "Причёска", q_sk0: "Чайный", q_sk1: "Красный фонарик", q_sk2: "Небесный", q_sk3: "Золотой дракон", q_sk4: "Сакура", q_sk5: "Тушь",
       q_donate_title: "Поддержать проект", q_donate_text: "Бот и игра создаются одним человеком. Если нравится, можно помочь: появятся новые главы, города и слова. Всё по желанию.", q_donate_open: "Открыть в боте",
     },
     uz: {
@@ -62,7 +62,7 @@
       q_shop_title: "Do'kon", q_ward_title: "Kiyimlar", q_wear: "Kiyish", q_worn: "Kiyilgan", q_buy: "Sotib olish",
       q_lives: "Jonlar", q_coins: "Tangalar", q_howmuch: "Topshiriq uchun: {a} 🪙, sahna uchun: {b} 🪙",
       q_hero_edit: "Qahramonni o'zgartirish", q_save: "Saqlash", q_lang_tr: "Tarjima", q_hint_tr: "Maslahat",
-      q_sk0: "Choy", q_sk1: "Qizil fonus", q_sk2: "Osmon", q_sk3: "Oltin ajdar", q_sk4: "Sakura", q_sk5: "Siyoh",
+      q_hair: "Soch rangi", q_hstyle: "Soch turmagi", q_sk0: "Choy", q_sk1: "Qizil fonus", q_sk2: "Osmon", q_sk3: "Oltin ajdar", q_sk4: "Sakura", q_sk5: "Siyoh",
       q_donate_title: "Loyihani qo'llab-quvvatlash", q_donate_text: "Bot va o'yinni bir kishi yaratadi. Yoqsa, yordam berishingiz mumkin: yangi boblar, shaharlar va so'zlar paydo bo'ladi. Hammasi ixtiyoriy.", q_donate_open: "Botda ochish",
     },
     en: {
@@ -94,7 +94,7 @@
       q_shop_title: "Shop", q_ward_title: "Wardrobe", q_wear: "Wear", q_worn: "Worn", q_buy: "Buy",
       q_lives: "Lives", q_coins: "Coins", q_howmuch: "Per task: {a} 🪙, per scene: {b} 🪙",
       q_hero_edit: "Edit hero", q_save: "Save", q_lang_tr: "Translation", q_hint_tr: "Hint",
-      q_sk0: "Tea green", q_sk1: "Red lantern", q_sk2: "Sky blue", q_sk3: "Golden dragon", q_sk4: "Sakura", q_sk5: "Ink",
+      q_hair: "Hair colour", q_hstyle: "Hairstyle", q_sk0: "Tea green", q_sk1: "Red lantern", q_sk2: "Sky blue", q_sk3: "Golden dragon", q_sk4: "Sakura", q_sk5: "Ink",
       q_donate_title: "Support the project", q_donate_text: "The bot and the game are made by one person. If you like them, you can help: new chapters, cities and words will appear. It is all optional.", q_donate_open: "Open in the bot",
     },
     zh: {
@@ -126,7 +126,7 @@
       q_shop_title: "商店", q_ward_title: "衣橱", q_wear: "穿上", q_worn: "已穿", q_buy: "购买",
       q_lives: "生命", q_coins: "金币", q_howmuch: "每个任务：{a} 🪙，每一幕：{b} 🪙",
       q_hero_edit: "修改主角", q_save: "保存", q_lang_tr: "翻译", q_hint_tr: "提示",
-      q_sk0: "茶绿", q_sk1: "红灯笼", q_sk2: "天蓝", q_sk3: "金龙", q_sk4: "樱花", q_sk5: "水墨",
+      q_hair: "发色", q_hstyle: "发型", q_sk0: "茶绿", q_sk1: "红灯笼", q_sk2: "天蓝", q_sk3: "金龙", q_sk4: "樱花", q_sk5: "水墨",
       q_donate_title: "支持项目", q_donate_text: "机器人和游戏由一个人制作。如果你喜欢，可以帮帮我：这样会有新的章节、城市和词语。一切自愿。", q_donate_open: "在机器人中打开",
     },
   };

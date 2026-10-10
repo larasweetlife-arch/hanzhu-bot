@@ -53,7 +53,7 @@ body.qs-open { overflow: hidden; }
 /* персонажи диалога: по пояс над окном-свитком */
 .qdf { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .qdf .qf { position: absolute; bottom: calc(var(--u) * 17); height: calc(var(--u) * 28); aspect-ratio: 120 / 190; transform: translateX(-50%); transition: filter .25s, transform .25s; filter: drop-shadow(0 calc(var(--u) * .5) calc(var(--u) * .6) rgba(0, 0, 0, .35)); }
-.qdf .qf[data-who="cc"] { height: calc(var(--u) * 14); aspect-ratio: 120 / 130; bottom: calc(var(--u) * 24); }
+.qdf .qf[data-who="cc"] { height: calc(var(--u) * 16); aspect-ratio: 120 / 130; bottom: calc(var(--u) * 25); }
 .qdf .qf.dim { filter: brightness(.9) saturate(.9) drop-shadow(0 calc(var(--u) * .5) calc(var(--u) * .6) rgba(0, 0, 0, .3)); }
 .qdf .qf.talk { animation: qtalk .5s ease-in-out infinite alternate; z-index: 3; }
 @keyframes qtalk { from { transform: translateX(-50%) translateY(0) scale(1.04); } to { transform: translateX(-50%) translateY(calc(var(--u) * -.6)) scale(1.04); } }
@@ -310,3 +310,17 @@ body.qs-open { overflow: hidden; }
 .qbtn, .qchip { position: relative; overflow: hidden; }
 .qbtn::before, .qchip::before { content: ""; position: absolute; left: 6%; right: 6%; top: 4%; height: 42%; border-radius: 99px; background: linear-gradient(rgba(255, 255, 255, .42), rgba(255, 255, 255, 0)); pointer-events: none; }
 .qplaque::after { box-shadow: none; }
+
+/* ── 茶茶: стикеры Лары, лёгкая «жизнь» вместо рисованных частей ── */
+.qcha .qchi { transform-origin: 60px 124px; animation: qcbreath 3.4s ease-in-out infinite; }
+.qcha .qcsh { transform-origin: 60px 125px; animation: qcshadow 3.4s ease-in-out infinite; }
+.qcha.pose-wave .qchi { animation: qcwave 2.6s ease-in-out infinite; }
+.qcha.pose-think .qchi { animation: qcthink 3.8s ease-in-out infinite; }
+.qcha.pose-read .qchi { animation: qcread 3s ease-in-out infinite; }
+@keyframes qcbreath { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.025, .975); } }
+@keyframes qcwave { 0%, 100% { transform: rotate(-2.2deg) scale(1, 1); } 50% { transform: rotate(2.4deg) scale(1.02, .98); } }
+@keyframes qcthink { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(3deg) translateY(-.8px); } }
+@keyframes qcread { 0%, 100% { transform: translateY(0) scale(1, 1); } 50% { transform: translateY(-1.2px) scale(1.02, .985); } }
+@keyframes qcshadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(.92); opacity: .8; } }
+.qcc { height: calc(var(--u) * 14.5); }
+.qcha.qavatar .qcsh { display: none; }

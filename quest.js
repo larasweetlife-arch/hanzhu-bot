@@ -66,9 +66,20 @@
     }));
   }
 
+  // выбор цвета волос и причёски (бесплатно)
+  function lookPick(d, redraw) {
+    const A_ = A(), n = 3;
+    return h("div", { class: "qlook" },
+      h("h3", { style: "margin-top:14px" }, tr("q_hair")),
+      h("div", { class: "qhairs" }, A_.HAIRS.map((c, i) => h("button", { class: "qhair" + ((d.hair || 0) === i ? " on" : ""), style: `--hc:${c}`, "aria-label": "hair " + (i + 1), onclick: () => { d.hair = i; redraw(); } }))),
+      h("h3", { style: "margin-top:14px" }, tr("q_hstyle")),
+      h("div", { class: "qhst" }, Array.from({ length: n }, (_, i) => h("button", { class: "qhs" + ((d.hstyle || 0) === i ? " on" : ""), onclick: () => { d.hstyle = i; redraw(); } },
+        h("div", { class: "av", html: A_.figure("me", Object.assign({}, d, { hstyle: i }), "smile").replace('viewBox="0 0 120 190"', 'viewBox="4 0 112 112"') })))));
+  }
+
   function creatorView() {
     const st = Q.st;
-    const d = Q.draft = Q.draft || { gender: "f", skin: 0, hero: "" };
+    const d = Q.draft = Q.draft || { gender: "f", skin: 0, hero: "", hair: 0, hstyle: 0 };
     const owned = st.shop.free;
     const input = h("input", { maxlength: 16, placeholder: tr("q_name_ph"), autocomplete: "off", spellcheck: "false", value: d.hero, oninput: (e) => { d.hero = e.target.value; } });
     const err = h("div", { class: "err" });
@@ -79,12 +90,13 @@
         preview(d),
         h("div", { class: "seg fill", style: "margin-top:6px" }, [["f", "q_girl"], ["m", "q_boy"]].map(([g, k]) => h("button", { class: d.gender === g ? "on" : "", onclick: () => { d.gender = g; Y().render(); } }, tr(k)))),
         h("h3", { style: "margin-top:14px" }, tr("q_name")), input, err,
+        lookPick(d, () => Y().render()),
         h("h3", { style: "margin-top:14px" }, tr("q_outfit")),
         skinChips(d, owned, (i, have) => { if (!have) return Y().toast(tr("q_locked_skin", { n: Q.st.shop.items.skin.coins })); d.skin = i; Y().render(); }),
         h("button", { class: "btn primary", style: "margin-top:16px", onclick: async () => {
           if ((d.hero || "").trim().length < 2) { err.textContent = tr("q_name_err"); return; }
           await Y().safe(async () => {
-            const r = await Y().api("/api/quest/char", { hero: d.hero, gender: d.gender, skin: d.skin });
+            const r = await Y().api("/api/quest/char", { hero: d.hero, gender: d.gender, skin: d.skin, hair: d.hair || 0, hstyle: d.hstyle || 0 });
             if (!r.ok) { err.textContent = tr("q_name_err"); return; }
             Q.draft = null; await reload(); Y().haptic("ok"); Y().render();
           });
@@ -770,7 +782,7 @@
   // гардероб и редактирование героя
   function wardrobeSheet() {
     closeSheets();
-    const st = Q.st, ch = st.char, d = { gender: ch.gender, skin: ch.skin, hero: ch.hero };
+    const st = Q.st, ch = st.char, d = { gender: ch.gender, skin: ch.skin, hero: ch.hero, hair: ch.hair || 0, hstyle: ch.hstyle || 0 };
     const wrap = h("div", {});
     const draw = () => {
       const have = st.char.owned.includes(d.skin);
@@ -778,6 +790,7 @@
       wrap.replaceChildren(h("h3", {}, "👘 " + tr("q_ward_title")), preview(d),
         h("div", { class: "seg fill" }, [["f", "q_girl"], ["m", "q_boy"]].map(([g, k]) => h("button", { class: d.gender === g ? "on" : "", onclick: () => { d.gender = g; draw(); } }, tr(k)))),
         input,
+        lookPick(d, draw),
         skinChips(d, st.char.owned, (i) => { d.skin = i; draw(); }),
         have
           ? h("button", { class: "btn jade", style: "margin-top:14px", onclick: save }, "✓ " + tr("q_save"))
@@ -785,7 +798,7 @@
     };
     const save = async () => {
       await Y().safe(async () => {
-        const r = await Y().api("/api/quest/char", { hero: d.hero, gender: d.gender, skin: d.skin });
+        const r = await Y().api("/api/quest/char", { hero: d.hero, gender: d.gender, skin: d.skin, hair: d.hair || 0, hstyle: d.hstyle || 0 });
         if (!r.ok) return Y().toast(tr("q_name_err"));
         closeSheets(); await reload(); Y().toast(tr("q_bought")); refreshAll();
       });

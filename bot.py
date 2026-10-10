@@ -3222,6 +3222,32 @@ def send_donate(uid):
 def cmd_donate(m): send_donate(m.from_user.id)
 
 
+@bot.message_handler(commands=["terms"])
+def cmd_terms(m):
+    """Условия покупок за Telegram Stars (этого требует Telegram перед приёмом платежей)."""
+    lang = lang_of(m.from_user.id)
+    tx = {
+        "ru": "📄 <b>Условия покупок за ⭐</b>\n\nЗа звёзды можно купить внутри игры: ещё одну сцену, жизни, наряды героя, а также поддержать проект. Всё это цифровые товары, они выдаются сразу после оплаты.\n\nЕсли оплата прошла, а покупка не появилась, напиши прямо в этот чат: мы всё проверим и вернём звёзды. Поддержка Telegram по покупкам в боте не помогает. Играть можно и без покупок: одна сцена в день бесплатно.",
+        "uz": "📄 <b>⭐ bilan xaridlar shartlari</b>\n\nYulduzlar bilan o'yin ichida yana bir sahna, jonlar, qahramon kiyimlari sotib olish va loyihani qo'llab-quvvatlash mumkin. Bular raqamli mahsulotlar, to'lovdan so'ng darhol beriladi.\n\nTo'lov o'tib, xarid chiqmasa, shu chatga yozing: tekshirib, yulduzlarni qaytaramiz. Telegram yordam xizmati bot xaridlariga yordam bermaydi. O'yinni xaridsiz ham o'ynash mumkin: kuniga bitta sahna bepul.",
+        "en": "📄 <b>Terms for purchases with ⭐</b>\n\nWith Stars you can buy inside the game: an extra scene, lives, hero outfits, and support the project. These are digital goods delivered right after payment.\n\nIf you paid but did not get your purchase, write in this chat: we will check and refund the Stars. Telegram support cannot help with purchases made in this bot. You can play without buying anything: one scene a day is free.",
+        "zh": "📄 <b>⭐ 购买条款</b>\n\n可用星星在游戏内购买：额外一幕、生命、角色装扮，也可以支持项目。这些都是数字商品，付款后立即发放。\n\n如果已付款但没有收到商品，请直接在此聊天中留言，我们会核实并退还星星。Telegram 客服无法处理本机器人内的购买。不购买也可以玩：每天一幕免费。",
+    }
+    bot.send_message(m.chat.id, tx.get(lang, tx["ru"]))
+
+
+@bot.message_handler(commands=["paysupport"])
+def cmd_paysupport(m):
+    """Помощь с платежом: человек пишет в чат, сообщение уходит владелице."""
+    lang = lang_of(m.from_user.id)
+    tx = {
+        "ru": "💬 Проблема с оплатой? Напиши сюда номер операции (он есть в сообщении об оплате) и что именно не получилось. Сообщение придёт Лазизе, она ответит и при необходимости вернёт звёзды.",
+        "uz": "💬 To'lovda muammo bormi? Shu yerga operatsiya raqamini (to'lov xabarida bor) va nima chiqmaganini yozing. Xabar Lazizaga boradi, u javob beradi va kerak bo'lsa yulduzlarni qaytaradi.",
+        "en": "💬 Problem with a payment? Write here the operation number (it is in the payment message) and what went wrong. The message goes to Laziza, who will reply and refund the Stars if needed.",
+        "zh": "💬 付款有问题？请在这里写下交易编号（在付款消息中）和遇到的问题。消息会转给 Laziza，她会回复并在需要时退还星星。",
+    }
+    bot.send_message(m.chat.id, tx.get(lang, tx["ru"]))
+
+
 @bot.callback_query_handler(func=lambda c: c.data.startswith("dn:"))
 def cb_donate(c):
     uid = c.from_user.id
@@ -3451,6 +3477,7 @@ if __name__ == "__main__":
             types.BotCommand("hw", "домашние задания"),
             types.BotCommand("lang", "язык"), types.BotCommand("about", "что я умею"),
             types.BotCommand("privacy", "конфиденциальность"), types.BotCommand("donate", "поддержать проект"),
+            types.BotCommand("terms", "условия покупок за ⭐"), types.BotCommand("paysupport", "помощь с оплатой"),
             types.BotCommand("mydata", "копия моих данных")])
         if OWNER_ID:
             bot.set_my_commands([

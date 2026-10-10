@@ -455,7 +455,7 @@ def create_app(deps):
             skin = int(b.get("skin", 0))
         except (TypeError, ValueError):
             skin = 0
-        ch, err = quest.char_save(tg["id"], b.get("hero"), b.get("gender"), skin)
+        ch, err = quest.char_save(tg["id"], b.get("hero"), b.get("gender"), skin, b.get("hair", 0), b.get("hstyle", 0))
         if err:
             return jsonify({"ok": False, "err": err})
         return jsonify({"ok": True})

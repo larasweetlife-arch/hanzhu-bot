@@ -134,6 +134,10 @@ def init_db():
         cols = {r[1] for r in c.execute("PRAGMA table_info(quest_char)").fetchall()}
         if "hide" not in cols:
             c.execute("ALTER TABLE quest_char ADD COLUMN hide INTEGER DEFAULT 0")
+        if "hair" not in cols:      # цвет волос героя (0..5), бесплатно
+            c.execute("ALTER TABLE quest_char ADD COLUMN hair INTEGER DEFAULT 0")
+        if "hstyle" not in cols:    # причёска героя (0..2), бесплатно
+            c.execute("ALTER TABLE quest_char ADD COLUMN hstyle INTEGER DEFAULT 0")
         # те, кто прошёл первую сцену до появления розыгрыша, тоже участвуют
         first = scenes()[0]["id"] if scenes() else None
         if first:
@@ -163,8 +167,17 @@ def clean_hero(raw):
     return s[:16] if len(s) >= 2 else ""
 
 
-def char_save(uid, hero, gender, skin):
+def _look(v, n):
+    try:
+        v = int(v)
+    except (TypeError, ValueError):
+        return 0
+    return v if 0 <= v < n else 0
+
+
+def char_save(uid, hero, gender, skin, hair=0, hstyle=0):
     hero = clean_hero(hero)
+    hair, hstyle = _look(hair, 6), _look(hstyle, 3)
     if not hero:
         return None, "hero"
     if gender not in ("m", "f"):
@@ -173,12 +186,12 @@ def char_save(uid, hero, gender, skin):
         cur = _row(c, "SELECT * FROM quest_char WHERE user_id=?", (uid,))
         if not cur:
             skin = skin if skin in FREE_SKINS else 0
-            c.execute("INSERT INTO quest_char (user_id, hero, gender, skin, owned, coins, lives, lives_ts, created) VALUES (?,?,?,?,?,?,?,?,?)",
-                      (uid, hero, gender, skin, json.dumps(list(FREE_SKINS)), 0, LIVES_MAX, time.time(), db.today()))
+            c.execute("INSERT INTO quest_char (user_id, hero, gender, skin, hair, hstyle, owned, coins, lives, lives_ts, created) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                      (uid, hero, gender, skin, hair, hstyle, json.dumps(list(FREE_SKINS)), 0, LIVES_MAX, time.time(), db.today()))
         else:
             if skin not in _owned(cur):
                 skin = cur["skin"]
-            c.execute("UPDATE quest_char SET hero=?, gender=?, skin=? WHERE user_id=?", (hero, gender, skin, uid))
+            c.execute("UPDATE quest_char SET hero=?, gender=?, skin=?, hair=?, hstyle=? WHERE user_id=?", (hero, gender, skin, hair, hstyle, uid))
         return _row(c, "SELECT * FROM quest_char WHERE user_id=?", (uid,)), None
 
 
@@ -261,7 +274,7 @@ def state(uid, stars_on=True, donate=None):
                            "boss": s["boss"], "tasks": len(s["tasks"]),
                            "progress": run["idx"] if (run and not run["replay"] and status == "current") else 0})
         free_left = 0 if day["free_used"] else 1
-        out["char"] = {"hero": ch["hero"], "gender": ch["gender"], "skin": ch["skin"], "owned": owned}
+        out["char"] = {"hero": ch["hero"], "gender": ch["gender"], "skin": ch["skin"], "hair": ch.get("hair") or 0, "hstyle": ch.get("hstyle") or 0, "owned": owned}
         out["coins"] = ch["coins"]
         out["lives"] = ch["lives"]
         out["next_life_in"] = 0 if ch["lives"] >= LIVES_MAX else max(1, int(LIFE_REGEN_SEC - (time.time() - ch["lives_ts"])))
