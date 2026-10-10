@@ -51,7 +51,11 @@ PAY_INFO = os.environ.get("PAY_INFO", "").strip()      # как оплатить
 PAY_PRICE = os.environ.get("PAY_PRICE", "").strip()    # например «39 000 сум»
 PAY_URL = os.environ.get("PAY_URL", "").strip()        # ссылка на оплату (Payme, Click, Uzum или эквайринг с Visa/UnionPay), по желанию
 PRO_DAYS = int(os.environ.get("PRO_DAYS", "30") or 30)
-WEBAPP_URL = os.environ.get("WEBAPP_URL", "").strip().rstrip("/")   # адрес Mini App (https://...)
+WEBAPP_URL = os.environ.get("WEBAPP_URL", "").strip().strip("\"'").rstrip("/")   # адрес Mini App (https://...)
+if WEBAPP_URL and not WEBAPP_URL.lower().startswith(("http://", "https://")):
+    WEBAPP_URL = "https://" + WEBAPP_URL      # если https:// забыли, добавим сами
+if WEBAPP_URL.lower().startswith("http://"):
+    WEBAPP_URL = "https://" + WEBAPP_URL[7:]  # Telegram принимает Mini App только по https
 # Версия 11: поддержка проекта и покупки в игре за Telegram Stars
 DONATE_INFO = os.environ.get("DONATE_INFO", "").strip()   # реквизиты карты для поддержки (текст как есть). В код не вписываем: только в переменную на Railway
 DONATE_URL = os.environ.get("DONATE_URL", "").strip()     # или ссылка на сбор (Boosty, Tribute, Ko-fi, CloudTips), по желанию
@@ -3452,7 +3456,7 @@ def start_webapp():
                 "donate": {"on": True, "card": bool(DONATE_INFO or DONATE_URL)}}
         threading.Thread(target=webapp.serve, args=(deps, int(port or 8080)), daemon=True).start()
         if WEBAPP_URL.startswith("https://"):
-            bot.set_chat_menu_button(menu_button=types.MenuButtonWebApp(text="🍵 清越", web_app=types.WebAppInfo(url=WEBAPP_URL)))
+            bot.set_chat_menu_button(menu_button=types.MenuButtonWebApp(text="Game", web_app=types.WebAppInfo(url=WEBAPP_URL)))
         logging.info("Mini App: порт %s, адрес %s", port or 8080, WEBAPP_URL or "не задан")
     except Exception:
         logging.exception("Mini App не запустился (бот работает без него)")

@@ -134,8 +134,19 @@ def create_app(deps):
             resp.headers["Cache-Control"] = "no-store"
         return resp
 
+    NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
+            "quest_art.js", "quest_world.js", "quest_i18n.js", "chacha/chacha_wave.webp"]
+    missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
+    if missing:
+        logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
+    else:
+        logging.info("Mini App: все файлы на месте (%s)", STATIC)
+
     @app.route("/")
     def index():
+        if not os.path.isfile(os.path.join(STATIC, "index.html")):
+            return ("Mini App: на сервере нет папки webapp_static/index.html. Загрузите на GitHub проект целиком, "
+                    "включая папку webapp_static. Не хватает: " + ", ".join(missing)), 503
         resp = send_from_directory(STATIC, "index.html")
         resp.headers["Cache-Control"] = "no-cache"
         return resp
