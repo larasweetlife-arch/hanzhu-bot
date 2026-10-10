@@ -55,7 +55,7 @@ T = {
  "done": "Готово, {name}! Добро пожаловать 🐉",
  "menu": "Что делаем?",
  "hi": "你好 (nǐ hǎo — привет)",
- "welcome_back": "{hi}, {name}! 🐉\nЯ 茶茶 (ЧаЧа), чайный помощник по китайскому. Рада, что ты снова здесь 🍵\n\nВот что я умею:\n📚 слово дня и 🧧 чэнъюй\n🌏 факты о Китае\n🔤 перевод с пиньинем\n📐 грамматика и 📖 тексты по уровням\n📊 прогресс и 🗓 напоминания о занятиях, если ты занимаешься с Лазизой\n\nНе нашёл(ла), что нужно? Просто напиши мне, я передам Лазизе 💌\n\nВыбирай в меню внизу 👇",
+ "welcome_back": "{hi}, {name}! 🐉\nЯ 茶茶 (ЧаЧа), чайный помощник по китайскому. Рад, что ты снова здесь 🍵\n\nВот что я умею:\n📚 слово дня и 🧧 чэнъюй\n🌏 факты о Китае\n🔤 перевод с пиньинем\n📐 грамматика и 📖 тексты по уровням\n📊 прогресс и 🗓 напоминания о занятиях, если ты занимаешься с Лазизой\n\nНе нашёл(ла), что нужно? Просто напиши мне, я передам Лазизе 💌\n\nВыбирай в меню внизу 👇",
  "b_sched": "🗓 Занятия",
  "sch_title": "🗓 <b>Мои занятия</b>",
  "sch_days": "Расписание",
@@ -72,7 +72,7 @@ T = {
  "b_channel": "📢 Канал", "b_help": "❓ Помощь",
  "word": "📚 Слово дня", "chengyu": "🧧 Чэнъюй дня", "fact": "🌏 Факт о Китае",
  "tr_ask": "Напиши слово, на русском или на китайском:",
- "tr_none": "Не нашла «{q}» 🔄\nПопробуй слово по-китайски или по-английски. Я записала запрос, словарь будет пополняться.",
+ "tr_none": "Не нашёл «{q}» 🔄\nПопробуй слово по-китайски или по-английски. Я записал запрос, словарь будет пополняться.",
  "tr_en_note": "Значения пока на английском: русский и узбекский словарь я ещё наполняю.",
  "tr_split": "Разбор по словам:",
  "channel": "📢 Мой канал о китайском языке и культуре:\nhttps://t.me/qing_laoshi",
@@ -396,3 +396,94 @@ PROFILE = {
         "description": "🍵 你好！我是茶茶 (Chá Chá)，茶香汉语小助手。\n\n每日词汇、成语、中国小知识、带拼音的翻译、上课提醒，如果你在跟老师上课，还能看到学习进度。我会说俄语、乌兹别克语、英语和中文。\n\n点“开始”，我们认识一下吧 🌿",
         "short": "茶香汉语小助手：词汇、成语、翻译和上课提醒 🍵"},
 }
+
+
+# ─── Новые функции: практика, пробный урок, друзья, домашки ──────────────────
+from texts_practice import P as _P, WELCOME_LINE as _WL
+
+for _lang in T:
+    T[_lang].update(_P.get(_lang, {}))
+    _wb = T[_lang].get("welcome_back", "")
+    if _wb and _WL.get(_lang) and _WL[_lang] not in _wb:
+        T[_lang]["welcome_back"] = _wb.replace("\n📊", "\n" + _WL[_lang] + "📊", 1)
+
+# ─── Обновления политики и справки под новые функции ─────────────────────────
+_PRIV_ADD = {
+    "ru": ("\n\nТвои сообщения мне бот", "· прогресс в карточках и Чайной лавке (какие слова учишь, монеты, звания)\n· если пришёл(ла) по ссылке друга: кто пригласил (вы оба получаете уведомление с именем друг друга); если приглашаешь сам(а): сколько друзей пришло\n· домашние задания, просьбы о переносе урока и оценка занятий с текстом отзыва (если оставишь)"),
+    "uz": ("\n\nMenga yozgan xabarlaringizni", "· kartochkalar va Choyxona do'konidagi progress (qaysi so'zlarni o'rganyapsiz, tangalar, unvonlar)\n· do'st havolasi orqali kelgan bo'lsangiz: kim taklif qilgani (ikkalangizga ham bir-biringizning ismingiz bilan xabar boradi); o'zingiz taklif qilsangiz: nechta do'st kelgani\n· uy vazifalari, darsni ko'chirish so'rovlari va darslarni baholash (fikr matni bilan, agar qoldirsangiz)"),
+    "en": ("\n\nYour messages to me are not stored", "· your progress in flashcards and the Tea shop (which words you study, coins, ranks)\n· if you came through a friend's link: who invited you (you both get a notification with each other's name); if you invite someone: how many friends came\n· homework, lesson reschedule requests and your lesson rating with the review text (if you leave one)"),
+    "zh": ("\n\n你发给我的消息不会保存", "· 你在单词卡和茶铺里的进度（学了哪些词、金币、称号）\n· 如果你是通过朋友的链接来的：是谁邀请的（你们双方都会收到带对方名字的通知）；如果你邀请别人：来了几位朋友\n· 作业、调课请求，以及你对课程的评分和评价文字（如果你留下的话）"),
+}
+for _l, (_anchor, _add) in _PRIV_ADD.items():
+    _p = T[_l].get("privacy", "")
+    if _p and _anchor in _p and _add not in _p:
+        T[_l]["privacy"] = _p.replace(_anchor, "\n" + _add + _anchor, 1)
+
+_HELP_ADD = {
+    "ru": "/practice викторина, карточки, игра\n/friend пригласить друга\n/trial пробный урок\n",
+    "uz": "/practice viktorina, kartochkalar, o'yin\n/friend do'stni taklif qilish\n/trial sinov darsi\n",
+    "en": "/practice quiz, flashcards, game\n/friend invite a friend\n/trial trial lesson\n",
+    "zh": "/practice 测验、单词卡、游戏\n/friend 邀请朋友\n/trial 试听课\n",
+}
+for _l, _add in _HELP_ADD.items():
+    _h = T[_l].get("help", "")
+    if _h and _add not in _h:
+        T[_l]["help"] = _h.replace("/lang ", _add + "/lang ", 1)
+
+# ─── Версия 8: марафон, сдача домашки, полный китайский ──────────────────────
+from texts_v8 import P as _P8
+
+for _lang in T:
+    T[_lang].update(_P8.get(_lang, {}))
+
+_PRIV_HW = {
+    "ru": ("· домашние задания, просьбы", "· фото и файлы домашки бот не хранит: он пересылает их Лазизе, у бота остаётся только отметка «сдано»\n"),
+    "uz": ("· uy vazifalari, darsni ko'chirish", "· uy vazifasi suratlari va fayllarini bot saqlamaydi: ularni Lazizaga yuboradi, botda faqat «topshirildi» belgisi qoladi\n"),
+    "en": ("· homework, lesson reschedule", "· the bot does not store homework photos or files: it forwards them to Laziza, and only a “submitted” mark stays with the bot\n"),
+    "zh": ("· 作业、调课请求", "· 机器人不保存作业照片和文件：只转发给 Laziza，机器人这边只留下“已提交”的记录\n"),
+}
+for _l, (_anchor, _add) in _PRIV_HW.items():
+    _p = T[_l].get("privacy", "")
+    if _p and _anchor in _p and _add not in _p:
+        T[_l]["privacy"] = _p.replace(_anchor, _add + _anchor, 1)
+
+# ─── Версия 9: правила игры, рейтинг недели, награда за друга ────────────────
+from texts_v9 import P as _P9
+
+for _lang in T:
+    T[_lang].update(_P9.get(_lang, {}))
+
+_PRIV_BOARD = {
+    "ru": ("· домашние задания, просьбы", "· если вступишь в рейтинг недели: твоё первое имя и очки видны другим участникам (выйти можно в любой момент)\n"),
+    "uz": ("· uy vazifalari, darsni ko'chirish", "· hafta reytingiga qo'shilsangiz: ismingizning birinchi so'zi va ochkolaringiz boshqa ishtirokchilarga ko'rinadi (istalgan vaqtda chiqish mumkin)\n"),
+    "en": ("· homework, lesson reschedule", "· if you join the weekly ranking: your first name and points are visible to other participants (you can leave at any time)\n"),
+    "zh": ("· 作业、调课请求", "· 如果你加入每周排行榜：你名字的第一个词和积分会被其他参与者看到（可随时退出）\n"),
+}
+for _l, (_anchor, _add) in _PRIV_BOARD.items():
+    _p = T[_l].get("privacy", "")
+    if _p and _anchor in _p and _add not in _p:
+        T[_l]["privacy"] = _p.replace(_anchor, _add + _anchor, 1)
+
+# ─── Версия 10: скидочные месяцы, продление без Stars, ники, родители ────────
+from texts_v10 import P as _P10, RULES_PATCH as _RP10, PRIVACY_PATCH as _PP10
+
+for _lang in T:
+    T[_lang].update(_P10.get(_lang, {}))
+
+for _l, _pairs in _RP10.items():
+    _r = T[_l].get("rules", "")
+    for _old, _new in _pairs:
+        if _old in _r:
+            _r = _r.replace(_old, _new, 1)
+    T[_l]["rules"] = _r
+
+for _l, (_old, _new) in _PP10.items():
+    _p = T[_l].get("privacy", "")
+    if _old in _p:
+        T[_l]["privacy"] = _p.replace(_old, _new, 1)
+
+# ─── Версия 11: игра «Путешествие с Чачей», Stars, поддержка проекта ─────────
+from texts_v11 import P as _P11
+
+for _lang in T:
+    T[_lang].update(_P11.get(_lang, {}))

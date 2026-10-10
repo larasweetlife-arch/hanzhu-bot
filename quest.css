@@ -1,0 +1,120 @@
+/* 清越 · «Путешествие с Чачей». Использует палитру app.css (нефрит, рисовая бумага, красная печать, золото). */
+
+/* ── иероглифы с пиньинем ── */
+.zhl { font-family: var(--serif); font-size: 22px; line-height: 2.1; font-weight: 700; word-break: keep-all; }
+.zhl.big { font-size: 25px; }
+.zhl.xl { font-size: 38px; text-align: center; display: block; line-height: 1.9; }
+.zhl.sm { font-size: 14px; line-height: 1.7; }
+.zhl.optz { font-size: 21px; }
+.zhl ruby { ruby-position: over; ruby-align: center; margin: 0 4px 0 0; }
+.zhl rt { font-family: var(--sans); font-size: .48em; font-weight: 600; color: var(--jade); letter-spacing: .2px; }
+.zhl .pn { margin: 0 6px 0 -2px; }
+.zhl .nm { font-family: var(--sans); font-weight: 800; color: var(--seal); border-bottom: 2px dotted var(--seal); }
+.zhl.xl rt { font-size: .38em; }
+.opt .zhl, .mtc .zhl, .chip3 .zhl { pointer-events: none; }
+
+/* ── карточка героя на карте ── */
+.qhero .qme { width: 84px; height: 94px; flex: none; border-radius: 26px; background: rgba(255, 252, 244, .18); overflow: hidden; display: grid; place-items: end center; }
+.qhero .qme svg { width: 90%; height: auto; }
+.qhero .qcha { width: 96px; margin: 0 auto 6px; }
+.qhero .qcha svg { width: 100%; }
+.qcreate .qhero { text-align: center; }
+.qstat { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin-top: 14px; }
+.qstat small { display: block; font-size: 12px; opacity: .85; margin-top: 3px; }
+.qcoin { text-align: right; }
+.qcoin b { font-family: var(--serif); font-size: 24px; }
+.qhearts { display: inline-flex; gap: 4px; }
+.qhearts .qlan { display: block; width: 18px; height: 24px; }
+.qhearts .qlan.off { filter: grayscale(1) opacity(.3); }
+.qlan svg { width: 100%; height: 100%; display: block; }
+.sheet .qhearts { justify-content: center; margin-top: 8px; }
+.sheet .qhearts .qlan { width: 24px; height: 32px; }
+.qem { font-size: 46px; text-align: center; line-height: 1.1; }
+.btn.qonhero { background: rgba(255, 252, 244, .14); border-color: rgba(255, 252, 244, .3); color: #fffcf4; }
+
+.qtoday { display: flex; gap: 14px; align-items: center; }
+.qtoday .em, .qsupport .em { font-size: 34px; width: 52px; height: 52px; border-radius: 16px; background: var(--mist); display: grid; place-items: center; flex: none; }
+.qtoday.done { background: color-mix(in srgb, var(--gold) 12%, var(--card)); }
+.qsupport { display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; }
+
+/* ── карта ── */
+.qmapcard { padding: 16px 16px 14px; }
+.qmapscroll { overflow-x: auto; border-radius: 22px; -webkit-overflow-scrolling: touch; border: 2px solid var(--gold); box-shadow: 0 0 0 2px var(--seal); }
+.qmap { position: relative; overflow: hidden; }
+.qmap > svg { position: absolute; left: 0; top: 0; }
+.qnode { position: absolute; width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; border: 4px solid var(--card); background: var(--jade); box-shadow: 0 6px 16px rgba(34, 48, 43, .28); transition: transform .12s; }
+.qnode:active { transform: scale(.94); }
+.qnode.locked { background: #aeb7b2; filter: grayscale(.4); }
+.qnode.locked span { font-size: 22px; opacity: .8; }
+.qnode.current { background: var(--seal); animation: qpulse 1.8s ease-in-out infinite; }
+.qnode.done { background: var(--jade); }
+.qnode.boss { width: 66px; height: 66px; margin: -4px 0 0 -4px; border-color: var(--gold); }
+.qnode em { position: absolute; right: -6px; top: -6px; width: 24px; height: 24px; border-radius: 50%; background: var(--gold); color: #fff; font-style: normal; font-size: 14px; font-weight: 800; display: grid; place-items: center; border: 2px solid var(--card); }
+@keyframes qpulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(197, 65, 58, .5), 0 6px 16px rgba(34, 48, 43, .28); } 50% { box-shadow: 0 0 0 14px rgba(197, 65, 58, 0), 0 6px 16px rgba(34, 48, 43, .28); } }
+.qlabel { position: absolute; padding: 6px 8px; border-radius: 12px; background: color-mix(in srgb, var(--card) 88%, transparent); border: 1px solid var(--line); pointer-events: none; }
+.qlabel small { display: block; color: var(--mute); font-size: 11px; }
+.qlabel .zhl { font-size: 15px; line-height: 1.9; }
+.qlabel .tl { font-size: 12px; color: var(--mute); line-height: 1.2; }
+.qlabel .pg { font-size: 12px; font-weight: 700; color: var(--seal); }
+.qlabel.locked { opacity: .55; }
+.qwho { position: absolute; width: 38px; height: 42px; pointer-events: none; animation: qbob 1.4s ease-in-out infinite; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .25)); }
+.qwho svg { width: 100%; height: 100%; }
+@keyframes qbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.qsoon { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.qsoon .it { display: flex; gap: 10px; align-items: center; opacity: .75; }
+.qsoon .it > span { font-size: 26px; filter: grayscale(.5); }
+.qsoon small { display: block; color: var(--mute); }
+
+/* ── герой / гардероб ── */
+.qprev { height: 210px; display: grid; place-items: end center; border-radius: 22px; background: linear-gradient(180deg, var(--mist), var(--bg2)); margin-bottom: 12px; overflow: hidden; }
+.qprev svg { height: 100%; width: auto; }
+.qskins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.qskin { border: 1.5px solid var(--line); background: var(--card); border-radius: 16px; padding: 6px 4px 8px; text-align: center; position: relative; }
+.qskin .av { width: 52px; height: 58px; margin: 0 auto 2px; border-radius: 16px; background: var(--mist); display: grid; place-items: end center; overflow: hidden; }
+.qskin .av svg { width: 92%; height: auto; }
+.qskin span { display: block; font-size: 12px; font-weight: 700; line-height: 1.15; }
+.qskin em { display: block; font-style: normal; font-size: 11px; color: var(--mute); margin-top: 2px; }
+.qskin.on { border-color: var(--jade); background: var(--mist); }
+.qskin.lock .av { opacity: .65; }
+.sheet input + .qskins, .sheet .qprev + .seg { margin-top: 0; }
+
+/* ── окна магазина ── */
+.qopt { display: flex; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); margin-top: 6px; }
+.qopt .tx { flex: 1; min-width: 0; } .qopt .tx b { display: block; } .qopt .tx small { color: var(--mute); }
+.prow { display: flex; gap: 6px; flex: none; }
+.prow .btn { width: auto; min-width: 70px; padding: 6px 12px; }
+.btn.star { background: linear-gradient(180deg, #f6c453, #e3a62a); color: #3b2a05; }
+.packs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.pack { border: 1.5px solid var(--gold); background: color-mix(in srgb, var(--gold) 10%, var(--card)); border-radius: 16px; padding: 12px 6px; display: grid; gap: 4px; text-align: center; }
+.pack b { font-family: var(--serif); font-size: 18px; } .pack span { font-weight: 700; color: var(--mute); }
+.linkbtn { color: var(--jade); font-weight: 700; font-size: 14px; }
+.dlglist { display: grid; gap: 8px; max-height: 52vh; overflow: auto; margin-top: 6px; }
+.dl { padding: 8px 12px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.dl.me { background: var(--mist); }
+.dl small { color: var(--mute); display: block; font-size: 12px; }
+.dl .trl { color: var(--mute); font-size: 14.5px; margin-top: 2px; }
+
+.qcreate input, .sheet input { width: 100%; margin-top: 8px; padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-size: 17px; outline: none; }
+.qcreate input:focus { border-color: var(--jade); }
+
+.qopt > .btn { width: auto; flex: none; min-width: 56px; }
+
+/* ── приз и рейтинг ── */
+.qprize { display: flex; gap: 14px; align-items: center; border: 1.5px solid var(--gold); background: color-mix(in srgb, var(--gold) 12%, var(--card)); }
+.qprize .em, .qrate .em { font-size: 30px; width: 50px; height: 50px; border-radius: 16px; background: var(--mist); display: grid; place-items: center; flex: none; }
+.qprize.in { border-color: var(--jade); background: color-mix(in srgb, var(--jade) 9%, var(--card)); }
+.qprize.won { border-color: var(--seal); background: color-mix(in srgb, var(--seal) 10%, var(--card)); }
+.qrate { display: block; width: 100%; text-align: left; }
+.qrate .row { display: flex; gap: 14px; align-items: center; }
+.qtop3 { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.qtop3 .me { color: var(--seal); }
+.qrows { display: grid; gap: 6px; max-height: 52vh; overflow: auto; }
+.qrow { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
+.qrow.me { border-color: var(--seal); background: color-mix(in srgb, var(--seal) 8%, var(--card)); }
+.qrow .pl { width: 30px; text-align: center; font-weight: 800; font-size: 18px; flex: none; }
+.qrow .av { width: 38px; height: 42px; border-radius: 12px; background: var(--mist); overflow: hidden; display: grid; place-items: end center; flex: none; }
+.qrow .av svg { width: 92%; height: auto; }
+.qrow .nm { flex: 1; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qrow .nm small { display: block; font-weight: 500; color: var(--mute); font-size: 12px; }
+.qrow .pt { font-family: var(--serif); font-size: 18px; color: var(--jade); }
+.btn.block { display: block; width: 100%; }
