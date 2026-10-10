@@ -35,6 +35,24 @@ from datetime import datetime, timedelta
 import telebot
 from telebot import types
 
+def _unpack_assets():
+    """Запасной путь: если папки webapp_static / quest_data не доехали до сервера, берём их из webapp_assets.zip (лежит рядом с bot.py)."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    need = [os.path.join(here, "webapp_static", "index.html"), os.path.join(here, "quest_data", "ch1.json")]
+    z = os.path.join(here, "webapp_assets.zip")
+    if all(os.path.isfile(f) for f in need) or not os.path.isfile(z):
+        return
+    try:
+        import zipfile
+        with zipfile.ZipFile(z) as zf:
+            for n in zf.namelist():
+                if n.startswith(("webapp_static/", "quest_data/")) and ".." not in n:
+                    zf.extract(n, here)
+        logging.warning("Папки webapp_static и quest_data распакованы из webapp_assets.zip")
+    except Exception:
+        logging.exception("Не удалось распаковать webapp_assets.zip")
+
+
 import db
 import scheduler
 import dictionary
@@ -68,6 +86,7 @@ if not TOKEN or TOKEN.startswith("ВСТАВЬ"):
         "   На хостинге: добавь переменную BOT_TOKEN в настройках.\n")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)s  %(message)s")
+_unpack_assets()
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
 db.init()
 quest.init_db()
