@@ -136,3 +136,27 @@ P["zh"] = {
     "bk_b_again": "📅 选择其他时间",
     "bk_cancelled_by_teacher": "抱歉，<b>{name}</b> 老师取消了 {day} {time} 的课。请在“预约上课”里选择其他时间 🍵",
 }
+
+P["ru"].update({
+    "board_word": "Тренировка слов",
+    "board_quest": "Путешествие по Китаю с 茶茶",
+    "theme_win": "🏆 <b>Ты победил(а) в рейтинге «{board}»!</b>\n\nТвой приз: оформление профиля «{theme}» {emoji}. Оно уже надето. Открой игру: интерфейс стал другим, а в таблице тебя видно по особой подсветке.\n\nОформление действует до воскресенья ({until}) включительно. Потом подведут новые итоги, оно исчезнет, а у нового победителя будет другое. Свои победы ты сохраняешь в карточке навсегда. Снять или сменить оформление можно в игре: «Профиль» → «Оформления» 🍵",
+})
+
+P["uz"].update({
+    "board_word": "So'z mashqi",
+    "board_quest": "茶茶 bilan Xitoy bo'ylab sayohat",
+    "theme_win": "🏆 <b>Siz «{board}» reytingida g'olib bo'ldingiz!</b>\n\nSovg'angiz: «{theme}» {emoji} profil bezagi. U allaqachon kiyilgan. O'yinni oching: interfeys o'zgardi, jadvalda esa sizni maxsus ajratilgan holda ko'rishadi.\n\nBezak yakshanbagacha ({until}) amal qiladi. Keyin yangi natijalar chiqadi, u yo'qoladi, yangi g'olibda esa boshqasi bo'ladi. G'alabalaringiz kartochkada abadiy qoladi. Bezakni o'yinda almashtirish yoki yechish mumkin: «Profil» → «Bezaklar» 🍵",
+})
+
+P["en"].update({
+    "board_word": "Word practice",
+    "board_quest": "Journey Through China with 茶茶",
+    "theme_win": "🏆 <b>You won the “{board}” ranking!</b>\n\nYour prize: the “{theme}” {emoji} profile theme. It is already on. Open the game: the interface looks different and you stand out in the table with a special highlight.\n\nThe theme lasts through Sunday ({until}). Then new results are announced, it disappears and the new winner gets a different one. Your wins stay on your card for good. You can change or remove the theme in the game: “Profile” → “Themes” 🍵",
+})
+
+P["zh"].update({
+    "board_word": "单词练习",
+    "board_quest": "和茶茶游中国",
+    "theme_win": "🏆 <b>你赢得了“{board}”排行榜！</b>\n\n你的奖品：「{theme}」{emoji} 个人主页主题。它已经穿在你身上了。打开游戏看看：界面变了，在榜单里你也会被特别高亮。\n\n主题持续到周日（{until}）。之后公布新的结果，它会消失，新冠军会得到另一款。你的夺冠次数会永久留在名片上。可以在游戏里更换或取消主题：“个人” → “主题” 🍵",
+})

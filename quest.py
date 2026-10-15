@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Квест «Путешествие с Чачей» (茶茶的旅行): прогресс, жизни, монеты, магазин, оплата Telegram Stars.
+"""Квест «Путешествие по Китаю с 茶茶» (和茶茶游中国): прогресс, жизни, монеты, магазин, оплата Telegram Stars.
 
 Все правила живут здесь, на сервере. Приложение только показывает: ответы проверяются тут,
 поэтому монеты и жизни нельзя «накрутить» через консоль браузера.
@@ -13,6 +13,7 @@ import threading
 import time
 from pathlib import Path
 
+import themes
 import db
 
 DATA_PATH = Path(__file__).parent / "quest_data"
@@ -29,37 +30,45 @@ CARDS_N = 5
 CARDS_MIN_SEC = 20              # карточки нельзя «пролистать» быстрее
 FREE_SKINS = (0, 1, 2)          # 6 нарядов, первые три бесплатно
 
-ITEMS = {                       # id: (монеты, звёзды)
-    "life": (25, 50),           # одна жизнь
-    "refill": (150, 300),       # все жизни сразу
-    "extra": (300, 600),        # ещё одна сцена сегодня
-    "skin": (150, 300),         # новый наряд
+ITEMS = {                       # id: (монеты, звёзды). Курс с версии 17: 1 монета = 1 ⭐, цены в монетах и звёздах совпадают
+    "life": (50, 50),           # одна жизнь
+    "refill": (300, 300),       # все жизни сразу
+    "extra": (600, 600),        # ещё одна сцена сегодня
+    "skin": (300, 300),         # новый наряд
 }
-COIN_PER_STAR = 0.5             # если человек заплатил, а покупка потеряла смысл: возвращаем монетами
+COIN_PER_STAR = 1.0             # если человек заплатил, а покупка потеряла смысл: возвращаем монетами
 PACKS = {}                      # пакетов монет за звёзды больше нет: монеты только зарабатываются
 DONATE_STARS = (10, 50, 100)
 PRIZE_ON = os.getenv("PRIZE_ON", "1") != "0"     # розыгрыш скина среди прошедших первую сцену
 
 ITEM_TXT = {
-    "ru": {"life": ("Жизнь", "+1 жизнь в игре «Путешествие с Чачей»"),
-           "refill": ("Все жизни", "Сразу пять жизней в игре «Путешествие с Чачей»"),
-           "extra": ("Ещё одна сцена", "Продолжить путь сегодня: ещё одна сцена в игре «Путешествие с Чачей»"),
-           "skin": ("Новый наряд", "Наряд для героя в игре «Путешествие с Чачей»"),
+    "ru": {"life": ("Жизнь", "+1 жизнь в игре «Путешествие по Китаю с 茶茶»"),
+           "refill": ("Все жизни", "Сразу пять жизней в игре «Путешествие по Китаю с 茶茶»"),
+           "extra": ("Ещё одна сцена", "Продолжить путь сегодня: ещё одна сцена в игре «Путешествие по Китаю с 茶茶»"),
+           "skin": ("Новый наряд", "Наряд для героя в игре «Путешествие по Китаю с 茶茶»"),
+           "theme": ("Оформление «{name}»", "Оформление профиля в игре «Путешествие по Китаю с 茶茶»"),
+           "coins": ("{n} монет", "Монеты для игры «Путешествие по Китаю с 茶茶»"),
            "donate": ("Поддержать проект", "Спасибо, что помогаешь проекту «清越» расти 🍵")},
-    "uz": {"life": ("Jon", "«Chacha bilan sayohat» o'yinida +1 jon"),
-           "refill": ("Barcha jonlar", "«Chacha bilan sayohat» o'yinida birdaniga besh jon"),
-           "extra": ("Yana bir sahna", "Bugun yo'lni davom ettirish: «Chacha bilan sayohat»da yana bir sahna"),
-           "skin": ("Yangi kiyim", "«Chacha bilan sayohat» o'yinida qahramon uchun kiyim"),
+    "uz": {"life": ("Jon", "«茶茶 bilan Xitoy bo'ylab sayohat» o'yinida +1 jon"),
+           "refill": ("Barcha jonlar", "«茶茶 bilan Xitoy bo'ylab sayohat» o'yinida birdaniga besh jon"),
+           "extra": ("Yana bir sahna", "Bugun yo'lni davom ettirish: «茶茶 bilan Xitoy bo'ylab sayohat»da yana bir sahna"),
+           "skin": ("Yangi kiyim", "«茶茶 bilan Xitoy bo'ylab sayohat» o'yinida qahramon uchun kiyim"),
+           "theme": ("«{name}» bezagi", "«茶茶 bilan Xitoy bo'ylab sayohat» o'yinida profil bezagi"),
+           "coins": ("{n} tanga", "«茶茶 bilan Xitoy bo'ylab sayohat» o'yini uchun tangalar"),
            "donate": ("Loyihani qo'llab-quvvatlash", "«清越» loyihasi o'sishiga yordam berganingiz uchun rahmat 🍵")},
-    "en": {"life": ("Life", "+1 life in “Journey with Chacha”"),
-           "refill": ("All lives", "Five lives at once in “Journey with Chacha”"),
-           "extra": ("One more scene", "Keep going today: one more scene in “Journey with Chacha”"),
-           "skin": ("New outfit", "An outfit for your hero in “Journey with Chacha”"),
+    "en": {"life": ("Life", "+1 life in “Journey Through China with 茶茶”"),
+           "refill": ("All lives", "Five lives at once in “Journey Through China with 茶茶”"),
+           "extra": ("One more scene", "Keep going today: one more scene in “Journey Through China with 茶茶”"),
+           "skin": ("New outfit", "An outfit for your hero in “Journey Through China with 茶茶”"),
+           "theme": ("“{name}” profile theme", "A profile theme in “Journey Through China with 茶茶”"),
+           "coins": ("{n} coins", "Coins for “Journey Through China with 茶茶”"),
            "donate": ("Support the project", "Thank you for helping 清越 grow 🍵")},
-    "zh": {"life": ("生命", "《茶茶的旅行》+1 条生命"),
-           "refill": ("全部生命", "《茶茶的旅行》一次补满五条生命"),
-           "extra": ("再来一幕", "今天继续旅行：《茶茶的旅行》再玩一幕"),
-           "skin": ("新装扮", "《茶茶的旅行》主角的新装扮"),
+    "zh": {"life": ("生命", "《和茶茶游中国》+1 条生命"),
+           "refill": ("全部生命", "《和茶茶游中国》一次补满五条生命"),
+           "extra": ("再来一幕", "今天继续旅行：《和茶茶游中国》再玩一幕"),
+           "skin": ("新装扮", "《和茶茶游中国》主角的新装扮"),
+           "theme": ("「{name}」主题", "《和茶茶游中国》个人主页主题"),
+           "coins": ("{n} 金币", "《和茶茶游中国》金币"),
            "donate": ("支持项目", "感谢你帮助「清越」成长 🍵")},
 }
 
@@ -142,6 +151,7 @@ def init_db():
         first = scenes()[0]["id"] if scenes() else None
         if first:
             c.execute("INSERT OR IGNORE INTO quest_prize (user_id, ts) SELECT user_id, done_day FROM quest_prog WHERE scene_id=?", (first,))
+    themes.init_db()
 
 
 def _row(c, sql, a=()):
@@ -546,6 +556,13 @@ def parse_item(item):
         return "skin", int(m.group(1)), ITEMS["skin"][0], ITEMS["skin"][1]
     if item in ("life", "refill", "extra"):
         return item, None, ITEMS[item][0], ITEMS[item][1]
+    m = re.fullmatch(r"theme_([a-z0-9]+)", item or "")
+    if m and themes.price(m.group(1)):
+        pc, ps = themes.price(m.group(1))
+        return "theme", m.group(1), pc, ps
+    if item in themes.PACKS:
+        n, ps = themes.PACKS[item]
+        return "coins", n, None, ps          # пакет монет продаётся только за звёзды
     return None
 
 
@@ -566,6 +583,12 @@ def _apply(c, uid, kind, arg):
     elif kind == "extra":
         day = _day_row(c, uid)
         c.execute("UPDATE quest_day SET extra=extra+1 WHERE user_id=? AND day=?", (uid, day["day"]))
+    elif kind == "theme":
+        if themes.has(uid, arg, c) and (themes.owned(uid, c).get(arg) or {}).get("expires") is None:
+            return False, "owned"
+        themes.grant(uid, arg, "buy", conn=c)
+    elif kind == "coins":
+        c.execute("UPDATE quest_char SET coins=coins+? WHERE user_id=?", (arg, uid))
     elif kind == "skin":
         owned = _owned(ch)
         if arg in owned:
@@ -580,10 +603,15 @@ def buy_coins(uid, item):
     if not p:
         return {"err": "item"}
     kind, arg, price, _ = p
+    if price is None:
+        return {"err": "item"}
     with _LOCK, db._conn() as c:
         ch = _row(c, "SELECT * FROM quest_char WHERE user_id=?", (uid,))
         if not ch:
             return {"err": "nochar"}
+        if (kind == "theme" and themes.has(uid, arg, c) and (themes.owned(uid, c).get(arg) or {}).get("expires") is None) \
+                or (kind == "skin" and arg in _owned(ch)):
+            return {"err": "owned"}                       # «уже куплено» важнее, чем «не хватает монет»
         if ch["coins"] < price:
             return {"err": "poor", "need": price - ch["coins"]}
         # сначала проверяем, что покупка имеет смысл (жизни полны, наряд уже есть), и только потом списываем
@@ -673,7 +701,8 @@ def board(uid, tab="week", exclude=()):
         shown = [r for r in rows if not r["hide"]]
         out = []
         for i, r in enumerate(shown[:BOARD_TOP]):
-            out.append({"place": i + 1, "hero": r["hero"], "gender": r["gender"], "skin": r["skin"], "pts": r["pts"], "scenes": r["scenes"], "me": r["uid"] == uid})
+            out.append({"place": i + 1, "hero": r["hero"], "gender": r["gender"], "skin": r["skin"], "pts": r["pts"], "scenes": r["scenes"], "me": r["uid"] == uid,
+                        "ref": themes.ref(r["uid"]), "theme": themes.public_theme(r["uid"])})
         me = None
         for i, r in enumerate(shown):
             if r["uid"] == uid:
@@ -683,7 +712,7 @@ def board(uid, tab="week", exclude=()):
             mine = next((r for r in rows if r["uid"] == uid), None)
             if mine:
                 me = {"place": None, "pts": mine["pts"], "scenes": mine["scenes"], "hidden": bool(mine["hide"])}
-        return {"tab": tab, "rows": out, "me": me, "total": len(shown), "week_start": _week_start()}
+        return {"tab": tab, "rows": out, "me": me, "total": len(shown), "week_start": _week_start(), "min": themes.QUEST_WIN_MIN}
 
 
 # ───────────────────────── розыгрыш скина ─────────────────────────
@@ -717,6 +746,10 @@ def item_text(lang, item):
     if not p:
         return ("?", "?")
     kind, arg = p[0], p[1]
+    if kind == "theme":
+        x = themes.BY_ID[arg]
+        ti, de = tx["theme"]
+        return ti.format(name=x["name"].get(lang) or x["name"]["en"]), de
     ti, de = tx[kind]
     return ti.format(n=arg), de
 
@@ -726,7 +759,52 @@ def payload_for(uid, item, nonce):
 
 
 def parse_payload(payload):
-    m = re.fullmatch(r"q1:([a-z0-9]+):(\d+):([A-Za-z0-9]{4,24})", payload or "")
+    m = re.fullmatch(r"q1:([a-z0-9_]+):(\d+):([A-Za-z0-9]{4,24})", payload or "")
     if not m:
         return None
     return m.group(1), int(m.group(2)), m.group(3)
+
+# ───────────────────────── бейджи путешествия ─────────────────────────
+
+JOURNEY_BADGES = ["j_first", "j_half", "j_chapter", "j_perfect", "j_streak3", "j_streak7", "j_coins", "j_wardrobe",
+                  "j_theme", "j_friend", "j_ranked", "j_winner"]
+BADGE_COINS = 300               # «Копилка»: столько монет заработано в игре за всё время
+
+
+def _best_streak(days):
+    """Самая длинная серия дней подряд среди заданных дат (строки ГГГГ-ММ-ДД)."""
+    from datetime import date, timedelta
+    ds = sorted({date.fromisoformat(d) for d in days if d})
+    best = cur = 0
+    prev = None
+    for d in ds:
+        cur = cur + 1 if prev and d - prev == timedelta(days=1) else 1
+        best = max(best, cur)
+        prev = d
+    return best
+
+
+def journey_badges(uid, friends=0, joined=False, wins=0):
+    """{id бейджа: получен ли}. Считается из прогресса в игре «Путешествие по Китаю с 茶茶», навсегда: потерять нельзя."""
+    load_chapters()
+    total = len(_CACHE["scenes"]) or 8
+    with db._conn() as c:
+        prog = c.execute("SELECT done_day, mistakes FROM quest_prog WHERE user_id=?", (uid,)).fetchall()
+        earned = c.execute("SELECT COALESCE(SUM(pts),0) FROM quest_score WHERE user_id=?", (uid,)).fetchone()[0]
+        days = [r[0] for r in c.execute("SELECT day FROM quest_score WHERE user_id=? AND pts>0", (uid,)).fetchall()] + [r[0] for r in prog]
+        ch = _row(c, "SELECT owned, hide FROM quest_char WHERE user_id=?", (uid,))
+        try:
+            th = c.execute("SELECT COUNT(*) FROM theme_owned WHERE user_id=?", (uid,)).fetchone()[0]
+        except Exception:
+            th = 0
+    done = len(prog)
+    perfect = sum(1 for r in prog if not r[1])
+    streak = _best_streak(days)
+    skins = len(_owned(ch)) if ch else 0
+    return {
+        "j_first": done >= 1, "j_half": done >= 4, "j_chapter": done >= total,
+        "j_perfect": perfect >= 1, "j_streak3": streak >= 3, "j_streak7": streak >= 7,
+        "j_coins": earned >= BADGE_COINS, "j_wardrobe": skins > len(FREE_SKINS), "j_theme": th > 0,
+        "j_friend": friends >= 1, "j_ranked": bool(joined) or bool(ch and not ch["hide"] and earned > 0), "j_winner": wins >= 1,
+    }
+

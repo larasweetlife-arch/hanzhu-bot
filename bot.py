@@ -58,6 +58,8 @@ import scheduler
 import dictionary
 import practice
 import quest
+import booking
+import themes
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
 from texts_v8 import WISHES
@@ -90,6 +92,7 @@ _unpack_assets()
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
 db.init()
 quest.init_db()
+themes.configure(OWNER_ID, TOKEN)
 
 esc = lambda s: html.escape(str(s), quote=False)   # только < > &: апострофы узбекского (o', g') не трогаем                      # всё, что вводит человек, экранируем перед отправкой
 STATE = {}                             # диалоги: {user_id: {"step": ..., "data": {...}}}
@@ -146,7 +149,7 @@ def kb_main(uid):
     k.row(t(lang, "b_grammar"), t(lang, "b_texts"))
     k.row(t(lang, "b_progress"), t(lang, "b_adult"))
     k.row(t(lang, "b_lang"), t(lang, "b_channel"))
-    k.row(t(lang, "b_practice"), t(lang, "b_rules"))
+    k.row(t(lang, "b_practice"), t(lang, "b_book"))
     if not is_owner(uid):
         if (db.get_user(uid) or {}).get("is_student"):
             k.row(t(lang, "b_friend"))
@@ -579,6 +582,31 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
+VERSION = "17"
+VERSION_INFO = "оформления профиля, озвучка с сервера, запись на занятия, бейджи путешествия"
+
+
+@bot.message_handler(commands=["version"])
+def cmd_version(m):
+    """Чтобы можно было проверить, какая версия бота реально работает на сервере."""
+    bot.send_message(m.chat.id, f"🐉 Работает версия {VERSION}: {VERSION_INFO}.\nЕсли в меню ещё «Правила игры», нажми /start: Telegram хранит старые кнопки, пока бот не пришлёт новые.",
+                     reply_markup=kb_main(m.from_user.id))
+
+
+def announce_version():
+    """После выкладки новой версии один раз пишем владельцу: так видно, что обновление доехало до сервера."""
+    if not OWNER_ID:
+        return
+    f = db.DATA_DIR / "last_version.txt"
+    try:
+        if f.is_file() and f.read_text().strip() == VERSION:
+            return
+        bot.send_message(OWNER_ID, f"🐉 Бот запущен: версия {VERSION}.\nВ ней: {VERSION_INFO}.\nНажми /start, чтобы обновилось меню.")
+        f.write_text(VERSION)
+    except Exception as e:
+        logging.warning("не удалось сообщить о версии: %s", e)
+
+
 @bot.message_handler(commands=["about"])
 def cmd_about(m):
     lang = lang_of(m.from_user.id)
@@ -921,7 +949,7 @@ def send_weekly(now):
     top = db.top_events_since(since)
     labels = {"word": "Слово дня", "chengyu": "Чэнъюй", "fact": "Факт", "progress": "Прогресс",
               "translate": "Перевод", "grammar": "Грамматика", "texts": "Тексты", "adult": "Раздел 16+",
-              "quiz": "Викторина", "cards": "Карточки", "tea": "Чайная лавка"}
+              "quiz": "Викторина", "cards": "Карточки", "tea": "Тренировка слов"}
     low = []
     for s in db.students():
         _, _, left = db.balance(s["user_id"])
@@ -1515,7 +1543,7 @@ def cb_cards(c):
     show_card(uid, c)
 
 
-# ── Чайная лавка ──
+# ── Тренировка слов ──
 
 def tea_status(uid, lang):
     g = db.game_get(uid, practice.LIVES_PER_DAY)
@@ -2653,6 +2681,8 @@ def cb_hw_submit(c):
 def on_file(m):
     uid = m.from_user.id
     lang = lang_of(uid)
+    if booking.on_photo(m):                     # фото для поста преподавателя
+        return
     if not hw_sub_state(uid):
         if not is_owner(uid) and db.hw_open(uid):
             bot.send_message(uid, t(lang, "hw_hint"))
@@ -2793,8 +2823,28 @@ def cb_board(c):
         return edit_or_send(c, t(lang, "hw_cancelled"))
 
 
+def close_week_themes(prev):
+    """Итоги недели prev (понедельник): победители обоих рейтингов получают оформление профиля на неделю.
+    Вызывается один раз за неделю. Возвращает строки для владельца."""
+    start, end, ranked = week_ranking(prev)
+    qrows = themes.quest_ranked(start, end, exclude=(OWNER_ID,))
+    won = themes.close_week(prev, ranked, qrows, practice.BOARD_MIN_POINTS)
+    lines = []
+    for w in won:
+        uid, x = w["user_id"], themes.BY_ID[w["theme_id"]]
+        pl = (db.get_user(uid) or {}).get("lang") or "ru"
+        board = t(pl, "board_word" if w["kind"] == "word" else "board_quest")
+        until = datetime.strptime(w["expires"], "%Y-%m-%d").strftime("%d.%m")
+        safe_send(uid, t(pl, "theme_win", board=board, theme=esc(x["name"].get(pl) or x["name"]["en"]), emoji=x["emoji"], until=until))
+        themes.mark_notified(w["week_start"], w["kind"])
+        who = board_name(uid) if w["kind"] == "word" else ((quest.char_get(uid) or {}).get("hero") or "?")
+        lines.append(f"{'Тренировка слов' if w['kind'] == 'word' else 'Путешествие'}: «{esc(who)}», {w['pts']} очков → "
+                     f"{x['emoji']} {esc(x['name']['ru'])} (до {datetime.strptime(w['expires'], '%Y-%m-%d').strftime('%d.%m')})")
+    return start, end, ranked, lines
+
+
 def board_hook(now):
-    """В понедельник после 9:00: итоги прошлой недели участникам и приз победителю (один раз за неделю)."""
+    """В понедельник после 9:00: итоги прошлой недели участникам; победителям обоих рейтингов оформление профиля (один раз за неделю)."""
     if now.hour < 9:
         return
     cur_mon = now.date() - timedelta(days=now.weekday())
@@ -2803,28 +2853,26 @@ def board_hook(now):
     if db.was_sent(0, key):
         return
     db.mark_sent(0, key)
-    start, end, ranked = week_ranking(prev)
-    if not ranked:
-        return
+    try:
+        start, end, ranked, lines = close_week_themes(prev)
+    except Exception:
+        logging.exception("итоги недели: оформления")
+        start, end, ranked = week_ranking(prev)
+        lines = []
     s, e = _fmt_d(start), _fmt_d(end)
-    for i, r in enumerate(ranked):
-        pl = (db.get_user(r["user_id"]) or {}).get("lang") or "ru"
-        you = t(pl, "top_you", place=i + 1, pts=r["points"])
-        safe_send(r["user_id"], t(pl, "board_result", start=s, end=e, rows=board_lines(ranked, 3, r["user_id"]), you=you))
-    win = ranked[0]
-    if win["points"] >= practice.BOARD_MIN_POINTS:
-        wid = win["user_id"]
-        safe_send(wid, t((db.get_user(wid) or {}).get("lang") or "ru", "board_win"))
-        u = db.get_user(wid) or {}
-        db.feed_add(wid, "win", f"{s}–{e}")
-        give_note(wid, "prize_lesson", f"Авторский урок на тему по выбору — победитель недели {s}–{e}, ник «{board_name(wid)}», "
-                                       f"{u.get('name') or '?'} "
-                                       f"({win['points']} очков, точность {win['acc'] * 100:.0f}%). "
-                                       f"Свяжись, чтобы выбрать тему (она не должна нарушать правила игры) и время. "
-                                       f"@{u.get('username') or '—'}")
-    else:
-        notify_owner(f"🏆 Итоги недели {s}–{e}: лучший результат {win['points']} очков, это меньше минимума "
-                     f"({practice.BOARD_MIN_POINTS}). Приз на этой неделе не выдан.")
+    if ranked:
+        for i, r in enumerate(ranked):
+            pl = (db.get_user(r["user_id"]) or {}).get("lang") or "ru"
+            you = t(pl, "top_you", place=i + 1, pts=r["points"])
+            safe_send(r["user_id"], t(pl, "board_result", start=s, end=e, rows=board_lines(ranked, 3, r["user_id"]), you=you))
+        win = ranked[0]
+        if win["points"] >= practice.BOARD_MIN_POINTS:
+            db.feed_add(win["user_id"], "win", f"{s}–{e}")
+    if lines:
+        notify_owner(f"🏆 <b>Итоги недели {s}–{e}</b>\nОформления победителям выданы автоматически:\n" + "\n".join("· " + x for x in lines))
+    elif ranked:
+        notify_owner(f"🏆 Итоги недели {s}–{e}: лучший результат {ranked[0]['points']} очков, это меньше минимума "
+                     f"({practice.BOARD_MIN_POINTS}). Оформление на этой неделе не выдано.")
 
 
 # ─── ПОДАРКИ, КОТОРЫЕ ВЫДАЁШЬ ТЫ (список и отметка «выдано») ──────────────────
@@ -2979,8 +3027,11 @@ def cmd_stickers(m):
 
 def menu_labels(lang):
     keys = ("b_word", "b_chengyu", "b_fact", "b_tr", "b_progress", "b_lang", "b_grammar", "b_texts",
-            "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_channel", "b_help", "b_donate")
+            "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_book", "b_channel", "b_help", "b_donate")
     return {t(lang, k) for k in keys}
+
+
+booking.register(bot, OWNER_ID, lang_of, notify_owner, lambda u: ask_trial(u), menu_labels)
 
 
 @bot.message_handler(func=lambda m: True, content_types=["text"])
@@ -2997,6 +3048,9 @@ def on_text(m):
                 return bot.send_message(uid, "✅ Отправила")
             except Exception:
                 return bot.send_message(uid, "Не получилось отправить: человек мог закрыть бота.")
+
+    if booking.on_text(m):                      # диалог редактирования профиля преподавателя
+        return
 
     st = hw_sub_state(uid) or STATE.get(uid)
     if st and st["step"] == "hw_submit" and txt in menu_labels(lang_of(uid)):      # кнопка меню посреди сдачи
@@ -3185,7 +3239,8 @@ def on_text(m):
                t(lang, "b_progress"): send_progress, t(lang, "b_lang"): ask_language,
                t(lang, "b_grammar"): send_grammar, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
                t(lang, "b_sched"): send_schedule, t(lang, "b_practice"): send_practice,
-               t(lang, "b_friend"): send_friend, t(lang, "b_trial"): ask_trial, t(lang, "b_rules"): send_rules}
+               t(lang, "b_friend"): send_friend, t(lang, "b_trial"): ask_trial, t(lang, "b_rules"): send_rules,
+               t(lang, "b_book"): booking.start}
     if txt in actions:
         return actions[txt](uid)
     if txt == t(lang, "b_channel"):
@@ -3354,8 +3409,9 @@ def cmd_stars(m):
     r = quest.stars_report(30)
     tot, mon = r["total"], r["month"]
     names = {"life": "жизнь", "refill": "все жизни", "extra": "ещё одна сцена", "donate": "поддержка проекта"}
+    names.update({k: f"{v[0]} монет" for k, v in themes.PACKS.items()})
     def label(i):
-        return names.get(i) or ("наряд" if i.startswith("skin") else "пакет монет" if i.startswith("pack") else i)
+        return names.get(i) or ("наряд" if i.startswith("skin") else "оформление «" + themes.BY_ID[i[6:]]["name"]["ru"] + "»" if i.startswith("theme_") and i[6:] in themes.BY_ID else i)
     usd = lambda n: f"≈ ${n * 0.013:.2f}"
     lines = [f"⭐ <b>Звёзды</b>\nЗа 30 дней: <b>{mon[0]} ⭐</b> ({usd(mon[0])}), оплат: {mon[1]}, плательщиков: {mon[2]}",
              f"За всё время: <b>{tot[0]} ⭐</b> ({usd(tot[0])}), оплат: {tot[1]}, плательщиков: {tot[2]}"]
@@ -3420,7 +3476,7 @@ def cmd_prize_draw(m):
 
 @bot.message_handler(commands=["qtop"])
 def cmd_qtop(m):
-    """/qtop: рейтинг игры «Путешествие с Чачей» за неделю (для всех)."""
+    """/qtop: рейтинг игры «Путешествие по Китаю с 茶茶» за неделю (для всех)."""
     uid = m.from_user.id
     r = quest.board(uid, "week", exclude=(OWNER_ID,))
     lang = lang_of(uid)
@@ -3494,7 +3550,8 @@ if __name__ == "__main__":
             types.BotCommand("grammar", "грамматика"), types.BotCommand("texts", "тексты"),
             types.BotCommand("practice", "практика: викторина, карточки, игра"), types.BotCommand("top", "рейтинг недели"),
             types.BotCommand("rules", "правила игры"), types.BotCommand("quiz", "викторина"),
-            types.BotCommand("cards", "карточки"), types.BotCommand("tea", "Чайная лавка"),
+            types.BotCommand("cards", "карточки"), types.BotCommand("tea", "Тренировка слов"),
+            types.BotCommand("book", "записаться на занятия"),
             types.BotCommand("friend", "пригласить друга"), types.BotCommand("trial", "пробный урок"),
             types.BotCommand("parents", "родители: недельная сводка"),
             types.BotCommand("hw", "домашние задания"),
@@ -3505,6 +3562,7 @@ if __name__ == "__main__":
         if OWNER_ID:
             bot.set_my_commands([
                 types.BotCommand("admin", "панель преподавателя"), types.BotCommand("schedule", "мои уроки"),
+                types.BotCommand("teachers", "преподаватели и запись на занятия"), types.BotCommand("myteacher", "мой профиль преподавателя"),
                 types.BotCommand("menu", "меню"), types.BotCommand("backup", "копия базы"),
                 types.BotCommand("csv", "уроки и оплаты за месяц"), types.BotCommand("hw", "открытые домашки"),
                 types.BotCommand("practice", "практика"), types.BotCommand("groups", "группы учеников"),
@@ -3516,7 +3574,8 @@ if __name__ == "__main__":
                 scope=types.BotCommandScopeChat(OWNER_ID))
     except Exception as e:
         logging.warning("не удалось задать команды: %s", e)
-    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook)), daemon=True).start()
+    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook)), daemon=True).start()
     start_webapp()
+    announce_version()
     print("🐉 汉助 HanZhu запущен. Останови сочетанием Ctrl+C.")
     bot.infinity_polling(skip_pending=True, timeout=30)

@@ -1,5 +1,5 @@
 """
-Mini App «Чайная лавка 清越»: сайт, который открывается внутри Telegram, и его API.
+Mini App «Путешествие по Китаю с 茶茶 和茶茶游中国»: сайт, который открывается внутри Telegram, и его API.
 Работает в том же процессе, что и бот, и использует ту же базу, поэтому жизни, монеты, рейтинг и ники общие.
 
 Безопасность:
@@ -19,11 +19,13 @@ import time
 from datetime import datetime, timedelta
 from urllib.parse import parse_qsl, quote
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, send_file
 
 import db
 import practice
 import quest
+import themes
+import tts
 from texts import T, t
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -33,7 +35,7 @@ CHANNEL_URL = "https://t.me/qing_laoshi"
 INSTAGRAM_URL = "https://instagram.com/lllaziza_r"
 LANGS = ("ru", "uz", "en", "zh")
 
-ORDERS = {}                 # uid → текущий заказ в Чайной лавке {order, seq, answered, queue, gap, recent, ts}
+ORDERS = {}                 # uid → текущий заказ в тренировке слов {order, seq, answered, queue, gap, recent, ts}
 _LOCK = threading.Lock()
 
 
@@ -97,6 +99,8 @@ def create_app(deps):
     OWNER = deps.get("owner_id") or 0
     TOKEN = deps["token"]
     PAY = deps.get("pay") or {}
+    themes.configure(OWNER, TOKEN)
+    themes.init_db()
 
     def lives_max(g):
         return practice.LIVES_PER_DAY * (db.PRO_MULT if db.pro_active(g) else 1)
@@ -203,7 +207,7 @@ def create_app(deps):
                      "days_left": (datetime.strptime(end, "%Y-%m-%d").date() - now_tz().date()).days + 1,
                      "min": practice.BOARD_MIN_POINTS, "cap": practice.BOARD_DAILY_CAP},
             "season": {"ym": ym, "points": season["points"], "correct": season["correct"], "wrong": season["wrong"], "days": season["days"]},
-            "acc": acc, "play_streak": pstreak, "badges": practice.badges(stats),
+            "acc": acc, "play_streak": pstreak, "badges": quest.journey_badges(uid, friends=rs["joined"], joined=joined, wins=themes.wins(uid)["total"]),
             "gift": {"opened": bool(gift), "kind": gift["kind"] if gift else None, "amount": gift["amount"] if gift else None,
                      "streak": gstreak},
             "invite": {"link": link, "joined": rs["joined"], "trial": rs["trial"], "paid": rs["paid"],
@@ -213,6 +217,81 @@ def create_app(deps):
             "limits": {"nick_min": practice.NICK_MIN, "nick_max": practice.NICK_MAX},
             "links": {"instagram": INSTAGRAM_URL, "channel": CHANNEL_URL},
         }
+
+    @app.route("/api/tts")
+    def api_tts():
+        """Озвучка фразы: GET /api/tts?q=текст&a=initData. Подпись Telegram — в параметре a (тег <audio> не умеет заголовки)."""
+        tg = verify_init_data(request.args.get("a", ""), TOKEN)
+        if not tg:
+            return jsonify({"error": "auth"}), 401
+        text = (request.args.get("q") or "").strip()
+        if not tts.valid_text(text):
+            return jsonify({"error": "text"}), 400
+        p = tts.cached(text)
+        if not p:
+            if not tts.allow_user(tg["id"]):
+                return jsonify({"error": "rate"}), 429
+            p = tts.generate(text)
+        if not p:
+            return jsonify({"error": "unavailable"}), 503
+        resp = send_file(str(p), mimetype="audio/mpeg", max_age=86400, conditional=True)
+        resp.headers["Cache-Control"] = "private, max-age=86400"
+        return resp
+
+    # ── оформления профиля и чужие профили ──
+    @app.route("/api/themes", methods=["POST"])
+    @need_auth
+    def api_themes(tg, lang, u):
+        v = themes.view(tg["id"], lang)
+        ch = quest.char_get(tg["id"])
+        v["coins"] = ch["coins"] if ch else None
+        v["has_hero"] = bool(ch)
+        v["stars_on"] = STARS_ON
+        v["week_end"] = practice.week_bounds(now_tz().date())[1]
+        return jsonify(v)
+
+    @app.route("/api/themes/equip", methods=["POST"])
+    @need_auth
+    def api_theme_equip(tg, lang, u):
+        tid = jbody().get("id")
+        if tid is not None and tid not in themes.BY_ID:
+            return jsonify({"ok": False})
+        return jsonify({"ok": themes.equip(tg["id"], tid), "equipped": themes.equipped(tg["id"])})
+
+    @app.route("/api/profile/public", methods=["POST"])
+    @need_auth
+    def api_profile_public(tg, lang, u):
+        """Карточка другого игрока: только то, что и так видно в рейтинге, плюс победы и очки. Без монет и без настоящих имён."""
+        b = jbody()
+        kind = "word" if b.get("kind") == "word" else "quest"
+        with db._conn() as c:
+            quest_ids = [r[0] for r in c.execute("SELECT user_id FROM quest_char WHERE hide=0").fetchall()]
+        joined = list(db.board_joined() - {OWNER})
+        uid = themes.uid_from_ref(str(b.get("ref", "")), quest_ids if kind == "quest" else joined)
+        if not uid or uid == OWNER:
+            return jsonify({"ok": False})
+        w = themes.wins(uid)
+        out = {"ok": True, "kind": kind, "ref": themes.ref(uid), "theme": themes.public_theme(uid), "wins": w}
+        start, end = practice.week_bounds(now_tz().date())
+        if kind == "quest":
+            ch = quest.char_get(uid)
+            with db._conn() as c:
+                scenes = c.execute("SELECT COUNT(*) FROM quest_prog WHERE user_id=?", (uid,)).fetchone()[0]
+                week = c.execute("SELECT COALESCE(SUM(pts),0) FROM quest_score WHERE user_id=? AND day>=?", (uid, quest._week_start())).fetchone()[0]
+                total = c.execute("SELECT COALESCE(SUM(pts),0) FROM quest_score WHERE user_id=?", (uid,)).fetchone()[0]
+            out.update({"name": ch["hero"], "hero": {"gender": ch["gender"], "skin": ch["skin"], "hair": ch.get("hair") or 0,
+                                                     "hstyle": ch.get("hstyle") or 0, "hero": ch["hero"]},
+                        "scenes": scenes, "scenes_total": len(quest.scenes()), "week": week, "total": total})
+        else:
+            g = db.game_get(uid, practice.LIVES_PER_DAY)
+            th, emoji, tkey = practice.tea_title(g["served"])
+            ranked = practice.rank(db.score_week(start, end), db.board_joined(), exclude={OWNER})
+            wp = next((r["points"] for r in ranked if r["user_id"] == uid), 0)
+            ym = now_tz().strftime("%Y-%m")
+            season = next((r for r in db.month_score(ym) if r["user_id"] == uid), None) or {"points": 0}
+            out.update({"name": pub(uid), "emoji": emoji, "title": t(lang, tkey), "week": wp, "season": season["points"],
+                        "streak": db.play_streak(uid)})
+        return jsonify(out)
 
     @app.route("/api/me", methods=["POST"])
     @need_auth
@@ -270,7 +349,8 @@ def create_app(deps):
     def board_rows(rows, me, value_key="points", extra=None):
         out = []
         for i, r in enumerate(rows[:20]):
-            out.append({"place": i + 1, "nick": pub(r["user_id"]), "value": r[value_key], "me": r["user_id"] == me})
+            out.append({"place": i + 1, "nick": pub(r["user_id"]), "value": r[value_key], "me": r["user_id"] == me,
+                        "ref": themes.ref(r["user_id"]), "theme": themes.public_theme(r["user_id"])})
         return out
 
     @app.route("/api/board", methods=["POST"])
@@ -319,7 +399,7 @@ def create_app(deps):
                     res["me"] = {"place": r["place"], "value": r["value"]}
         return jsonify(res)
 
-    # ── Чайная лавка ──
+    # ── Тренировка слов ──
     @app.route("/api/tea/next", methods=["POST"])
     @need_auth
     def api_tea_next(tg, lang, u):
@@ -445,7 +525,7 @@ def create_app(deps):
             db.save_inbox(sent.message_id, uid)
         return jsonify({"ok": True})
 
-    # ── квест «Путешествие с Чачей» ──
+    # ── квест «Путешествие по Китаю с 茶茶» ──
     quest.init_db()
     STARS_ON = bool(deps.get("create_invoice"))
     DONATE = deps.get("donate") or {"on": False}
@@ -548,6 +628,10 @@ def create_app(deps):
 
 def serve(deps, port):
     app = create_app(deps)
+    try:
+        tts.prewarm(os.path.join(HERE, "quest_data"))
+    except Exception:
+        logging.exception("озвучка: подготовка не запустилась")
     try:
         from waitress import serve as wserve
         wserve(app, host="0.0.0.0", port=port, threads=8, ident="qingyue")

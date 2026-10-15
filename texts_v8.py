@@ -21,7 +21,7 @@ P["ru"] = {
     "mr_done": "🎉 <b>Поздравляю!</b>\n\nТы прошёл(ла) марафон <b>HSK {level}</b>: {total} вопросов!\n"
                "Верно: <b>{correct}/{total}</b> ({pct}%)\n🏅 Твоё звание: <b>{title}</b>\n\n"
                "🧧 <b>Пожелание от 茶茶</b>\n<b>{zh}</b>\n<code>{py}</code>\n<i>{meaning}</i>\n\n{wish}",
-    "mr_gift": "\n\n🎁 Подарок: +{n} жизней в Чайной лавке на сегодня.",
+    "mr_gift": "\n\n🎁 Подарок: +{n} жизней в тренировке слов на сегодня.",
     "mr_title_hi": "Мастер иероглифов", "mr_title_mid": "Чайный знаток", "mr_title_low": "Упорный путник",
     "mr_share": "📣 Рассказать другу", "mr_share_text": "Я прошёл(ла) марафон HSK {level} в боте 汉助: {correct}/{total}! 🍵",
     "mr_add": "🃏 Ошибки в карточки ({n})", "mr_more": "🏁 Другие уровни",
@@ -57,7 +57,7 @@ P["uz"] = {
     "mr_done": "🎉 <b>Tabriklayman!</b>\n\nSiz <b>HSK {level}</b> marafonini tugatdingiz: {total} ta savol!\n"
                "To'g'ri: <b>{correct}/{total}</b> ({pct}%)\n🏅 Unvoningiz: <b>{title}</b>\n\n"
                "🧧 <b>茶茶dan tilak</b>\n<b>{zh}</b>\n<code>{py}</code>\n<i>{meaning}</i>\n\n{wish}",
-    "mr_gift": "\n\n🎁 Sovg'a: bugun Choyxona do'konida +{n} jon.",
+    "mr_gift": "\n\n🎁 Sovg'a: bugun So'z mashqida +{n} jon.",
     "mr_title_hi": "Ieroglif ustasi", "mr_title_mid": "Choy bilimdoni", "mr_title_low": "Sabrli yo'lovchi",
     "mr_share": "📣 Do'stga aytish", "mr_share_text": "Men 汉助 botida HSK {level} marafonini tugatdim: {correct}/{total}! 🍵",
     "mr_add": "🃏 Xatolarni kartochkaga ({n})", "mr_more": "🏁 Boshqa darajalar",
@@ -92,7 +92,7 @@ P["en"] = {
     "mr_done": "🎉 <b>Congratulations!</b>\n\nYou finished the <b>HSK {level}</b> marathon: {total} questions!\n"
                "Correct: <b>{correct}/{total}</b> ({pct}%)\n🏅 Your title: <b>{title}</b>\n\n"
                "🧧 <b>A wish from 茶茶</b>\n<b>{zh}</b>\n<code>{py}</code>\n<i>{meaning}</i>\n\n{wish}",
-    "mr_gift": "\n\n🎁 Gift: +{n} lives in the Tea shop today.",
+    "mr_gift": "\n\n🎁 Gift: +{n} lives in Word practice today.",
     "mr_title_hi": "Master of characters", "mr_title_mid": "Tea connoisseur", "mr_title_low": "Persistent traveller",
     "mr_share": "📣 Tell a friend", "mr_share_text": "I finished the HSK {level} marathon in the 汉助 bot: {correct}/{total}! 🍵",
     "mr_add": "🃏 Mistakes to flashcards ({n})", "mr_more": "🏁 Other levels",
@@ -127,7 +127,7 @@ P["zh"] = {
     "mr_done": "🎉 <b>恭喜你！</b>\n\n你完成了 <b>HSK {level}</b> 马拉松：共 {total} 题！\n"
                "答对：<b>{correct}/{total}</b>（{pct}%）\n🏅 你的称号：<b>{title}</b>\n\n"
                "🧧 <b>茶茶的祝福</b>\n<b>{zh}</b>\n<code>{py}</code>\n<i>{meaning}</i>\n\n{wish}",
-    "mr_gift": "\n\n🎁 礼物：今天茶铺里 +{n} 条命。",
+    "mr_gift": "\n\n🎁 礼物：今天单词练习里 +{n} 条命。",
     "mr_title_hi": "汉字大师", "mr_title_mid": "品茶行家", "mr_title_low": "坚持的旅人",
     "mr_share": "📣 告诉朋友", "mr_share_text": "我在汉助机器人里完成了 HSK {level} 马拉松：{correct}/{total}！🍵",
     "mr_add": "🃏 错题加入单词卡（{n}）", "mr_more": "🏁 其他等级",
@@ -157,7 +157,7 @@ P["zh"] = {
     "fc_back": "🃏 <b>{zh}</b>  <code>{py}</code>\n📖 {meaning}",
     "fc_done": "今天就到这里 🎉 记住了：{known}/{total}。明天再来，复习会自动安排。",
     "fc_new": "已为你的卡组添加新词：{n}", "fc_stale": "这张卡已过期，请再点一次“单词卡”。",
-    "tea_intro": "🍵 <b>茶铺</b>\n\n顾客用中文点单，你来上对应的茶和茶具。"
+    "tea_intro": "🍵 <b>单词练习</b>\n\n顾客用中文点单，你来上对应的茶和茶具。"
                  "答对：+1 金币。答错：−1 条命，这个词稍后会再出现。\n\n"
                  "❤️ 今天的命数：{lives}\n🪙 金币：{coins}\n{emoji} {title}",
     "tea_start": "▶️ 开门营业",
@@ -165,7 +165,7 @@ P["zh"] = {
     "tea_right": "✅ 答对了！+{coins} 🪙", "tea_wrong": "❌ 不对。应该是：<b>{right}</b>\n❤️ 剩余命数：{lives}",
     "tea_closed": "🏮 今天茶铺打烊了：命用完了。明天又有 {max} 条。现在可以去做小测验或单词卡。",
     "tea_levelup": "🎉 新称号：{emoji} {title}！", "tea_next": "➡️ 下一位顾客", "tea_stop": "🚪 离开",
-    "tea_stale": "这个订单已过期，请再点一次“茶铺”。",
+    "tea_stale": "这个订单已过期，请再点一次“单词练习”。",
     "title0": "柜台新手", "title1": "茶师助手", "title2": "茶铺老板", "title3": "茶艺大师", "title4": "茶道导师",
     "trial_ask": "第一节试听课免费 🌿 请告诉我你方便的日期和时间，再简单介绍一下自己：年龄、想学什么"
                  "（例如：“周一到周三 18:00 以后，成人，零基础”）。我会转告 Laziza。",
@@ -174,7 +174,7 @@ P["zh"] = {
     "friend_text": "🎁 <b>邀请朋友</b>\n\n你的专属链接：\n<code>{link}</code>\n\n"
                    "<b>你可以得到：</b>\n{rewards}\n\n你的朋友第一节试听课免费。\n\n"
                    "通过你的链接加入：{joined} · 预约试听：{trial} · 开始上课：{paid}",
-    "ref_r1": "🎟 朋友启动机器人：今天茶铺里 +3 条命",
+    "ref_r1": "🎟 朋友启动机器人：今天单词练习里 +3 条命",
     "ref_r2": "🖌 朋友预约试听课：Laziza 送你一个中文名和一张书法卡片",
     "ref_r3": "🎁 朋友开始上课：赠送一节 30 分钟的口语课",
     "ref_welcome": "{name} 邀请了你 🌿 Laziza 的第一节试听课免费：点菜单里的“📝 试听课”。",
