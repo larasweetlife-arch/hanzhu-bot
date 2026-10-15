@@ -409,10 +409,10 @@ for _lang in T:
 
 # ─── Обновления политики и справки под новые функции ─────────────────────────
 _PRIV_ADD = {
-    "ru": ("\n\nТвои сообщения мне бот", "· прогресс в карточках и Чайной лавке (какие слова учишь, монеты, звания)\n· если пришёл(ла) по ссылке друга: кто пригласил (вы оба получаете уведомление с именем друг друга); если приглашаешь сам(а): сколько друзей пришло\n· домашние задания, просьбы о переносе урока и оценка занятий с текстом отзыва (если оставишь)"),
-    "uz": ("\n\nMenga yozgan xabarlaringizni", "· kartochkalar va Choyxona do'konidagi progress (qaysi so'zlarni o'rganyapsiz, tangalar, unvonlar)\n· do'st havolasi orqali kelgan bo'lsangiz: kim taklif qilgani (ikkalangizga ham bir-biringizning ismingiz bilan xabar boradi); o'zingiz taklif qilsangiz: nechta do'st kelgani\n· uy vazifalari, darsni ko'chirish so'rovlari va darslarni baholash (fikr matni bilan, agar qoldirsangiz)"),
-    "en": ("\n\nYour messages to me are not stored", "· your progress in flashcards and the Tea shop (which words you study, coins, ranks)\n· if you came through a friend's link: who invited you (you both get a notification with each other's name); if you invite someone: how many friends came\n· homework, lesson reschedule requests and your lesson rating with the review text (if you leave one)"),
-    "zh": ("\n\n你发给我的消息不会保存", "· 你在单词卡和茶铺里的进度（学了哪些词、金币、称号）\n· 如果你是通过朋友的链接来的：是谁邀请的（你们双方都会收到带对方名字的通知）；如果你邀请别人：来了几位朋友\n· 作业、调课请求，以及你对课程的评分和评价文字（如果你留下的话）"),
+    "ru": ("\n\nТвои сообщения мне бот", "· прогресс в карточках и тренировке слов (какие слова учишь, монеты, звания)\n· если пришёл(ла) по ссылке друга: кто пригласил (вы оба получаете уведомление с именем друг друга); если приглашаешь сам(а): сколько друзей пришло\n· домашние задания, просьбы о переносе урока и оценка занятий с текстом отзыва (если оставишь)"),
+    "uz": ("\n\nMenga yozgan xabarlaringizni", "· kartochkalar va So'z mashqidagi progress (qaysi so'zlarni o'rganyapsiz, tangalar, unvonlar)\n· do'st havolasi orqali kelgan bo'lsangiz: kim taklif qilgani (ikkalangizga ham bir-biringizning ismingiz bilan xabar boradi); o'zingiz taklif qilsangiz: nechta do'st kelgani\n· uy vazifalari, darsni ko'chirish so'rovlari va darslarni baholash (fikr matni bilan, agar qoldirsangiz)"),
+    "en": ("\n\nYour messages to me are not stored", "· your progress in flashcards and Word practice (which words you study, coins, ranks)\n· if you came through a friend's link: who invited you (you both get a notification with each other's name); if you invite someone: how many friends came\n· homework, lesson reschedule requests and your lesson rating with the review text (if you leave one)"),
+    "zh": ("\n\n你发给我的消息不会保存", "· 你在单词卡和单词练习里的进度（学了哪些词、金币、称号）\n· 如果你是通过朋友的链接来的：是谁邀请的（你们双方都会收到带对方名字的通知）；如果你邀请别人：来了几位朋友\n· 作业、调课请求，以及你对课程的评分和评价文字（如果你留下的话）"),
 }
 for _l, (_anchor, _add) in _PRIV_ADD.items():
     _p = T[_l].get("privacy", "")
@@ -482,8 +482,14 @@ for _l, (_old, _new) in _PP10.items():
     if _old in _p:
         T[_l]["privacy"] = _p.replace(_old, _new, 1)
 
-# ─── Версия 11: игра «Путешествие с Чачей», Stars, поддержка проекта ─────────
+# ─── Версия 11: игра «Путешествие по Китаю с 茶茶», Stars, поддержка проекта ─────────
 from texts_v11 import P as _P11
 
 for _lang in T:
     T[_lang].update(_P11.get(_lang, {}))
+
+# ─── Версия 12: запись на занятия к преподавателям ──────────────────────────────
+from texts_v12 import P as _P12
+
+for _lang in T:
+    T[_lang].update(_P12.get(_lang, {}))
