@@ -28,13 +28,13 @@ P["ru"] = {
     # домашка со сдачей
     "hw_submit_btn": "📤 Отправить ДЗ · 提交作业",
     "hw_fmt": "📎 <b>Как отправить домашку</b>\n\n<b>Принимаю:</b>\n· фото тетради или листа (JPG, PNG), можно несколько, каждое отдельным сообщением\n"
-              "· файлы PDF и Word (DOC, DOCX)\n· голосовое сообщение или аудио (для устных заданий)\n· обычный текст\n\n"
-              "<b>Не принимаю:</b> видео, «кружки», архивы (ZIP, RAR) и другие форматы.\n\n"
-              "💡 Фотографируй при хорошем свете, чтобы всё было видно. Файл не больше 20 МБ.",
+              "· видео и «кружки» (для устных заданий)\n· файлы PDF и Word (DOC, DOCX)\n· голосовое сообщение или аудио\n· обычный текст\n\n"
+              "<b>Не принимаю:</b> архивы (ZIP, RAR) и другие форматы.\n\n"
+              "💡 Фотографируй при хорошем свете, а видео снимай так, чтобы было хорошо слышно. Можно смешивать: например, текст и аудио.",
     "hw_fmt_ok": "✅ Понятно, отправляю", "hw_cancel": "Отмена",
     "hw_send_now": "Присылай по одному сообщению. Когда всё отправишь, нажми «Готово».",
     "hw_got": "Получила: {n}. Можно прислать ещё или нажать «Готово».", "hw_finish": "✅ Готово",
-    "hw_bad_fmt": "Этот формат я не принимаю 🙈 Пришли фото, PDF или Word, голосовое сообщение или текст.",
+    "hw_bad_fmt": "Этот формат я не принимаю 🙈 Пришли фото, видео, аудио, голосовое, PDF или Word, либо текст.",
     "hw_empty": "Пока ничего не пришло. Пришли файл или нажми «Отмена».",
     "hw_sent": "Отправила Лазизе! Она посмотрит и ответит 🌿", "hw_cancelled": "Хорошо, отменила.",
     "hw_stale": "Это задание уже закрыто или устарело.", "hw_hint": "Чтобы сдать домашку, нажми «📤 Отправить ДЗ» под заданием (список: /hw).",
@@ -63,13 +63,13 @@ P["uz"] = {
     "mr_add": "🃏 Xatolarni kartochkaga ({n})", "mr_more": "🏁 Boshqa darajalar",
     "hw_submit_btn": "📤 Uy vazifasini yuborish · 提交作业",
     "hw_fmt": "📎 <b>Uy vazifasini qanday yuborish kerak</b>\n\n<b>Qabul qilaman:</b>\n· daftar yoki varaq surati (JPG, PNG), bir nechta bo'lishi mumkin, har biri alohida xabarda\n"
-              "· PDF va Word fayllari (DOC, DOCX)\n· ovozli xabar yoki audio (og'zaki topshiriqlar uchun)\n· oddiy matn\n\n"
-              "<b>Qabul qilmayman:</b> video, «dumaloq video», arxivlar (ZIP, RAR) va boshqa formatlar.\n\n"
-              "💡 Hammasi ko'rinishi uchun yorug'da suratga oling. Fayl 20 MB dan oshmasin.",
+              "· video va «dumaloq video» (og'zaki topshiriqlar uchun)\n· PDF va Word fayllari (DOC, DOCX)\n· ovozli xabar yoki audio\n· oddiy matn\n\n"
+              "<b>Qabul qilmayman:</b> arxivlar (ZIP, RAR) va boshqa formatlar.\n\n"
+              "💡 Hammasi ko'rinishi uchun yorug'da suratga oling, videoda ovoz yaxshi eshitilsin. Aralashtirish mumkin: masalan, matn va audio.",
     "hw_fmt_ok": "✅ Tushundim, yuboraman", "hw_cancel": "Bekor qilish",
     "hw_send_now": "Bittadan xabar qilib yuboring. Hammasini yuborgach, «Tayyor»ni bosing.",
     "hw_got": "Qabul qildim: {n}. Yana yuborishingiz yoki «Tayyor»ni bosishingiz mumkin.", "hw_finish": "✅ Tayyor",
-    "hw_bad_fmt": "Bu formatni qabul qilmayman 🙈 Surat, PDF yoki Word, ovozli xabar yoki matn yuboring.",
+    "hw_bad_fmt": "Bu formatni qabul qilmayman 🙈 Surat, video, audio, ovozli xabar, PDF yoki Word, yoki matn yuboring.",
     "hw_empty": "Hozircha hech narsa kelmadi. Fayl yuboring yoki «Bekor qilish»ni bosing.",
     "hw_sent": "Lazizaga yubordim! U ko'rib chiqib, javob beradi 🌿", "hw_cancelled": "Mayli, bekor qildim.",
     "hw_stale": "Bu topshiriq yopilgan yoki eskirgan.", "hw_hint": "Uy vazifasini topshirish uchun topshiriq ostidagi «📤 Uy vazifasini yuborish» tugmasini bosing (ro'yxat: /hw).",
@@ -98,13 +98,13 @@ P["en"] = {
     "mr_add": "🃏 Mistakes to flashcards ({n})", "mr_more": "🏁 Other levels",
     "hw_submit_btn": "📤 Submit homework · 提交作业",
     "hw_fmt": "📎 <b>How to submit homework</b>\n\n<b>Accepted:</b>\n· photos of a notebook or sheet (JPG, PNG), several are fine, one per message\n"
-              "· PDF and Word files (DOC, DOCX)\n· a voice message or audio (for speaking tasks)\n· plain text\n\n"
-              "<b>Not accepted:</b> video, round video messages, archives (ZIP, RAR) and other formats.\n\n"
-              "💡 Take photos in good light so everything is readable. File size up to 20 MB.",
+              "· video and round video messages (for speaking tasks)\n· PDF and Word files (DOC, DOCX)\n· a voice message or audio\n· plain text\n\n"
+              "<b>Not accepted:</b> archives (ZIP, RAR) and other formats.\n\n"
+              "💡 Take photos in good light and record video so the sound is clear. You can mix them, for example text and audio.",
     "hw_fmt_ok": "✅ Got it, sending", "hw_cancel": "Cancel",
     "hw_send_now": "Send them one message at a time. When you're done, tap “Done”.",
     "hw_got": "Received: {n}. You can send more or tap “Done”.", "hw_finish": "✅ Done",
-    "hw_bad_fmt": "I can't accept that format 🙈 Please send a photo, PDF or Word file, a voice message or text.",
+    "hw_bad_fmt": "I can't accept that format 🙈 Please send a photo, video, audio, a voice message, a PDF or Word file, or text.",
     "hw_empty": "Nothing has arrived yet. Send a file or tap “Cancel”.",
     "hw_sent": "Sent to Laziza! She'll take a look and reply 🌿", "hw_cancelled": "OK, cancelled.",
     "hw_stale": "This task is closed or has expired.", "hw_hint": "To submit homework, tap “📤 Submit homework” under the task (list: /hw).",
@@ -133,13 +133,13 @@ P["zh"] = {
     "mr_add": "🃏 错题加入单词卡（{n}）", "mr_more": "🏁 其他等级",
     "hw_submit_btn": "📤 提交作业",
     "hw_fmt": "📎 <b>如何提交作业</b>\n\n<b>可以接收：</b>\n· 笔记本或试卷的照片（JPG、PNG），可以发多张，每张单独一条消息\n"
-              "· PDF 和 Word 文件（DOC、DOCX）\n· 语音消息或音频（口语作业）\n· 普通文字\n\n"
-              "<b>不能接收：</b>视频、圆形视频、压缩包（ZIP、RAR）和其他格式。\n\n"
-              "💡 请在光线好的地方拍照，保证看得清楚。文件不超过 20 MB。",
+              "· 视频和圆形视频（口语作业）\n· PDF 和 Word 文件（DOC、DOCX）\n· 语音消息或音频\n· 普通文字\n\n"
+              "<b>不能接收：</b>压缩包（ZIP、RAR）和其他格式。\n\n"
+              "💡 请在光线好的地方拍照，录视频时保证声音清楚。可以混合发送，例如文字加音频。",
     "hw_fmt_ok": "✅ 明白了，开始发送", "hw_cancel": "取消",
     "hw_send_now": "请一条消息发一个。全部发完后，点“完成”。",
     "hw_got": "已收到：{n}。可以继续发送，或点“完成”。", "hw_finish": "✅ 完成",
-    "hw_bad_fmt": "这个格式我不能接收 🙈 请发照片、PDF 或 Word 文件、语音消息或文字。",
+    "hw_bad_fmt": "这个格式我不能接收 🙈 请发照片、视频、音频、语音消息、PDF 或 Word 文件，或文字。",
     "hw_empty": "还没有收到任何内容。请发送文件，或点“取消”。",
     "hw_sent": "已发给 Laziza！她看完会回复你 🌿", "hw_cancelled": "好的，已取消。",
     "hw_stale": "这个作业已关闭或已过期。", "hw_hint": "要提交作业，请点作业下方的“📤 提交作业”（列表：/hw）。",

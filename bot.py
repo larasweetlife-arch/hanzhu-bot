@@ -673,8 +673,8 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "19"
-VERSION_INFO = "исправления: кнопка «Правила и условия», переключение «Классика → Адаптированные», защита от тихих сбоев и уведомления об ошибках, индексы базы"
+VERSION = "20"
+VERSION_INFO = "домашние задания с фото, видео, аудио, голосовыми и файлами: Лазиза задаёт их, ученики сдают в любом из этих форматов или текстом"
 
 
 @bot.message_handler(commands=["version"])
@@ -2093,7 +2093,7 @@ def fmt_due(due, lang="ru"):
 def cb_hw_new(c):
     uid = int(c.data.split(":")[1])
     STATE[c.from_user.id] = {"step": "hw_text", "data": {"uid": uid, "uids": [uid]}}
-    bot.send_message(c.message.chat.id, f"Домашка для {_name_of(uid)}. Что задать? Напиши текст задания.")
+    bot.send_message(c.message.chat.id, f"Домашка для {_name_of(uid)}.\n" + HW_ASK_TEXT)
     bot.answer_callback_query(c.id)
 
 
@@ -2129,15 +2129,15 @@ def send_hw_list(uid):
         out = [t(lang, "hw_title"), ""]
         for h in sorted(rows, key=lambda x: x["due"] or "9999"):
             late = " ⚠️ просрочено" if h["due"] and h["due"] < today else ""
-            out.append(f"· {_name_of(h['user_id'])}: {esc(h['text'][:60])} ({fmt_due(h['due'])}){late}")
+            clip = " 📎" if h.get("media_id") else ""
+            out.append(f"· {_name_of(h['user_id'])}: {esc(h['text'][:60])}{clip} ({fmt_due(h['due'])}){late}")
         return bot.send_message(uid, "\n".join(out))
     rows = db.hw_open(uid)
     if not rows:
         return bot.send_message(uid, t(lang, "hw_none"))
     bot.send_message(uid, t(lang, "hw_title"))
     for h in rows:
-        bot.send_message(uid, t(lang, "hw_new", text=esc(h["text"]), due=fmt_due(h["due"], lang)),
-                         reply_markup=hw_markup(h["id"], lang))
+        send_hw_card(uid, h)
 
 
 def hw_hook(now):
@@ -2603,7 +2603,7 @@ def cb_group(c):
         if not g or not mem:
             return bot.send_message(uid, "В группе нет учеников. Сначала добавь их через «✏️ Состав».")
         STATE[uid] = {"step": "hw_text", "data": {"uids": [m["user_id"] for m in mem]}}
-        return bot.send_message(uid, f"Домашка для группы «{esc(g['name'])}» ({len(mem)} чел.).\nЧто задать? Напиши текст задания.")
+        return bot.send_message(uid, f"Домашка для группы «{esc(g['name'])}» ({len(mem)} чел.).\n" + HW_ASK_TEXT)
     if act == "d":
         g = db.group_get(gid)
         if g:
@@ -2648,7 +2648,7 @@ def cb_pick(c):
         names = ", ".join(_name_of(u) for u in sorted(p["sel"])[:8]) + (" …" if len(p["sel"]) > 8 else "")
         edit_or_send(c, f"Домашка для {len(p['sel'])} чел.: {names}")
         STATE[uid] = {"step": "hw_text", "data": {"uids": sorted(p["sel"])}}
-        return bot.send_message(uid, "Что задать? Напиши текст задания.")
+        return bot.send_message(uid, HW_ASK_TEXT)
     bot.answer_callback_query(c.id)
     try:
         bot.edit_message_reply_markup(c.message.chat.id, c.message.message_id, reply_markup=picker_markup(uid))
@@ -2658,7 +2658,9 @@ def cb_pick(c):
 
 # ─── СДАЧА ДОМАШКИ УЧЕНИКОМ ───────────────────────────────────────────────────
 
-HW_OK_EXT = {"jpg", "jpeg", "png", "heic", "webp", "pdf", "doc", "docx", "txt", "mp3", "m4a", "ogg", "oga", "wav"}
+HW_OK_EXT = {"jpg", "jpeg", "png", "heic", "webp", "gif", "bmp", "pdf", "doc", "docx", "txt", "rtf", "odt", "xls", "xlsx", "ppt", "pptx",
+             "mp3", "m4a", "ogg", "oga", "opus", "wav", "aac", "flac", "wma", "amr",
+             "mp4", "mov", "m4v", "mkv", "webm", "avi", "3gp"}
 HW_WINDOW = 30 * 60                     # сколько минут открыта сдача, если человек ушёл
 
 
@@ -2666,24 +2668,74 @@ def hw_markup(hid, lang):
     return ikb([[(t(lang, "hw_submit_btn"), f"hws:ask:{hid}")], [(t(lang, "hw_btn"), f"hwd:{hid}")]])
 
 
-def deliver_hw(uids, text, due):
+HW_MEDIA_MAX = 10                       # сколько вложений можно приложить к одному заданию
+HW_ICON = {"photo": "🖼", "video": "🎬", "video_note": "🎬", "animation": "🎬", "audio": "🎧", "voice": "🎙", "document": "📄"}
+
+
+def hw_media_of(m):
+    """(тип, file_id) вложения в сообщении или None."""
+    ct = m.content_type
+    if ct == "photo" and m.photo:
+        return ct, m.photo[-1].file_id
+    obj = getattr(m, ct, None) if ct in ("document", "voice", "audio", "video", "video_note", "animation") else None
+    return (ct, obj.file_id) if obj else None
+
+
+def hw_media_list(h):
+    """Вложения задания списком [(тип, file_id)]; пусто, если задание только текстовое."""
+    raw = (h or {}).get("media_id")
+    if not raw:
+        return []
+    try:
+        lst = json.loads(raw)
+        return [(k, f) for k, f in lst] if isinstance(lst, list) else []
+    except (ValueError, TypeError):
+        return []
+
+
+def hw_default_text(media, due=None):
+    """Если задание без слов, а только вложение: нейтральная подпись на любом языке."""
+    icon = HW_ICON.get(media[0][0], "📎") if media else "📚"
+    return f"{icon} {datetime.now(db.TZ).strftime('%d.%m')}"
+
+
+def send_hw_card(u, h):
+    """Показывает ученику задание: вложения (если есть), текст, срок и кнопки. Возвращает сообщение или None."""
+    sl = lang_of(u)
+    txt = t(sl, "hw_new", text=esc(h["text"]), due=fmt_due(h.get("due"), sl))
+    mk = hw_markup(h["id"], sl)
+    media = hw_media_list(h)
+    try:
+        if len(media) == 1 and media[0][0] != "video_note" and len(txt) <= 1000:
+            kind, fid = media[0]
+            return getattr(bot, "send_" + kind)(u, fid, caption=txt, reply_markup=mk)     # одно вложение: подпись и кнопки на нём
+        for kind, fid in media:                                                           # несколько (или длинная подпись): сначала вложения, потом карточка
+            getattr(bot, "send_" + kind)(u, fid)
+    except Exception as e:
+        logging.warning("не отправилось вложение домашки %s: %s", u, e)
+        if "blocked" in str(e) or "deactivated" in str(e) or "chat not found" in str(e):
+            return None
+    return safe_send(u, txt, reply_markup=mk)
+
+
+def deliver_hw(uids, text, due, media=None):
     ok, fail = [], []
+    raw = json.dumps([list(x) for x in media]) if media else None
     for u in uids:
-        hid = db.hw_add(u, text, due)
-        sl = lang_of(u)
-        sent = safe_send(u, t(sl, "hw_new", text=esc(text), due=fmt_due(due, sl)), reply_markup=hw_markup(hid, sl))
+        hid = db.hw_add(u, text, due, (media[0][0], raw) if media else None)
+        sent = send_hw_card(u, db.hw_get(hid))
         (ok if sent else fail).append(u)
     return ok, fail
 
 
 def file_ok(m):
-    if m.content_type in ("photo", "voice", "audio"):
+    if m.content_type in ("photo", "voice", "audio", "video", "video_note", "animation"):
         return True
     if m.content_type == "document" and m.document:
         name = (m.document.file_name or "").lower()
         ext = name.rsplit(".", 1)[-1] if "." in name else ""
         mime = m.document.mime_type or ""
-        return ext in HW_OK_EXT or mime.startswith(("image/", "audio/")) or mime == "application/pdf"
+        return ext in HW_OK_EXT or mime.startswith(("image/", "audio/", "video/")) or mime == "application/pdf"
     return False
 
 
@@ -2772,11 +2824,69 @@ def cb_hw_submit(c):
         finish_submission(uid)
 
 
+HW_ASK_TEXT = ("Что задать? Напиши текст задания. Можно приложить фото, видео, аудио, голосовое или файл "
+               "(несколько штук тоже можно, до %d).") % HW_MEDIA_MAX
+
+
+def ask_hw_due(uid, st):
+    st["step"] = "hw_due"
+    return bot.send_message(uid, "К какому сроку? Напиши «сегодня», «завтра», «послезавтра», дату вроде "
+                                 "<code>15.10</code> или «-», если без срока.")
+
+
+def owner_hw_media(m):
+    """Лазиза прислала вложение к заданию. True, если сообщение обработано."""
+    uid = m.from_user.id
+    st = STATE.get(uid)
+    if not (is_owner(uid) and st and st["step"] == "hw_text"):
+        return False
+    md = hw_media_of(m)
+    if not md:
+        return False
+    d = st["data"]
+    lst = d.setdefault("media", [])
+    if len(lst) >= HW_MEDIA_MAX:
+        bot.send_message(uid, f"Больше {HW_MEDIA_MAX} вложений к одному заданию не приложить. Нажми «Дальше».",
+                         reply_markup=ikb([[("➡️ Дальше", "hwm:next")]]))
+        return True
+    lst.append(md)
+    cap = (getattr(m, "caption", None) or "").strip()
+    if cap and not d.get("text"):
+        d["text"] = cap[:500]
+    gid = getattr(m, "media_group_id", None)
+    if gid and d.get("last_group") == gid:
+        return True                                      # альбом: отвечаем один раз
+    d["last_group"] = gid
+    note = f"📎 Приложено: {len(lst)}."
+    if d.get("text"):
+        note += f"\nТекст задания: «{esc(d['text'][:80])}»."
+    bot.send_message(uid, note + "\nМожно прислать ещё вложение, написать текст задания или нажать «Дальше».",
+                     reply_markup=ikb([[("➡️ Дальше", "hwm:next")]]))
+    return True
+
+
+@bot.callback_query_handler(func=lambda c: c.data == "hwm:next")
+@owner_only
+def cb_hw_media_next(c):
+    uid = c.from_user.id
+    bot.answer_callback_query(c.id)
+    st = STATE.get(uid)
+    if not st or st["step"] != "hw_text":
+        return
+    try:
+        bot.edit_message_reply_markup(c.message.chat.id, c.message.message_id, reply_markup=None)
+    except Exception:
+        pass
+    return ask_hw_due(uid, st)
+
+
 @bot.message_handler(content_types=["photo", "document", "voice", "audio", "video", "video_note", "animation"])
 def on_file(m):
     uid = m.from_user.id
     lang = lang_of(uid)
     if booking.on_photo(m):                     # фото для поста преподавателя
+        return
+    if owner_hw_media(m):                       # вложение к заданию от Лазизы
         return
     if not hw_sub_state(uid):
         if not is_owner(uid) and db.hw_open(uid):
@@ -2805,8 +2915,8 @@ def _sub_answer(c, ok):
     else:
         db.hw_reopen(sub["hw_id"])
         safe_send(u, t(lang, "hw_redo", text=esc(h["text"][:80])))
-        safe_send(u, t(lang, "hw_new", text=esc(h["text"]), due=fmt_due(h.get("due"), lang)),
-                  reply_markup=hw_markup(sub["hw_id"], lang))
+        if h.get("id"):
+            send_hw_card(u, h)
     bot.send_message(c.message.chat.id, f"{'✅ Принято' if ok else '🔁 Отправила на доработку'}: {_name_of(u)}")
 
 
@@ -3256,16 +3366,15 @@ def on_text(m):
 
             if step == "hw_text":
                 d["text"] = txt[:500]
-                st["step"] = "hw_due"
-                return bot.send_message(uid, "К какому сроку? Напиши «сегодня», «завтра», «послезавтра», дату вроде "
-                                             "<code>15.10</code> или «-», если без срока.")
+                return ask_hw_due(uid, st)
 
             if step == "hw_due":
                 due = practice.parse_due(txt, db.today())
                 if due is None:
                     return bot.send_message(uid, "Не поняла срок. Примеры: завтра, 15.10, «-».")
                 STATE.pop(uid, None)
-                ok, fail = deliver_hw(d.get("uids") or [sid], d["text"], due)
+                media = d.get("media") or None
+                ok, fail = deliver_hw(d.get("uids") or [sid], d.get("text") or hw_default_text(media), due, media)
                 msg_ = f"📚 Домашка отправлена: {len(ok)} чел."
                 if fail:
                     msg_ += "\n⚠️ Не дошла (человек мог закрыть бота): " + ", ".join(_name_of(u) for u in fail)

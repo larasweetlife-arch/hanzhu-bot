@@ -171,6 +171,10 @@ def init():
             c.execute("ALTER TABLE board ADD COLUMN nick TEXT")
             c.execute("ALTER TABLE board ADD COLUMN nick_date TEXT")
         c.execute("CREATE UNIQUE INDEX IF NOT EXISTS board_nick ON board(nick COLLATE NOCASE)")
+        hcols = {r["name"] for r in c.execute("PRAGMA table_info(homework)")}
+        for col in ("media_kind", "media_id"):      # задание с вложениями: тип первого и список (тип, file_id) в JSON
+            if col not in hcols:
+                c.execute(f"ALTER TABLE homework ADD COLUMN {col} TEXT")
         gcols = {r["name"] for r in c.execute("PRAGMA table_info(game)")}
         if "pro_until" not in gcols:
             c.execute("ALTER TABLE game ADD COLUMN pro_until TEXT")
@@ -800,10 +804,12 @@ def payments_count(uid):
 
 # ─── ДОМАШНИЕ ЗАДАНИЯ ─────────────────────────────────────────────────────────
 
-def hw_add(uid, text, due):
+def hw_add(uid, text, due, media=None):
+    """media = (kind, file_id) или None: к заданию приложены фото/видео/аудио/файл."""
+    kind, fid = (media or (None, None))
     with _conn() as c:
-        cur = c.execute("INSERT INTO homework (user_id, text, due, created) VALUES (?,?,?,?)",
-                        (uid, text, due or None, today()))
+        cur = c.execute("INSERT INTO homework (user_id, text, due, created, media_kind, media_id) VALUES (?,?,?,?,?,?)",
+                        (uid, text, due or None, today(), kind, fid))
         return cur.lastrowid
 
 
