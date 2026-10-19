@@ -83,6 +83,8 @@ def load_chapters():
         chs = []
         for p in sorted(DATA_PATH.glob("ch*.json")):
             chs.append(json.loads(p.read_text(encoding="utf-8")))
+        if not chs:
+            logging.error("Игра: в папке %s нет глав (ch1.json, ch2.json, ch3.json). Загрузите папку quest_data на GitHub целиком.", DATA_PATH)
         _CACHE["ch"] = chs
         _CACHE["scenes"] = [s for c in chs for s in c["scenes"]]
         _CACHE["by_id"] = {s["id"]: s for s in _CACHE["scenes"]}
