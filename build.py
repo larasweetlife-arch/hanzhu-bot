@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Строит из ch1_src.py: ch1.json (для игры) и ch1_review.md (для проверки Ларой).
+"""Строит из ch1_src.py: ch1.json (для игры) и ch1_review.md (для проверки Лазизой).
 Пиньинь = pypinyin + ручные исключения + правила 不/一 + эрхуа + апостроф."""
 import json, random, re, sys, unicodedata
 from pypinyin import pinyin, Style
-import ch1_src as S
+import importlib
+CH = sys.argv[1] if len(sys.argv) > 1 else "ch1"
+S = importlib.import_module(CH + "_src")
 
 PUNCT = "，。！？、：；"
 # ручные исключения (слово → слоги). Всё, что pypinyin читает неверно/не по учебнику.
@@ -27,9 +29,13 @@ FIX = {
     "得": ["de"], "着": ["zhe"], "辣的": ["là", "de"],
 }
 CAP_ALWAYS = set()
+from fix_extra import EXTRA_FIX, EXTRA_PY_STR, EXTRA_SPACED
+FIX.update(EXTRA_FIX)
 FIX.update({"哇": ["wā"], "对不起": ["duì", "bu", "qǐ"], "上来": ["shàng", "lai"]})
 PY_STR = {"不客气": "bú kèqi", "你好": "nǐ hǎo", "笑一笑": "xiào yi xiào", "不到": "bú dào", "十二点": "shí'èr diǎn"}
 SPACED = {"七点", "九点", "九点半", "十二点", "三点", "八点"}
+PY_STR.update(EXTRA_PY_STR)
+SPACED |= EXTRA_SPACED
 
 
 def strip_tone(s):
@@ -165,7 +171,7 @@ def render(items):
     return out
 
 
-ASCII = {"，": ",", "。": ".", "！": "!", "？": "?", "、": ","}
+ASCII = {"，": ",", "。": ".", "！": "!", "？": "?", "、": ",", "：": ":", "；": ";"}
 
 
 def plain_pinyin(items):
@@ -336,8 +342,8 @@ def md(data):
 
 if __name__ == "__main__":
     data, toks = build()
-    json.dump(data, open("ch1_build.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    open("ch1_review.md", "w", encoding="utf-8").write(md(data))
+    json.dump(data, open(CH + "_build.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    open(CH + "_review.md", "w", encoding="utf-8").write(md(data))
     # отчёт для ручной сверки: все токены + многозначные
     print("TOKENS", len(toks))
     for h, p in sorted(toks.items(), key=lambda x: x[0]):

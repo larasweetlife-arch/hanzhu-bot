@@ -221,3 +221,12 @@ details ol { margin: 0; padding-left: 20px; }
 
 .seg.fill { overflow: visible; }
 .seg.fill button { flex: 1 1 0; min-width: 0; padding: 8px 4px; white-space: nowrap; font-size: 13.5px; }
+
+/* v15: заголовок не ломает строку, списки наград и шагов читаются легко */
+.top .ttl { min-width: 0; font-size: 15.5px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.rew { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.rew li { position: relative; padding-left: 22px; font-size: 14.5px; line-height: 1.45; }
+.rew li::before { content: "🍵"; position: absolute; left: 0; top: 0; font-size: 14px; }
+details ol li { margin: 0 0 8px; line-height: 1.5; }
+details ol li:last-child { margin-bottom: 0; }
+.card.creator p { line-height: 1.6; }

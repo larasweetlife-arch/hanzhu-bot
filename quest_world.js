@@ -1,4 +1,4 @@
-/* 清越 · «Путешествие с Чачей»: горизонтальный мир сцен (формат 16:9, вид сбоку), оформленный по-китайски.
+/* 清越 · «Путешествие по Китаю с 茶茶»: горизонтальный мир сцен (формат 16:9, вид сбоку), оформленный по-китайски.
    Пекин: красные дворцовые стены и жёлтая черепица, ворота-пайлоу, хутуны с фонариками, золотые гинкго, метро и вокзал.
    В горах вдали видна Великая стена, а в финале сцена идёт прямо по ней.
    Один экран = 1600 × 900 условных единиц. Слои двигаются с разной скоростью (параллакс): небо, дальние горы, средний план, земля с препятствиями.
@@ -31,6 +31,8 @@
     s8: { theme: "wall", sky: ["#5d7fc4", "#eea49f", "#ffd9a2"], sun: ["#fff0b0", 1160, 540, 92, true], far: "#a893bd", far2: "#8873a8", far3: "#6f5e94", ob: ["烽火台", "fēnghuǒtái"] },
   };
   const pal = (id) => Object.assign({}, BASE, P[id] || P.s1);
+  // точки расширения для глав 2–3 (quest_world2.js): темы неба, дали, среднего плана, земли, ориентиры, карта
+  const EXT = { sky: {}, skyx: {}, far: {}, mid: {}, ground: {}, decor: {}, landmark: {}, map: {} };
 
   // ── строительные детали ──
   const plaque = (x, y, w, zh, py, zs) => `<g><rect x="${x}" y="${y}" width="${w}" height="${zs + 36}" rx="6" fill="#7a1812" stroke="${GOLD}" stroke-width="4"/><rect x="${x + 7}" y="${y + 7}" width="${w - 14}" height="${zs + 22}" rx="3" fill="none" stroke="${GOLD}" stroke-width="1.6" opacity=".7"/><text x="${x + w / 2}" y="${y + zs + 4}" text-anchor="middle" font-size="${zs}" font-weight="900" fill="#f4d675" font-family="${SERIF}">${zh}</text><text x="${x + w / 2}" y="${y + zs + 26}" text-anchor="middle" font-size="${Math.max(16, zs * 0.38)}" fill="#f4d675" opacity=".92" font-family="sans-serif">${py}</text></g>`;
@@ -92,6 +94,7 @@
 
   // ── небо ──
   function sky(id, p) {
+    if (EXT.sky[p.theme]) return EXT.sky[p.theme](id, p);
     const [a, b, c] = p.sky, [sc, sx, sy, sr, red] = p.sun;
     if (p.indoor) {
       let t = "";
@@ -106,11 +109,11 @@
     }
     const sun = sr ? `<g class="qsunc" style="transform-origin:${sx}px ${sy}px"><circle cx="${sx}" cy="${sy}" r="${sr * 2.6}" fill="url(#su${id})"/><circle cx="${sx}" cy="${sy}" r="${sr}" fill="${red ? "#f6c46a" : sc}"/>${red ? `<circle cx="${sx}" cy="${sy}" r="${sr * 0.8}" fill="#fff0b0" opacity=".55"/>` : ""}</g>` : "";
     const R = rng("sky" + id);
-    let cl = ""; for (let i = 0; i < 5; i++) cl += `<g class="qcl" style="animation-duration:${60 + Math.floor(R() * 50)}s;animation-delay:-${Math.floor(R() * 60)}s">${xcloud(140 + i * 330 + R() * 120, 100 + R() * 230, 0.8 + R() * 0.7, 0.75 + R() * 0.2, "#fff")}</g>`;
-    let birds = ""; for (let i = 0; i < 4; i++) { const bx = 420 + i * 90 + R() * 40, by = 200 + R() * 100; birds += `<g class="qbird" style="animation-duration:${22 + i * 3}s;animation-delay:-${i * 5}s"><path class="qwing" style="transform-origin:${bx + 20}px ${by}px" d="M${bx} ${by} q10 -10 20 0 q10 -10 20 0" fill="none" stroke="rgba(60,40,50,.45)" stroke-width="3" stroke-linecap="round"/></g>`; }
+    let cl = ""; for (let i = 0; i < 5; i++) cl += `<g class="qcl" style="animation-duration:${60 + Math.floor(R() * 50)}s;animation-delay:-${Math.floor(R() * 60)}s">${xcloud(140 + i * 330 + R() * 120, 100 + R() * 230, 0.8 + R() * 0.7, 0.75 + R() * 0.2, p.cloud || "#fff")}</g>`;
+    let birds = ""; for (let i = 0; i < (p.nobirds ? 0 : 4); i++) { const bx = 420 + i * 90 + R() * 40, by = 200 + R() * 100; birds += `<g class="qbird" style="animation-duration:${22 + i * 3}s;animation-delay:-${i * 5}s"><path class="qwing" style="transform-origin:${bx + 20}px ${by}px" d="M${bx} ${by} q10 -10 20 0 q10 -10 20 0" fill="none" stroke="rgba(60,40,50,.45)" stroke-width="3" stroke-linecap="round"/></g>`; }
     return `<defs><linearGradient id="sk${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset=".55" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></linearGradient>
       <radialGradient id="su${id}"><stop offset="0" stop-color="${sc}" stop-opacity=".9"/><stop offset="1" stop-color="${sc}" stop-opacity="0"/></radialGradient></defs>
-      <rect width="${W}" height="${H}" fill="url(#sk${id})"/>${sun}${cl}${birds}`;
+      <rect width="${W}" height="${H}" fill="url(#sk${id})"/>${sun}${cl}${birds}${EXT.skyx[p.theme] ? EXT.skyx[p.theme](id, p, R) : ""}`;
   }
 
   // ── горы в стиле туши, с дымкой ──
@@ -142,6 +145,7 @@
 
   function farLayer(id, p, screens) {
     const R = rng("far" + id), w = screens * W;
+    if (EXT.far[p.theme]) return EXT.far[p.theme](id, p, screens, R, w);
     if (p.indoor) {
       let s = "";
       if (p.theme === "subway") {
@@ -183,6 +187,7 @@
   const plane = () => `<g><path d="M-30 0 Q-30 -8 -18 -8 H24 Q36 -6 38 0 Q36 6 24 6 H-18 Q-30 6 -30 0Z" fill="#fbfbf7"/><path d="M-26 -6 L-34 -22 L-24 -22 L-14 -7Z" fill="#c5413a"/><path d="M-4 4 L8 20 L16 20 L12 4Z" fill="#dfe3e0"/><path d="M-4 -6 L8 -20 L14 -20 L12 -6Z" fill="#e9ecea"/><g fill="#8fb9d6"><rect x="14" y="-5" width="4" height="4" rx="1"/><rect x="21" y="-5" width="4" height="4" rx="1"/><rect x="28" y="-4" width="4" height="3" rx="1"/></g></g>`;
   function midLayer(id, p, screens) {
     const R = rng("mid" + id), w = screens * W;
+    if (EXT.mid[p.theme]) return EXT.mid[p.theme](id, p, screens, R, w);
     let s = "";
     if (p.indoor) {
       if (p.theme === "subway") for (let x = 300; x < w; x += 780) s += `<g><rect x="${x}" y="290" width="380" height="${GY - 290}" fill="#dfe5e8"/><rect x="${x}" y="290" width="380" height="22" fill="#2f6db0"/><rect x="${x}" y="${GY - 38}" width="380" height="14" fill="#2f6db0"/>${[0, 1, 2].map((k) => `<rect x="${x + 18 + k * 118}" y="332" width="100" height="${GY - 400}" rx="6" fill="#2b333b"/><rect x="${x + 24 + k * 118}" y="338" width="88" height="${GY - 412}" fill="#f4e7b8"/><path d="M${x + 68 + k * 118} 338 V${GY - 74}" stroke="#aaa" stroke-width="3"/>`).join("")}</g>`;
@@ -207,6 +212,7 @@
 
   // ── ориентиры у места диалога (мировые x примерно 520–1500) ──
   function landmark(id, p) {
+    if (EXT.landmark[id]) return EXT.landmark[id](p);
     switch (id) {
       case "s1": return `<g><rect x="540" y="330" width="780" height="${GY - 330}" rx="6" fill="#ece6d6"/><rect x="540" y="330" width="780" height="26" fill="${RED}"/><rect x="540" y="356" width="780" height="8" fill="${GOLD}"/>
         ${[0, 1, 2, 3].map((k) => `<rect x="${580 + k * 200}" y="370" width="26" height="${GY - 370}" fill="${RED}"/><rect x="${572 + k * 200}" y="${GY - 24}" width="42" height="24" fill="#cfc8b8"/>`).join("")}
@@ -241,6 +247,7 @@
   // ── земля ──
   function ground(id, p, screens) {
     const w = screens * W, R = rng("gr" + id);
+    if (EXT.ground[p.theme]) return EXT.ground[p.theme](id, p, screens, R, w);
     if (p.indoor) {
       let s = `<rect x="0" y="${GY}" width="${w}" height="${H - GY}" fill="${p.floor}"/><rect x="0" y="${GY}" width="${w}" height="12" fill="#f0c53a"/><rect x="0" y="${GY + 12}" width="${w}" height="8" fill="rgba(0,0,0,.12)"/>`;
       for (let x = 0; x < w; x += 160) s += `<path d="M${x} ${GY + 20} V${H}" stroke="rgba(0,0,0,.08)" stroke-width="3"/>`;
@@ -270,6 +277,7 @@
   function decor(id, p, screens, keepOut) {
     const w = screens * W, R = rng("dc" + id); let back = "", front = "";
     const free = (x, r) => keepOut.every((k) => Math.abs(x - k) > r);
+    if (EXT.decor[p.theme]) return EXT.decor[p.theme](id, p, screens, R, w, free);
     if (p.indoor) return { back, front };
     for (let x = 200; x < w - 100; x += 320 + R() * 420) {
       if (!free(x, 260)) continue;
@@ -337,7 +345,8 @@
   }
 
   // ── картинка для карты на главной: горы тушью, Великая стена, пагода ──
-  function mapArt(w, h) {
+  function mapArt(w, h, ci) {
+    if (ci && EXT.map[ci]) return EXT.map[ci](w, h);
     const R = rng("map" + w), sc = h / 900;
     return `<svg class="qmapbg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><defs><linearGradient id="mpsk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6cf9c"/><stop offset=".6" stop-color="#fbe8c6"/><stop offset="1" stop-color="#eef0dd"/></linearGradient></defs>
       <rect width="${w}" height="${h}" fill="url(#mpsk)"/>
@@ -347,5 +356,12 @@
       <g opacity=".85">${xcloud(w * 0.45, h * 0.14, sc * 0.5, 0.9)}${xcloud(w * 0.78, h * 0.24, sc * 0.4, 0.8)}</g></svg>`;
   }
 
-  window.QWORLD = { build, W, H, GY, OB_AT, FINISH_AT, PAL: P, pal, mapArt, xcloud, pagoda, roof };
+  // неподвижный кадр сцены для фона диалога: небо + даль + земля + ориентир (кадр 360×220)
+  function still(id) {
+    const p = pal(id);
+    return `<svg x="0" y="0" width="360" height="220" viewBox="440 150 1120 685" preserveAspectRatio="xMidYMid slice">${sky(id, p)}${farLayer(id, p, 2)}${ground(id, p, 2)}${landmark(id, p)}</svg>`;
+  }
+
+  window.QWORLD = { build, still, W, H, GY, OB_AT, FINISH_AT, PAL: P, pal, mapArt, xcloud, pagoda, roof, EXT, KINDS,
+    h: { plaque, bluesign, roof, tower, pagoda, pailou, ginkgo, pine, lampPost, bike, pot, xcloud, mist, ridge, farMountains, wallOnRidge, skyline, stripes, rng, f1, SERIF, RED, RED2, GOLD, GOLD2, YEL, YEL2, A, wallRed, hutongRow, plane, BASE } };
 })();

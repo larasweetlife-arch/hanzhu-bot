@@ -1,4 +1,4 @@
-/* 清越 · Чайная лавка: интерфейс Mini App. Без внешних библиотек. */
+/* 清越 · Путешествие по Китаю с 茶茶: интерфейс Mini App. Без внешних библиотек. */
 (() => {
   "use strict";
   const tg = window.Telegram && window.Telegram.WebApp;
@@ -27,7 +27,7 @@
       else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
       else el.setAttribute(k, v === true ? "" : v);
     }
-    for (const kid of kids.flat()) {
+    for (const kid of kids.flat(Infinity)) {
       if (kid == null || kid === false) continue;
       el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
     }
@@ -79,6 +79,7 @@
   function applyTheme(theme) {
     document.documentElement.dataset.theme = theme;
     store.set("qy_theme", theme);
+    if (window.TH) window.TH.reapply();
     try { if (tg) { tg.setHeaderColor(theme === "dark" ? "#0f1915" : "#f3eee1"); tg.setBackgroundColor(theme === "dark" ? "#0f1915" : "#f3eee1"); } } catch (e) { /* старые версии Telegram */ }
   }
   function initTheme() {
@@ -120,8 +121,8 @@
     const cur = LANGS.find((l) => l[0] === S.lang);
     const bar = h("div", { class: "top" },
       h("div", { class: "seal sm" }, "清越"),
-      h("div", { class: "ttl" }, tr("app")),
-      h("button", { class: "iconbtn", "aria-label": "theme", onclick: () => { applyTheme(curTheme() === "dark" ? "light" : "dark"); render(); } }, curTheme() === "dark" ? "☀️" : "🌙"),
+      h("div", { class: "ttl", html: String(tr("app")).replace(/(\S+\s)?茶茶/, '<span style="white-space:nowrap">$&</span>') }),
+      window.TH && window.TH.active() ? null : h("button", { class: "iconbtn", "aria-label": "theme", onclick: () => { applyTheme(curTheme() === "dark" ? "light" : "dark"); render(); } }, curTheme() === "dark" ? "☀️" : "🌙"),
       h("button", { class: "langbtn", onclick: (e) => { e.stopPropagation(); S.pop = !S.pop; render(); } }, cur[1]));
     if (S.pop) {
       bar.append(h("div", { class: "pop" }, LANGS.map(([c, , name]) => h("button", { class: c === S.lang ? "on" : "", onclick: () => setLang(c) }, name))));
@@ -135,20 +136,20 @@
   }
   function go(tab) {
     haptic();
-    S.tab = tab; S.pop = false;
-    if (tab === "top") { loadBoard(S.board.tab); }
+    S.tab = tab; S.pop = false; S.playSub = null;
+    if (tab === "top" && window.QUEST) window.QUEST.enterRating();
     if (tab === "quest" && window.QUEST) window.QUEST.enter();
     render(); window.scrollTo(0, 0);
   }
   function view() {
-    return { quest: () => window.QUEST.view(), play: viewPlay, top: viewTop, me: viewMe, about: viewAbout }[S.tab]();
+    return { quest: () => window.QUEST.view(), play: viewPlay, top: () => window.QUEST.ratingView(), me: viewMe, about: viewAbout }[S.tab]();
   }
   document.addEventListener("click", () => { if (S.pop) { S.pop = false; render(); } });
 
   async function setLang(code) {
     S.lang = code; S.pop = false;
     render();
-    await safe(async () => { await api("/api/lang", { lang: code }); await reloadMe(); S.docs = null; if (S.tab === "top") loadBoard(S.board.tab); render(); });
+    await safe(async () => { await api("/api/lang", { lang: code }); await reloadMe(); S.docs = null; if (S.playSub === "board") loadBoard(S.board.tab); render(); });
   }
   async function reloadMe() { S.me = await api("/api/me"); S.lang = S.me.lang; }
 
@@ -165,6 +166,7 @@
   }
   function viewPlay() {
     if (S.game) return viewGame();
+    if (S.playSub === "board") return viewWordTop();
     const m = S.me, r = m.rank;
     const nm = m.nick || null;
     const pct = r.to ? Math.min(100, Math.round(((m.served - r.from) / (r.to - r.from)) * 100)) : 100;
@@ -175,7 +177,7 @@
       h("div", { class: "bar" }, h("i", { style: `width:${pct}%` })),
       h("div", { class: "small" }, r.to ? tr("to_next", { t: nextTitle, n: r.to - m.served }) : tr("max_rank")),
       h("button", { class: "btn primary", onclick: startGame }, "🍵 " + (m.lives > 0 ? tr("start") : tr("start"))));
-    const out = [hero, statTiles(m), giftCard(m), inviteCard(m)];
+    const out = [hero, statTiles(m), giftCard(m), wordRatingCard(m)];
     if (m.pro_until) out.splice(2, 0, h("div", { class: "card" }, h("b", {}, "✨ " + tr("ext_active", { d: fmtDate(m.pro_until) }))));
     out.push(h("details", {}, h("summary", {}, tr("how_title")), h("div", { class: "body" }, h("ol", {}, tr("how").map((s) => h("li", {}, s))))));
     return h("div", {}, out);
@@ -221,6 +223,7 @@
     const i = m.invite;
     if (!i.link) return h("div");
     const card = h("div", { class: "card" }, h("h3", {}, "🤝 " + tr("invite_title")), h("div", { class: "muted" }, tr("invite_sub")));
+    card.append(h("ul", { class: "rew" }, tr("invite_rewards").map((x) => h("li", {}, x))));
     card.append(h("div", { class: "muted", style: "margin-top:8px" }, tr("invite_stats", { j: i.joined, t: i.trial, p: i.paid })));
     if (i.disc_until) card.append(h("div", { style: "margin-top:6px;font-weight:700;color:var(--jade)" }, "💸 " + tr("invite_disc_on", { d: fmtDate(i.disc_until) })));
     if (i.disc_queue) card.append(h("div", { style: "margin-top:6px;font-weight:700;color:var(--jade)" }, "⏭ " + tr("invite_disc", { n: i.disc_queue })));
@@ -241,7 +244,23 @@
     });
   }
   function leaveGame() { S.game = null; safe(async () => { await reloadMe(); render(); }); }
-  function speak(zh) { try { const u = new SpeechSynthesisUtterance(zh); u.lang = "zh-CN"; u.rate = 0.85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) { /* нет озвучки: ничего страшного */ } }
+  // Озвучка: основной звук приходит с сервера (mp3 играет на любом телефоне). Голос телефона — запасной вариант.
+  const AU = new Audio();
+  function speakFallback(zh) { try { const u = new SpeechSynthesisUtterance(zh); u.lang = "zh-CN"; u.rate = 0.85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) { /* нет озвучки: ничего страшного */ } }
+  function stopSpeak() { try { AU.pause(); } catch (e) { /* ok */ } try { speechSynthesis.cancel(); } catch (e) { /* нет озвучки */ } }
+  function speak(zh) {
+    if (!zh) return;
+    try { speechSynthesis.cancel(); } catch (e) { /* нет озвучки */ }
+    let failed = false;
+    const fail = () => { if (!failed) { failed = true; speakFallback(zh); } };
+    try {
+      AU.pause();
+      AU.onerror = fail;
+      AU.src = "/api/tts?" + new URLSearchParams({ q: zh, a: (tg && tg.initData) || "" }).toString();
+      const p = AU.play();
+      if (p && p.catch) p.catch((e) => { if (e && e.name !== "AbortError") fail(); });
+    } catch (e) { fail(); }
+  }
   async function pick(i) {
     const g = S.game;
     if (!g || !g.order || g.answered) return;
@@ -309,9 +328,15 @@
     await safe(async () => { S.board.data = await api("/api/board", { tab }); render(); });
   }
   function medal(p) { return p === 1 ? "🥇" : p === 2 ? "🥈" : p === 3 ? "🥉" : p; }
-  function viewTop() {
+  function wordRatingCard(m) {
+    const sub = m.joined && m.week.place ? tr("your_place", { p: m.week.place }) + " · " + m.week.points + " " + tr("points") : tr("word_rating_sub");
+    return h("button", { class: "card qrate", onclick: () => { S.playSub = "board"; haptic(); loadBoard(S.board.tab); window.scrollTo(0, 0); } },
+      h("div", { class: "row" }, h("span", { class: "em" }, "🏆"), h("div", { style: "flex:1;text-align:left" }, h("b", {}, tr("word_rating")), h("div", { class: "muted" }, sub))));
+  }
+  function viewWordTop() {
     const m = S.me, w = m.week;
-    const out = [h("div", { class: "card hero" }, h("h2", {}, "🏆 " + tr("top_title")), h("div", { style: "margin-top:4px;opacity:.85" }, tr("week_range", { a: fmtDate(w.start), b: fmtDate(w.end) }) + " · " + tr("days_left", { n: w.days_left })),
+    const out = [h("button", { class: "linkbtn", style: "margin-bottom:10px", onclick: () => { S.playSub = null; render(); window.scrollTo(0, 0); } }, "← " + tr("back")),
+      h("div", { class: "card hero" }, h("h2", {}, "🏆 " + tr("word_rating")), h("div", { style: "margin-top:4px;opacity:.85" }, tr("week_range", { a: fmtDate(w.start), b: fmtDate(w.end) }) + " · " + tr("days_left", { n: w.days_left })),
       h("div", { style: "margin-top:10px;font-size:14px;opacity:.9" }, tr("prize", { m: w.min })))];
     if (!m.joined) {
       out.push(h("div", { class: "card" }, h("h3", {}, tr("join_cta")), h("div", { class: "muted" }, tr("join_sub")),
@@ -345,14 +370,14 @@
         r.top.map((x, i) => h("div", { class: "li" + (x.me ? " me" : ""), style: "margin-top:6px" }, h("div", { class: "pl" }, medal(i + 1)), h("div", { class: "nm" }, x.nick), h("div", { class: "vl" }, x.points, " ", h("small", {}, tr("points"))))))));
     }
     const unit = d.tab === "coins" ? "🪙" : d.tab === "streak" ? tr("days_unit") : tr("points");
-    return h("div", { class: "list" }, d.rows.map((r) => h("div", { class: "li" + (r.me ? " me" : "") }, h("div", { class: "pl" }, medal(r.place)), h("div", { class: "nm" }, r.nick + (r.me ? " · " + tr("you") : "")), h("div", { class: "vl" }, r.value, " ", h("small", {}, unit)))));
+    return h("div", { class: "list" }, d.rows.map((r) => { const rp = window.TH ? window.TH.rowProps(r, "word") : {}; return h("div", { class: "li" + (r.me ? " me" : "") + (rp.cls || ""), style: rp.style, onclick: rp.onclick }, h("div", { class: "pl" }, medal(r.place)), h("div", { class: "nm" }, r.nick + (r.me ? " · " + tr("you") : ""), window.TH ? window.TH.mark(r) : null), h("div", { class: "vl" }, r.value, " ", h("small", {}, unit))); }));
   }
   function joinFlow() { S.me.nick ? setJoined(true) : nickSheet(true); }
   async function setJoined(v) {
     await safe(async () => {
       const r = await api("/api/board/join", { joined: v });
       if (r.need_nick) return nickSheet(true);
-      await reloadMe(); if (S.tab === "top") await loadBoard(S.board.tab); render();
+      await reloadMe(); if (S.playSub === "board") await loadBoard(S.board.tab); render();
     });
   }
   function nickSheet(thenJoin) {
@@ -369,14 +394,14 @@
             if (!r.ok) { err.textContent = r.err || tr("err"); return; }
             bg.remove(); toast(tr("nick_saved"));
             if (thenJoin) await api("/api/board/join", { joined: true });
-            await reloadMe(); if (S.tab === "top") await loadBoard(S.board.tab); render();
+            await reloadMe(); if (S.playSub === "board") await loadBoard(S.board.tab); render();
           });
         } }, tr("save")))]);
     setTimeout(() => input.focus(), 150);
   }
 
   // ── профиль ──
-  const BADGE_ICON = { first: "☕", served25: "🍃", served100: "💯", streak3: "🔥", streak7: "🗓️", gift7: "🎁", marathon: "🏃", marathon3: "🏅", friend: "🤝", ranked: "🏆", winner: "🥇", sharp: "🎯" };
+  const BADGE_ICON = { j_first: "👣", j_half: "🚇", j_chapter: "🧱", j_perfect: "🎯", j_streak3: "🔥", j_streak7: "🗓️", j_coins: "🪙", j_wardrobe: "👘", j_theme: "🎨", j_friend: "🤝", j_ranked: "🏆", j_winner: "🥇", j_xian: "🏺", j_chengdu: "🐼", first: "☕", served25: "🍃", served100: "💯", streak3: "🔥", streak7: "🗓️", gift7: "🎁", marathon: "🏃", marathon3: "🏅", friend: "🤝", ranked: "🏆", winner: "🥇", sharp: "🎯" };
   function viewMe() {
     const m = S.me, s = m.season;
     const month = new Date(s.ym + "-01T00:00:00").toLocaleDateString(LOCALES[S.lang], { month: "long", year: "numeric" });
@@ -385,8 +410,9 @@
     const acc = s.correct + s.wrong ? Math.round((s.correct * 100) / (s.correct + s.wrong)) : 0;
     out.push(h("div", { class: "card" }, h("h3", {}, "🗓 " + tr("season") + " · " + month),
       h("div", { class: "sgrid" }, [[s.points, "s_points"], [acc + "%", "s_acc"], [s.days, "s_days"], [m.play_streak, "streak"]].map(([v, k]) => h("div", {}, h("b", {}, v), h("span", {}, tr(k)))))));
+    if (window.TH) out.push(window.TH.card());
     out.push(statTiles(m));
-    const bs = m.badges, ids = Object.keys(bs);
+    const bs = m.badges, ids = Object.keys(BADGE_ICON).filter((k) => k in bs);
     out.push(h("div", { class: "card" }, h("h3", {}, "🏵 " + tr("badges") + " · " + ids.filter((k) => bs[k]).length + "/" + ids.length),
       h("div", { class: "grid3", style: "margin-top:10px" }, ids.map((k) => { const [n, d] = tr("b_" + k); return h("div", { class: "badge" + (bs[k] ? "" : " lock") }, h("div", { class: "em" }, BADGE_ICON[k]), h("b", {}, n), h("span", {}, d)); }))));
     const sw = h("div", { class: "switch" + (m.joined ? " on" : ""), role: "switch", "aria-checked": String(m.joined), onclick: () => (m.nick ? setJoined(!m.joined) : (toast(tr("visible_need")), nickSheet(true))) });
@@ -398,6 +424,7 @@
       h("div", { class: "setting", style: "display:block" }, h("b", {}, tr("theme")), h("div", { class: "seg fill", style: "margin-top:6px" },
         h("button", { class: curTheme() === "light" ? "on" : "", onclick: () => { applyTheme("light"); render(); } }, "☀️ " + tr("theme_light")),
         h("button", { class: curTheme() === "dark" ? "on" : "", onclick: () => { applyTheme("dark"); render(); } }, "🌙 " + tr("theme_dark"))))));
+    out.push(inviteCard(m));
     out.push(supportCard());
     return h("div", {}, out);
   }
@@ -422,12 +449,12 @@
       h("div", { class: "chips" },
         h("button", { class: "chip", onclick: () => openLink(m.links.instagram) }, h("div", { class: "ic ig" }, "IG"), h("div", {}, h("small", {}, tr("insta")), h("b", {}, "@lllaziza_r"))),
         h("button", { class: "chip", onclick: () => openTg(m.links.channel) }, h("div", { class: "ic tg" }, "TG"), h("div", {}, h("small", {}, tr("channel")), h("b", {}, tr("channel_name"))))));
-    const why = h("div", { class: "card" }, h("h3", {}, "🍃 " + tr("why_title")), h("p", { style: "margin:8px 0 0" }, tr("why")));
-    const how = h("details", {}, h("summary", {}, tr("howto")), h("div", { class: "body" }, h("ol", {}, tr("how").map((s) => h("li", {}, s)))));
-    return h("div", {}, creator, why, supportCard(), how, lazyDoc("rules", tr("rules")), lazyDoc("privacy", tr("privacy")), h("div", { class: "foot" }, tr("version")));
+    const why = h("div", { class: "card" }, h("h3", {}, "🍃 " + tr("why_title")), h("p", { style: "margin:8px 0 0" }, tr("why")), h("p", { class: "muted", style: "margin:10px 0 0" }, tr("why_priv")));
+    const how = h("details", { open: true }, h("summary", {}, tr("qhow_title")), h("div", { class: "body" }, h("ol", {}, tr("qhow").map((s) => h("li", {}, s)))));
+    return h("div", {}, creator, how, why, supportCard(), lazyDoc("rules", tr("rules")), lazyDoc("privacy", tr("privacy")), h("div", { class: "foot" }, tr("version")));
   }
 
-  window.QY = { h, tr, api, safe, toast, sheet, haptic, confetti, openTg, openLink, render, S };
+  window.QY = { go, fmtDate, speak, stopSpeak, inviteCard, h, tr, api, safe, toast, sheet, haptic, confetti, openTg, openLink, render, S };
 
   // ── запуск ──
   function showNoTg() {
@@ -436,6 +463,7 @@
   }
   async function boot() {
     initTheme();
+    try { if (window.TH) await window.TH.load(); } catch (e) { /* без оформлений тоже работаем */ }
     try { if (tg) { tg.ready(); tg.expand(); if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } } catch (e) { /* ок */ }
     const code = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || "ru").slice(0, 2);
     S.lang = window.I18N[code] ? code : "ru";

@@ -1,4 +1,4 @@
-/* 清越 · «Путешествие с Чачей»: рисованная графика (SVG, без картинок и внешних файлов).
+/* 清越 · «Путешествие по Китаю с 茶茶»: рисованная графика (SVG, без картинок и внешних файлов).
    Герои собираются из частей: кожа, волосы, наряд, аксессуары. Фоны сцен рисуются по одному на сцену. */
 (() => {
   "use strict";
@@ -182,7 +182,7 @@
     </svg>`;
   }
 
-  // ── 茶茶: настоящий талисман Лары (стикеры в /static/chacha/), три позы под настроение ──
+  // ── 茶茶: настоящий талисман Лазизы (стикеры в /static/chacha/), три позы под настроение ──
   const CC_POSE = { happy: "wave", smile: "wave", open: "read", sad: "think" };
   const CC_URL = (k) => `/static/chacha/chacha_${k}.webp`;
   try { ["wave", "read", "think"].forEach((k) => { const i = new Image(); i.src = CC_URL(k); }); } catch (e) { /* без предзагрузки тоже работает */ }
@@ -204,6 +204,21 @@
     staff:  { hair: INK, style: "bob", top: "#e8793a", top2: "#fff", skirt: false, acc: ["cap", "vest", "badge"], cap: "#e8793a", vest: "#f0c53a", bottom: "#33383d" },
     ticket: { hair: INK, style: "bun", top: "#27425f", top2: "#fff", acc: ["cap", "glasses", "tie", "badge"], cap: "#27425f", bottom: "#27425f" },
     vend:   { hair: "#3a3128", style: "short", top: "#7fa66f", top2: "#fff", wide: true, acc: ["straw", "towel"], bottom: "#6c5a46" },
+    att:    { hair: INK, style: "bun", top: "#2b4a7a", top2: "#fff", acc: ["cap", "scarf", "badge"], cap: "#2b4a7a", scarf: "#c5413a", skirt: true },
+    ya:     { hair: INK, style: "long", top: "#e9a9c0", top2: "#fff", skirt: true, acc: ["bow"], bow: "#c5413a" },
+    zu:     { hair: INK, style: "short", top: "#3f7fb5", top2: "#fff", wide: true, acc: ["cap", "towel"], cap: "#c5413a", bottom: "#33383d" },
+    gu:     { hair: "#f1efe8", style: "white", skin: SKIN2, top: "#a3281f", top2: "#e9c96d", motif: "frog", wide: true, acc: ["brows", "towel"], bottom: "#33383d" },
+    ma:     { hair: INK, style: "short", top: "#e8e2d2", top2: "#fff", wide: true, acc: ["cap", "beard", "apron"], cap: "#f4f2ec", bottom: "#4a3f38" },
+    bus:    { hair: INK, style: "short", top: "#e8eef2", top2: "#2b3a55", acc: ["cap", "badge", "tie"], cap: "#2b3a55", bottom: "#2b3a55" },
+    guide:  { hair: INK, style: "bob", top: "#2b3a55", top2: "#fff", skirt: false, acc: ["cap", "headset", "badge"], cap: "#c5413a", bottom: "#2b3a55" },
+    pi:     { hair: "#4a3b35", style: "bun", top: "#6b3f8f", top2: "#e9c96d", motif: "cloud", skirt: true, acc: ["scarf"], scarf: "#e9c96d" },
+    gen:    { hair: INK, style: "short", top: "#8a2a22", top2: "#e0b24a", motif: "dragon", wide: true, acc: ["driver", "beard", "brows"], bottom: "#4a1d14" },
+    chuan:  { hair: INK, style: "short", top: "#4f9a6a", top2: "#fff", acc: ["backpack", "glasses"], bottom: "#3b4a63" },
+    tea:    { hair: "#4a3b35", style: "bun", top: "#2f7a6a", top2: "#e9c96d", motif: "petal", skirt: true, acc: ["apron"] },
+    wt:     { hair: INK, style: "short", top: "#c5413a", top2: "#fff", acc: ["cap", "apron", "badge"], cap: "#c5413a", bottom: "#33383d" },
+    tang:   { hair: INK, style: "short", top: "#d9a23a", top2: "#fff", wide: true, acc: ["cap", "apron", "towel"], cap: "#8a5a2f", bottom: "#5b4a36" },
+    op:     { hair: INK, style: "buns2", top: "#d9473f", top2: "#f0c53a", motif: "dragon", skirt: true, wide: true, acc: ["flower"] },
+    keep:   { hair: INK, style: "short", top: "#2f8f83", top2: "#fff", wide: true, acc: ["cap", "vest", "badge"], cap: "#2f8f83", vest: "#f4f2ec", bottom: "#33383d" },
     old:    { hair: "#f1efe8", style: "white", skin: SKIN2, top: "#8d7f74", top2: "#e9c96d", motif: "frog", acc: ["beard", "brows", "cane"], bottom: "#4a3f38" },
   };
 
@@ -368,7 +383,7 @@
     <g fill="#7a7466"><rect x="0" y="178" width="22" height="10"/><rect x="34" y="178" width="22" height="10"/><rect x="68" y="178" width="22" height="10"/><rect x="102" y="178" width="22" height="10"/><rect x="136" y="178" width="22" height="10"/><rect x="170" y="178" width="22" height="10"/><rect x="204" y="178" width="22" height="10"/><rect x="238" y="178" width="22" height="10"/><rect x="272" y="178" width="22" height="10"/><rect x="306" y="178" width="22" height="10"/><rect x="340" y="178" width="22" height="10"/></g>`;
 
   function bg(id) {
-    const f = BG[id] || BG.s1;
+    const f = BG[id] || (window.QWORLD && window.QWORLD.still && /^s\d+$/.test(id) ? () => window.QWORLD.still(id) : BG.s1);
     return `<svg class="qbg" viewBox="0 0 360 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${f()}</svg>`;
   }
 
@@ -383,5 +398,5 @@
     </svg>`;
   }
 
-  window.QART = { person, chacha, figure, avatar, avatarOf, bg, mapBackdrop, SKINS, HAIRS, NPC, sign, cloud, lantern };
+  window.QART = { person, chacha, figure, avatar, avatarOf, bg, mapBackdrop, BG, SKINS, HAIRS, NPC, sign, cloud, lantern };
 })();

@@ -38,7 +38,8 @@ from telebot import types
 def _unpack_assets():
     """Запасной путь: если папки webapp_static / quest_data не доехали до сервера, берём их из webapp_assets.zip (лежит рядом с bot.py)."""
     here = os.path.dirname(os.path.abspath(__file__))
-    need = [os.path.join(here, "webapp_static", "index.html"), os.path.join(here, "quest_data", "ch1.json")]
+    need = [os.path.join(here, "webapp_static", "index.html"), os.path.join(here, "quest_data", "ch1.json"),
+            os.path.join(here, "quest_data", "ch2.json"), os.path.join(here, "quest_data", "ch3.json")]
     z = os.path.join(here, "webapp_assets.zip")
     if all(os.path.isfile(f) for f in need) or not os.path.isfile(z):
         return
@@ -90,6 +91,96 @@ if not TOKEN or TOKEN.startswith("ВСТАВЬ"):
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)s  %(message)s")
 _unpack_assets()
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
+
+
+# Telegram не принимает сообщения длиннее 4096 символов: бот молча «ничего не делает».
+# Так было с «Правилами и условиями». Длинный текст режем по абзацам, кнопки остаются под последней частью.
+def _split_html(text, lim=3800):
+    def balanced(s):
+        stack = []
+        for m in re.finditer(r"<(/?)([a-zA-Z]+)[^>]*>", s):
+            if not m.group(1):
+                stack.append(m.group(2).lower())
+            elif stack and stack[-1] == m.group(2).lower():
+                stack.pop()
+            else:
+                return False
+        return not stack
+    parts, cur = [], ""
+    for para in text.split("\n\n"):
+        cand = (cur + "\n\n" + para) if cur else para
+        if len(cand) <= lim or not cur:
+            cur = cand
+        else:
+            parts.append(cur)
+            cur = para
+    if cur:
+        parts.append(cur)
+    out, buf = [], ""
+    for p in parts:                     # если тег разорван между кусками, склеиваем обратно
+        buf = (buf + "\n\n" + p) if buf else p
+        if balanced(buf):
+            out.append(buf)
+            buf = ""
+    if buf:
+        out.append(buf)
+    return out
+
+
+_orig_send_message = bot.send_message
+
+
+def _send_message_safe(chat_id, text, *args, **kwargs):
+    if isinstance(text, str) and len(text) > 4000 and not args:
+        parts = _split_html(text)
+        markup = kwargs.pop("reply_markup", None)
+        res = None
+        for i, p in enumerate(parts):
+            kw = dict(kwargs)
+            if markup is not None and i == len(parts) - 1:
+                kw["reply_markup"] = markup
+            res = _orig_send_message(chat_id, p, **kw)
+        return res
+    return _orig_send_message(chat_id, text, *args, **kwargs)
+
+
+bot.send_message = _send_message_safe
+
+# Если ответить на нажатие поздно (бот перезапускался или тормозил), Telegram отвечает «query is too old».
+# Раньше это исключение обрывало весь обработчик: человек жал кнопку, и ничего не происходило.
+_orig_answer_cb = bot.answer_callback_query
+
+
+def _answer_cb_safe(*args, **kwargs):
+    try:
+        return _orig_answer_cb(*args, **kwargs)
+    except Exception as e:
+        logging.info("answer_callback_query не прошёл (не страшно): %s", e)
+        return False
+
+
+bot.answer_callback_query = _answer_cb_safe
+
+
+# Ошибки в обработчиках больше не теряются в журнале: владелица получает короткое сообщение (не чаще раза в 30 минут на один вид ошибки).
+class _ErrorReporter(telebot.ExceptionHandler):
+    seen = {}
+
+    def handle(self, exception):
+        logging.error("ошибка в обработчике: %r", exception, exc_info=exception)
+        try:
+            key = f"{type(exception).__name__}:{str(exception)[:80]}"
+            now = time.time()
+            if OWNER_ID and now - self.seen.get(key, 0) > 1800 and "Forbidden" not in str(exception):
+                self.seen[key] = now
+                _orig_send_message(OWNER_ID, "⚠️ <b>Ошибка в боте</b> (пользователь мог увидеть, что кнопка ничего не сделала)\n\n"
+                                   f"<code>{html.escape(key)}</code>\n\nПришли мне это сообщение, я разберусь.")
+        except Exception:
+            pass
+        return True
+
+
+bot.exception_handler = _ErrorReporter()
 db.init()
 quest.init_db()
 themes.configure(OWNER_ID, TOKEN)
@@ -582,8 +673,8 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "17"
-VERSION_INFO = "оформления профиля, озвучка с сервера, запись на занятия, бейджи путешествия"
+VERSION = "19"
+VERSION_INFO = "исправления: кнопка «Правила и условия», переключение «Классика → Адаптированные», защита от тихих сбоев и уведомления об ошибках, индексы базы"
 
 
 @bot.message_handler(commands=["version"])
@@ -759,7 +850,9 @@ def text_view(lang, kind, lvl, idx):
                  for L in levels])
     other = "classic" if kind == "adapted" else "adapted"
     if any(y["kind"] == other for y in C.TEXTS):
-        first_lvl = lvl if other == "adapted" else 0
+        # из классики уровень равен 0, а адаптированных текстов HSK 0 нет: кнопка молчала. Берём ближайший настоящий уровень
+        ad_lv = sorted({y["level"] for y in C.TEXTS if y["kind"] == "adapted"})
+        first_lvl = (lvl if lvl in ad_lv else (ad_lv[0] if ad_lv else 0)) if other == "adapted" else 0
         kb.row(types.InlineKeyboardButton("🏛 " + t(lang, "tx_classic") if other == "classic" else "📖 " + t(lang, "tx_adapted"),
                                           callback_data=f"tx:{other}:{first_lvl}:0"))
     return "\n".join(out), kb, x
@@ -1367,7 +1460,9 @@ def ikb(rows):
 def edit_or_send(c, text, markup=None):
     try:
         bot.edit_message_text(text, c.message.chat.id, c.message.message_id, reply_markup=markup)
-    except Exception:
+    except Exception as e:
+        if "message is not modified" in str(e):          # тот же текст: не плодим дубликаты
+            return
         bot.send_message(c.message.chat.id, text, reply_markup=markup)
 
 

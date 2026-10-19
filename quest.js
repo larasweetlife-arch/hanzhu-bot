@@ -1,11 +1,11 @@
-/* 清越 · «Путешествие с Чачей»: экраны игры (создание героя, карта, сцены, задания, магазин).
+/* 清越 · «Путешествие по Китаю с 茶茶»: экраны игры (создание героя, карта, сцены, задания, магазин).
    Все правила и проверка ответов на сервере; здесь только показ. Связь с app.js через window.QY. */
 (() => {
   "use strict";
   const Y = () => window.QY;
   const A = () => window.QART;
   const Q = { st: null, scene: null, loadedAt: 0, busy: false, mood: "smile", nextLifeAt: 0, draft: null, board: {} };
-  const ICONS = ["✈️", "🚕", "🏨", "🥟", "🚇", "🚆", "⛰️", "🏯"];
+  const ICONS = ["✈️", "🚕", "🏨", "🥟", "🚇", "🚆", "⛰️", "🏯", "🚄", "🚲", "🔔", "🥙", "🚌", "🏺", "🏮", "⚔️", "🌧️", "🍵", "🍲", "🍬", "🎭", "🌅", "🐼", "🎋"];
   const TASK_KEY = { tr: "q_t_tr", hz: "q_t_hz", tn: "q_t_tn", od: "q_t_od", mt: "q_t_mt", rp: "q_t_rp" };
 
   const h = (...a) => Y().h(...a);
@@ -30,7 +30,7 @@
     }
     return box;
   }
-  function speak(toks) { try { const u = new SpeechSynthesisUtterance(plain(toks)); u.lang = "zh-CN"; u.rate = 0.85; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) { /* озвучки нет: не страшно */ } }
+  function speak(toks) { try { window.QY.speak(plain(toks)); } catch (e) { /* озвучки нет: не страшно */ } }
 
   // ── загрузка состояния ──
   async function load(force) {
@@ -115,12 +115,12 @@
   function hearts(n, max) { return h("span", { class: "qhearts", "aria-label": `${n}/${max}` }, Array.from({ length: max }, (_, i) => h("i", { class: "qlan" + (i < n ? "" : " off"), html: LAN }))); }
 
   function homeView() {
-    const st = Q.st, ch = st.char, c = st.constants, ch1 = st.chapters[0];
+    const st = Q.st, ch = st.char, c = st.constants, cci = curChapter(), ch1 = st.chapters[cci] || st.chapters[0];
     const out = [];
     out.push(h("div", { class: "card hero qhero" },
       h("div", { class: "row" },
         h("div", { class: "qme", html: A().avatar(ch) }),
-        h("div", { style: "flex:1;min-width:0" }, h("h2", {}, ch.hero), h("div", { class: "rank" }, "🗺 " + tr("q_chapter", { n: 1 }) + " · " + loc(ch1.city)),
+        h("div", { style: "flex:1;min-width:0" }, h("h2", {}, ch.hero), h("div", { class: "rank" }, "🗺 " + tr("q_chapter", { n: cci + 1 }) + " · " + loc(ch1.city)),
           h("div", { style: "margin-top:6px;font-size:13px;opacity:.9" }, tr("q_level") + ": " + ch1.level))),
       h("div", { class: "qstat" },
         h("div", {}, hearts(st.lives, c.lives_max), h("small", { class: "qtick" }, st.lives >= c.lives_max ? tr("q_life_full") : tr("q_life_in", { t: mmss(st.next_life_in) }))),
@@ -130,36 +130,57 @@
         h("button", { class: "btn line sm qonhero", onclick: wardrobeSheet }, "👘 " + tr("q_wardrobe")))));
 
     const t = st.today;
-    if (!t.chapter_done) {
+    if (!t.game_done) {
       if (t.free_left) out.push(h("div", { class: "card qtoday" }, h("div", { class: "em" }, "🍵"), h("div", {}, h("b", {}, tr("q_today_free")), h("div", { class: "muted" }, tr("q_howmuch", { a: c.task_coins, b: c.scene_bonus })))));
       else if (t.extra) out.push(h("div", { class: "card qtoday" }, h("div", { class: "em" }, "🎟"), h("div", {}, h("b", {}, tr("q_continue_today")), h("div", { class: "muted" }, tr("q_continue_sub")))));
       else out.push(h("div", { class: "card qtoday done" }, h("div", { class: "em" }, "🌙"), h("div", { style: "flex:1" }, h("b", {}, tr("q_today_done")),
         h("button", { class: "btn jade sm", style: "margin-top:10px", onclick: () => extraSheet() }, "▶ " + tr("q_continue_today") + " · ⭐ " + st.shop.items.extra.stars))));
     }
 
-    out.push(mapView());
+    chapterBlocks().forEach((b) => out.push(b));
+    out.push(h("details", {}, h("summary", {}, Y().tr("qhow_title")), h("div", { class: "body" }, h("ol", {}, Y().tr("qhow").map((x) => h("li", {}, x))))));
     const pc = prizeCard(); if (pc) out.push(pc);
     out.push(ratingCard());
-    out.push(h("div", { class: "card qsoon" }, [["q_ch2", "🏯"], ["q_ch3", "🐼"]].map(([k, e]) => h("div", { class: "it" }, h("span", {}, e), h("div", {}, h("b", {}, tr(k)), h("small", {}, tr("q_soon")))))));
+    if (Y().inviteCard) out.push(Y().inviteCard(Y().S.me));
     out.push(h("button", { class: "card qsupport", onclick: openSupport }, h("span", { class: "em" }, "💝"), h("div", { style: "text-align:left" }, h("b", {}, tr("q_support")), h("div", { class: "muted" }, tr("q_support_sub")))));
     return h("div", {}, out);
   }
 
-  // карта главы: дорога слева направо (Пекин → Великая стена), прокручивается пальцем
-  function mapView() {
-    const st = Q.st, n = st.scenes.length, H = 250, STEP = 150, W = Math.max(Math.min(window.innerWidth, 560) - 32, 80 + n * STEP);
+  // какая глава сейчас идёт (по текущей сцене); если всё пройдено, последняя
+  function curChapter() {
+    const sc = Q.st.scenes.find((x) => x.status === "current");
+    return sc ? sc.ch : Math.max(0, Q.st.chapters.length - 1);
+  }
+  const chapterOpen = (ci) => Q.st.scenes.some((s) => s.ch === ci && s.status !== "locked");
+  // карты всех глав: текущая сверху, пройденные ниже, закрытые показаны замком
+  function chapterBlocks() {
+    const st = Q.st, order = st.chapters.map((_, i) => i), cc = curChapter();
+    order.sort((a, b) => (a === cc ? -1 : b === cc ? 1 : a - b));
+    return order.map((ci) => {
+      if (chapterOpen(ci)) return mapView(ci);
+      const chap = st.chapters[ci];
+      return h("div", { class: "card qsoon" }, h("div", { class: "it" }, h("span", {}, "🔒"),
+        h("div", {}, h("b", {}, tr("q_chapter", { n: ci + 1 }) + " · " + loc(chap.city)), h("small", {}, tr("q_ch_locked", { n: ci })))));
+    });
+  }
+
+  // карта главы: дорога слева направо (город → цель главы), прокручивается пальцем
+  function mapView(ci) {
+    const st = Q.st, chap = st.chapters[ci] || st.chapters[0];
+    const list = st.scenes.map((s, g) => Object.assign({ g }, s)).filter((s) => s.ch === ci), n = list.length, H = 250, STEP = 150;
+    const W = Math.max(Math.min(window.innerWidth, 560) - 32, 80 + n * STEP);
     const xs = (i) => 76 + i * ((W - 152) / Math.max(1, n - 1));
     const ys = (i) => 104 + Math.sin(i * 1.3 + .4) * 34;
     let d = `M ${xs(0) - 70} ${ys(0) + 10} L ${xs(0)} ${ys(0)}`;
     for (let i = 1; i < n; i++) { const x0 = xs(i - 1), x1 = xs(i), mx = (x0 + x1) / 2; d += ` C ${mx} ${ys(i - 1)}, ${mx} ${ys(i)}, ${x1} ${ys(i)}`; }
-    const doneN = st.scenes.filter((s) => s.status === "done").length;
-    const cur = Math.max(0, st.scenes.findIndex((s) => s.status === "current"));
+    const doneN = list.filter((s) => s.status === "done").length;
+    const cur = Math.max(0, list.findIndex((s) => s.status === "current"));
     const box = h("div", { class: "qmap", style: `width:${W}px;height:${H}px` });
-    box.append(html(window.QWORLD.mapArt(W, H)));
+    box.append(html(window.QWORLD.mapArt(W, H, ci)));
     box.append(html(`<svg class="qpath" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="rgba(90,17,13,.28)" stroke-width="11" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#e0b24a" stroke-width="4" stroke-dasharray="3 10" stroke-linecap="round"/></svg>`));
-    st.scenes.forEach((s, i) => {
+    list.forEach((s, i) => {
       const node = h("button", { class: "qnode " + s.status + (s.boss ? " boss" : ""), style: `left:${xs(i) - 29}px;top:${ys(i) - 29}px`, "aria-label": loc(s.title_tr), onclick: () => tapScene(s) },
-        h("span", {}, s.status === "locked" ? "🔒" : ICONS[i] || "📍"), s.status === "done" ? h("em", {}, "✓") : null);
+        h("span", {}, s.status === "locked" ? "🔒" : ICONS[s.g] || "📍"), s.status === "done" ? h("em", {}, "✓") : null);
       const label = h("div", { class: "qlabel " + s.status, style: `top:${ys(i) + 36}px;left:${xs(i) - 62}px;width:124px` },
         h("small", {}, tr("q_scene_n", { n: s.n })), ruby(s.title), h("div", { class: "tl" }, loc(s.title_tr)),
         s.status === "current" && s.progress ? h("div", { class: "pg" }, s.progress + "/" + s.tasks) : null);
@@ -169,8 +190,8 @@
     const sc = h("div", { class: "qmapscroll" }, box);
     setTimeout(() => { if (sc.isConnected) sc.scrollLeft = Math.max(0, xs(cur) - sc.clientWidth / 2); }, 30);
     return h("div", { class: "card qmapcard" },
-      h("div", { style: "display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px" }, h("h3", {}, loc(st.chapters[0].title)), h("span", { class: "muted" }, `${doneN}/${n}`)),
-      h("div", { class: "muted", style: "margin:-2px 0 10px" }, tr("q_goal") + ": " + loc(st.chapters[0].goal)), sc);
+      h("div", { style: "display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px" }, h("h3", {}, loc(chap.title)), h("span", { class: "muted" }, `${doneN}/${n}`)),
+      h("div", { class: "muted", style: "margin:-2px 0 10px" }, tr("q_goal") + ": " + loc(chap.goal)), sc);
   }
 
   function prizeCard() {
@@ -187,23 +208,23 @@
     const b = Q.board[tab];
     if (b && !force && Date.now() - b.at < 30000) return b;
     try { const r = await Y().api("/api/quest/board", { tab }); r.at = Date.now(); Q.board[tab] = r; } catch (e) { return null; }
-    if (S().tab === "quest" && !Q.scene && !document.querySelector(".sheetbg")) Y().render();
+    if ((S().tab === "quest" || S().tab === "top") && !Q.scene && !document.querySelector(".sheetbg")) Y().render();
     return Q.board[tab];
   }
   const MEDAL = ["🥇", "🥈", "🥉"];
   function boardRows(b) {
     if (!b.rows.length) return [h("div", { class: "muted", style: "text-align:center;padding:18px 0" }, tr("q_rate_empty"))];
-    return b.rows.map((r) => h("div", { class: "qrow" + (r.me ? " me" : "") },
+    return b.rows.map((r) => { const rp = window.TH ? window.TH.rowProps(r, "quest") : {}; return h("div", { class: "qrow" + (r.me ? " me" : "") + (rp.cls || ""), style: rp.style, onclick: rp.onclick },
       h("span", { class: "pl" }, MEDAL[r.place - 1] || r.place),
       h("span", { class: "av", html: A().avatar({ gender: r.gender, skin: r.skin, hero: r.hero }) }),
-      h("span", { class: "nm" }, r.hero, h("small", {}, `${tr("q_rate_scenes", { n: r.scenes })}`)),
-      h("b", { class: "pt" }, r.pts)));
+      h("span", { class: "nm" }, r.hero, window.TH ? window.TH.mark(r) : null, h("small", {}, `${tr("q_rate_scenes", { n: r.scenes })}`)),
+      h("b", { class: "pt" }, r.pts)); });
   }
   function ratingCard() {
     const b = Q.board.week, top = b && b.rows.slice(0, 3);
     const me = b && b.me;
     const sub = !b ? "…" : me && me.place ? tr("q_rate_you", { p: me.place, pts: me.pts }) : me && me.hidden ? tr("q_rate_hidden") : tr("q_rate_none");
-    return h("button", { class: "card qrate", onclick: ratingSheet },
+    return h("button", { class: "card qrate", onclick: () => Y().go("top") },
       h("div", { class: "row" }, h("span", { class: "em" }, "🏆"), h("div", { style: "flex:1;text-align:left" }, h("b", {}, tr("q_rating")), h("div", { class: "muted" }, sub))),
       top && top.length ? h("div", { class: "qtop3" }, top.map((r) => h("span", { class: r.me ? "me" : "" }, MEDAL[r.place - 1] + " " + r.hero + " · " + r.pts))) : null);
   }
@@ -295,7 +316,10 @@
   function fx(el, cls, ms) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), ms); }
 
   // ── живость: передний план, падающие листья, свет, монеты, искры ──
-  const LEAF = { airport: ["#e8b53c", "#f3d06a", "#d99a2b"], road: ["#e8b53c", "#f3d06a", "#d99a2b"], hotel: ["#e8b53c", "#f08a5d", "#d9632f"], food: ["#e8b53c", "#f08a5d", "#f3d06a"], mountain: ["#e8b53c", "#8fc35f", "#d9632f"], wall: ["#e0a53a", "#d9632f", "#f3d06a"] };
+  const LEAF = { airport: ["#e8b53c", "#f3d06a", "#d99a2b"], road: ["#e8b53c", "#f3d06a", "#d99a2b"], hotel: ["#e8b53c", "#f08a5d", "#d9632f"], food: ["#e8b53c", "#f08a5d", "#f3d06a"], mountain: ["#e8b53c", "#8fc35f", "#d9632f"], wall: ["#e0a53a", "#d9632f", "#f3d06a"],
+    rail: ["#e8b53c", "#f3d06a", "#d99a2b"], xwall: ["#e8b53c", "#8fc35f", "#d9632f"], xsq: ["#e8b53c", "#f08a5d", "#d9632f"], xstreet: ["#e8b53c", "#f08a5d", "#f3d06a"], xroad: ["#e8b53c", "#f3d06a", "#d99a2b"],
+    night: ["#ffd36b", "#ffe9a0", "#f7b955"], gate: ["#e0a53a", "#d9632f", "#f3d06a"], rain: ["#a9c9e8", "#cfe3f5", "#8fb4d8"], teahouse: ["#8fc35f", "#a8d98a", "#5ea053"],
+    hotpot: ["#ffb35c", "#ff8a5c", "#ffd36b"], alley: ["#f2a6bd", "#f3d06a", "#8fc35f"], dawn: ["#f6c5d0", "#ffe9b8", "#c9b6f0"], bamboo: ["#7fbf6a", "#a8d98a", "#5ea053"] };
   function ambient(pal) {
     const th = pal.theme || "airport";
     const back = h("div", { class: "qamb back" }, h("div", { class: "qgrade g-" + th }));
@@ -400,7 +424,7 @@
     document.body.classList.remove("qs-open"); Q.scene = null;
     await reload(); Y().render(); fn();
   }
-  function speechSynthesisCancel() { try { speechSynthesis.cancel(); } catch (e) { /* нет озвучки */ } }
+  function speechSynthesisCancel() { try { window.QY.stopSpeak(); } catch (e) { /* нет озвучки */ } }
 
   function renderHud() {
     if (!G) return;
@@ -649,7 +673,8 @@
       h("div", { class: "cha", html: A().chacha("happy") }),
       h("div", {},
         h("h2", {}, r.replay ? tr("q_replay_done") : r.chapter_done ? tr("q_chapter_done") : tr("q_done_title")),
-        r.chapter_done ? h("p", { class: "muted" }, tr("q_chapter_done_sub")) : null,
+        r.chapter_done ? h("p", { class: "muted" }, tr("q_ch_sub_" + ((r.chapter || 0) + 1))) : null,
+        r.game_done && r.chapter_done ? h("p", { class: "muted" }, tr("q_game_done")) : null,
         !r.replay ? h("div", { class: "earn" }, h("span", {}, coinI(), " " + tr("q_earned", { n: r.earned || 0 }).replace("🪙", "").trim()), r.mistakes ? h("small", {}, tr("q_mist", { n: r.mistakes })) : null) : null,
         r.prize_new ? h("div", { class: "prz" }, "🎁 " + tr("q_prize_new")) : null,
         h("div", { class: "culture" }, h("b", {}, "🏮 " + tr("q_culture")), h("p", {}, loc(sc.p.culture))),
@@ -767,6 +792,7 @@
     body.push(h("div", { class: "qopt" }, h("div", { class: "tx" }, h("b", {}, "🏮🏮 " + tr("q_refill")), h("small", {}, `+${c.lives_max}`)), priceRow("refill", () => closeSheets())));
     if (st.stars_on) body.push(h("div", { class: "muted", style: "font-size:12.5px;margin-top:10px" }, tr("q_stars_note")));
     body.push(h("button", { class: "btn line sm", style: "margin-top:14px", onclick: () => { closeSheets(); wardrobeSheet(); } }, "👘 " + tr("q_wardrobe")));
+    if (window.TH) body.push(h("button", { class: "btn line sm", style: "margin-top:10px", onclick: () => { closeSheets(); window.TH.open(); } }, "🎨 " + window.TH.title()));
     Y().sheet(body);
   }
   function extraSheet(nextId) {
@@ -812,6 +838,45 @@
       bot ? h("button", { class: "btn jade", onclick: () => { closeSheets(); Y().openTg(bot + "?start=donate"); } }, tr("q_donate_open")) : null]);
   }
 
+
+  // ── вкладка «Рейтинг»: рейтинг путешествия ──
+  function ratingView() {
+    if (!Q.st) { load(); return h("div", { class: "muted", style: "text-align:center;padding:40px" }, "…"); }
+    if (!Q.st.char) {
+      return h("div", { class: "card", style: "text-align:center" }, h("div", { style: "font-size:44px" }, "🏆"), h("h3", {}, tr("q_rating")),
+        h("div", { class: "muted", style: "margin:6px 0 12px" }, tr("q_rate_need_hero")),
+        h("button", { class: "btn primary", onclick: () => Y().go("quest") }, tr("q_rate_go")));
+    }
+    const tab = Q.rtab || "week";
+    const b = Q.board[tab];
+    if (!b && !Q.rbusy) { Q.rbusy = true; loadBoard(tab).finally(() => { Q.rbusy = false; }); }
+    const me = b && b.me, hidden = !!Q.st.hide;
+    const out = [];
+    const start = b && b.week_start;
+    let range = "", left = 0;
+    if (start) {
+      const a = new Date(start + "T00:00:00"), z = new Date(a.getTime() + 6 * 864e5);
+      const iso = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+      range = tr("week_range", { a: Y().fmtDate(start), b: Y().fmtDate(iso(z)) });
+      const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+      left = Math.max(1, Math.round((z.getTime() - t0.getTime()) / 864e5) + 1);
+    }
+    out.push(h("div", { class: "card hero" }, h("h2", {}, "🏆 " + tr("top_title")),
+      start ? h("div", { style: "margin-top:4px;opacity:.85" }, range + " · " + tr("days_left", { n: left })) : null,
+      h("div", { style: "margin-top:10px;font-size:14px;opacity:.9" }, tr("prize", { m: (b && b.min) || 60 }))));
+    const sub = !b ? "…" : me && me.place ? tr("q_rate_you", { p: me.place, pts: me.pts }) : me && me.hidden ? tr("q_rate_hidden") : tr("q_rate_none");
+    out.push(h("div", { class: "card", style: "text-align:center" }, h("b", {}, sub)));
+    out.push(h("div", { class: "seg fill", style: "margin:14px 0 8px" }, [["week", "q_rate_week"], ["all", "q_rate_all"]].map(([k, t]) =>
+      h("button", { class: tab === k ? "on" : "", onclick: () => { Q.rtab = k; Y().render(); } }, tr(t)))));
+    out.push(b ? h("div", { class: "qrows" }, boardRows(b)) : h("div", { class: "muted", style: "text-align:center;padding:20px" }, "…"));
+    if (b && me && me.place && !b.rows.some((r) => r.me)) out.push(h("div", { class: "qrow me" }, h("span", { class: "pl" }, me.place), h("span", { class: "nm" }, heroName()), h("b", { class: "pt" }, me.pts)));
+    out.push(h("div", { class: "muted", style: "font-size:12.5px;margin-top:12px" }, tr("q_rate_note")));
+    out.push(h("button", { class: "linkbtn", style: "margin-top:10px", onclick: async () => { await Y().safe(async () => { await Y().api("/api/quest/hide", { hide: !hidden }); Q.st.hide = !hidden; Q.board = {}; Y().toast(tr("q_bought")); Y().render(); }); } },
+      hidden ? "👁 " + tr("q_rate_show") : "🙈 " + tr("q_rate_hide")));
+    return h("div", {}, out);
+  }
+  function enterRating() { Q.rbusy = false; if (!Q.st) load(false); else loadBoard(Q.rtab || "week", true); }
+
   // ───────────────────────── вход ─────────────────────────
   function view() {
     if (!Q.st) { load(); return h("div", { class: "muted", style: "text-align:center;padding:40px" }, "…"); }
@@ -820,5 +885,5 @@
   }
   function enter() { load(false); loadBoard("week", false); }
 
-  window.QUEST = { view, enter, reload, openSupport };
+  window.QUEST = { view, enter, ratingView, enterRating, reload, openSupport, buyCoins, buyStars };
 })();

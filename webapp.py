@@ -21,6 +21,12 @@ from urllib.parse import parse_qsl, quote
 
 from flask import Flask, jsonify, request, send_from_directory, send_file
 
+
+def _jb():
+    """Тело запроса как словарь: если пришло что-то другое (строка, список), берём пустой словарь, а не падаем с 500."""
+    b = request.get_json(silent=True)
+    return b if isinstance(b, dict) else {}
+
 import db
 import practice
 import quest
@@ -139,7 +145,7 @@ def create_app(deps):
         return resp
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
-            "quest_art.js", "quest_world.js", "quest_i18n.js", "chacha/chacha_wave.webp"]
+            "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -301,7 +307,7 @@ def create_app(deps):
     @app.route("/api/lang", methods=["POST"])
     @need_auth
     def api_lang(tg, lang, u):
-        new = (request.get_json(silent=True) or {}).get("lang")
+        new = _jb().get("lang")
         if new in LANGS:
             db.save_user(tg["id"], lang=new)
         return jsonify({"ok": new in LANGS})
@@ -318,7 +324,7 @@ def create_app(deps):
     @need_auth
     def api_nick(tg, lang, u):
         uid = tg["id"]
-        raw = (request.get_json(silent=True) or {}).get("nick", "")
+        raw = _jb().get("nick", "")
         cur, since = db.nick_get(uid)
         if cur and since and datetime.strptime(since, "%Y-%m-%d").date() + timedelta(days=practice.NICK_CHANGE_DAYS) > now_tz().date():
             nxt = datetime.strptime(since, "%Y-%m-%d") + timedelta(days=practice.NICK_CHANGE_DAYS)
@@ -334,7 +340,7 @@ def create_app(deps):
     @need_auth
     def api_join(tg, lang, u):
         uid = tg["id"]
-        want = bool((request.get_json(silent=True) or {}).get("joined"))
+        want = bool(_jb().get("joined"))
         if want and not db.nick_get(uid)[0]:
             return jsonify({"ok": False, "need_nick": True})
         if OWNER and uid == OWNER:
@@ -357,7 +363,7 @@ def create_app(deps):
     @need_auth
     def api_board(tg, lang, u):
         me = tg["id"]
-        tab = (request.get_json(silent=True) or {}).get("tab", "week")
+        tab = _jb().get("tab", "week")
         joined = db.board_joined() - {OWNER}
         today = now_tz().date()
         res = {"tab": tab, "rows": [], "me": None}
@@ -428,7 +434,7 @@ def create_app(deps):
     @need_auth
     def api_tea_answer(tg, lang, u):
         uid = tg["id"]
-        body = request.get_json(silent=True) or {}
+        body = _jb()
         with _LOCK:
             sess = ORDERS.get(uid)
             try:
@@ -531,7 +537,7 @@ def create_app(deps):
     DONATE = deps.get("donate") or {"on": False}
 
     def jbody():
-        return request.get_json(silent=True) or {}
+        return _jb()
 
     @app.route("/api/quest/state", methods=["POST"])
     @need_auth

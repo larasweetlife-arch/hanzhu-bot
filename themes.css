@@ -1,0 +1,67 @@
+/* Оформления профиля: фон, карточки и подсветка. Цвета берутся из переменных, которые ставит themes.js. */
+html[data-qtheme] body { background: var(--qbg, var(--bg)); background-attachment: fixed; }
+html[data-qtheme] body::before { opacity: .12; }
+html[data-qtheme][data-theme] .hero { background: linear-gradient(160deg, var(--jade2), var(--jade)); color: var(--onjade); }
+html[data-qtheme] .hero::before { opacity: .18; }
+html[data-qtheme] .card { border-color: color-mix(in srgb, var(--jade) 22%, var(--line)); }
+html[data-qtheme] .btn.primary { background: linear-gradient(180deg, color-mix(in srgb, var(--seal) 82%, #fff), var(--seal)); color: #fff; box-shadow: 0 8px 20px color-mix(in srgb, var(--seal) 38%, transparent); }
+html[data-qtheme] .tab.on { background: var(--mist); color: var(--jade); }
+html[data-qtheme] .sheet { border-top: 1px solid color-mix(in srgb, var(--jade) 30%, var(--line)); }
+
+/* легендарное: золотая бегущая рамка у карточек */
+html[data-qtheme="dragongate"] .card {
+  border: 1px solid transparent;
+  background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(120deg, #ffcc4d, #ff8a3d, #ffe08a, #ff8a3d, #ffcc4d) border-box;
+  background-size: 100% 100%, 300% 300%; animation: thshift 7s linear infinite;
+}
+@keyframes thshift { to { background-position: 0 0, 300% 0; } }
+@media (prefers-reduced-motion: reduce) { html[data-qtheme="dragongate"] .card { animation: none; } }
+
+/* строки рейтинга: у тех, у кого есть оформление, подсветка в его цветах */
+.tap { cursor: pointer; }
+.throw { border-color: var(--rj) !important; background: linear-gradient(90deg, color-mix(in srgb, var(--rj) 16%, var(--card)), var(--card) 75%) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rj) 45%, transparent) inset, 0 4px 14px color-mix(in srgb, var(--rj) 22%, transparent); }
+.thmark { margin-left: 6px; font-size: 14px; }
+
+/* карточка игрока */
+.pcard { border-radius: 22px; padding: 18px; background: var(--qbg, var(--card)); color: var(--ink); border: 1px solid var(--line); }
+.pcard.themed { border-color: color-mix(in srgb, var(--jade) 45%, transparent); box-shadow: 0 10px 30px color-mix(in srgb, var(--jade) 22%, transparent); }
+.phead { display: flex; gap: 14px; align-items: center; }
+.pav { width: 78px; height: 86px; border-radius: 22px; background: var(--mist); overflow: hidden; display: grid; place-items: end center; flex: none; border: 2px solid color-mix(in srgb, var(--jade) 50%, transparent); }
+.pav svg { width: 92%; height: auto; }
+.pav.em { place-items: center; font-size: 40px; }
+.pinfo { min-width: 0; }
+.pinfo h2 { font-size: 22px; word-break: break-word; }
+.psub { color: var(--mute); font-size: 14px; margin-top: 2px; }
+.pchip { display: inline-block; margin-top: 8px; padding: 4px 11px; border-radius: 99px; background: color-mix(in srgb, var(--jade) 18%, var(--card)); color: var(--jade); font-weight: 700; font-size: 13.5px; }
+.pchip.dim { background: var(--mist); color: var(--mute); font-weight: 600; }
+.pwins { display: flex; gap: 12px; align-items: center; margin-top: 14px; padding: 10px 12px; border-radius: 16px; background: color-mix(in srgb, var(--gold) 20%, var(--card)); border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); }
+.pwins .k { font-size: 28px; }
+.pwins small { display: block; color: var(--mute); font-size: 12.5px; }
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.pgrid div { text-align: center; padding: 10px 4px; border-radius: 14px; background: color-mix(in srgb, var(--card) 85%, transparent); border: 1px solid var(--line); }
+.pgrid b { display: block; font-family: var(--serif); font-size: 20px; color: var(--jade); }
+.pgrid span { font-size: 11.5px; color: var(--mute); }
+.pnote { margin-top: 12px; text-align: center; font-size: 12px; color: var(--mute); }
+
+/* окно оформлений */
+.thh { margin: 18px 0 8px; font-family: var(--serif); font-size: 16px; }
+.thlist { display: grid; gap: 10px; }
+.thc { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 18px; background: var(--qbg, var(--card)); color: var(--ink); border: 1.5px solid var(--line); }
+.thc.on { border-color: var(--jade); box-shadow: 0 0 0 2px color-mix(in srgb, var(--jade) 30%, transparent); }
+.thc .tx { flex: 1; min-width: 0; }
+.thc .tx b { display: block; }
+.thc .tx small { color: var(--mute); font-size: 12.5px; }
+.thc .btn { width: auto; flex: none; min-width: 64px; min-height: 40px; padding: 6px 12px; font-size: 15px; }
+.thc .prow { display: flex; flex-direction: column; gap: 6px; }
+.thon { font-weight: 700; color: var(--jade); font-size: 14px; flex: none; }
+.thprev { width: 54px; height: 54px; border-radius: 14px; background: var(--qbg, var(--bg)); border: 1px solid var(--line); position: relative; flex: none; overflow: hidden; }
+.thprev i { position: absolute; display: block; border-radius: 6px; }
+.thprev .c1 { left: 7px; right: 7px; top: 8px; height: 16px; background: var(--card); border: 1px solid var(--line); }
+.thprev .c2 { left: 7px; width: 22px; bottom: 9px; height: 9px; background: var(--jade); border-radius: 99px; }
+.thprev .c3 { right: 7px; width: 12px; bottom: 9px; height: 9px; background: var(--seal); border-radius: 99px; }
+.thpacks { display: flex; gap: 8px; flex-wrap: wrap; }
+.thpacks .btn { width: auto; flex: 1 1 30%; }
+.thentry { cursor: pointer; background: var(--qbg, var(--card)); color: var(--ink); }
+.thentry .row { display: flex; align-items: center; gap: 12px; }
+.thentry .em { font-size: 28px; }

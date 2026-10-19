@@ -793,7 +793,7 @@ def register(bot, owner_id, lang_of, notify_owner, ask_trial, labels):
         uid = m.from_user.id
         tc = teacher_of_user(uid)
         if not tc:
-            return bot.send_message(uid, "Профиль преподавателя пока не создан. Попроси Ларе добавить тебя.")
+            return bot.send_message(uid, "Профиль преподавателя пока не создан. Попроси Лазизе добавить тебя.")
         editor(uid, tc["id"])
 
     @bot.message_handler(commands=["teachers"])

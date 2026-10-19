@@ -2,9 +2,11 @@
 """ch1.json (build.py) + quest_tr -> hanzhu4/quest_data/ch1.json (формат движка, 3 языка)."""
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
-import quest_tr as T
+import importlib
+CH = sys.argv[1] if len(sys.argv) > 1 else "ch1"
+T = importlib.import_module("quest_tr" if CH == "ch1" else CH + "_tr")
 
-src = json.load(open("ch1_build.json", encoding="utf-8"))
+src = json.load(open(CH + "_build.json", encoding="utf-8"))
 ch = src["chapter"]
 
 def tri(ru, uz, en):
@@ -59,7 +61,7 @@ for sc in src["scenes"]:
 
 if problems:
     print("PROBLEMS", problems); sys.exit(1)
-dst = "../hanzhu4/quest_data"
+dst = "../quest_data"
 os.makedirs(dst, exist_ok=True)
-json.dump(out, open(dst + "/ch1.json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
-print("ok", os.path.getsize(dst + "/ch1.json"), "bytes;", len(out["scenes"]), "scenes")
+json.dump(out, open(dst + "/" + CH + ".json", "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+print("ok", os.path.getsize(dst + "/" + CH + ".json"), "bytes;", len(out["scenes"]), "scenes")

@@ -311,7 +311,7 @@ body.qs-open { overflow: hidden; }
 .qbtn::before, .qchip::before { content: ""; position: absolute; left: 6%; right: 6%; top: 4%; height: 42%; border-radius: 99px; background: linear-gradient(rgba(255, 255, 255, .42), rgba(255, 255, 255, 0)); pointer-events: none; }
 .qplaque::after { box-shadow: none; }
 
-/* ── 茶茶: стикеры Лары, лёгкая «жизнь» вместо рисованных частей ── */
+/* ── 茶茶: стикеры Лазизы, лёгкая «жизнь» вместо рисованных частей ── */
 .qcha .qchi { transform-origin: 60px 124px; animation: qcbreath 3.4s ease-in-out infinite; }
 .qcha .qcsh { transform-origin: 60px 125px; animation: qcshadow 3.4s ease-in-out infinite; }
 .qcha.pose-wave .qchi { animation: qcwave 2.6s ease-in-out infinite; }
@@ -324,3 +324,20 @@ body.qs-open { overflow: hidden; }
 @keyframes qcshadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(.92); opacity: .8; } }
 .qcc { height: calc(var(--u) * 14.5); }
 .qcha.qavatar .qcsh { display: none; }
+
+/* главы 2–3: дождь, звёзды, колесо сахарных картинок, свечение фонарей, цветокор новых тем */
+.qrain { animation: qrainfall .55s linear infinite; }
+@keyframes qrainfall { from { transform: translateY(0); } to { transform: translateY(120px); } }
+.qtw { animation: qtwk 3s ease-in-out infinite alternate; }
+@keyframes qtwk { from { opacity: .35; } to { opacity: 1; } }
+.qspin { animation: qspin 14s linear infinite; }
+@keyframes qspin { to { transform: rotate(360deg); } }
+.qglow { animation: qglow 2.2s ease-in-out infinite alternate; }
+@keyframes qglow { from { opacity: .6; } to { opacity: 1; } }
+.qgrade.g-rail, .qgrade.g-xroad, .qgrade.g-xwall, .qgrade.g-alley, .qgrade.g-teahouse { background: linear-gradient(180deg, rgba(120, 190, 255, .28), rgba(255, 245, 200, .14)); }
+.qgrade.g-xsq, .qgrade.g-xstreet, .qgrade.g-gate { background: linear-gradient(180deg, rgba(240, 120, 110, .42), rgba(255, 190, 120, .15)); }
+.qgrade.g-night, .qgrade.g-hotpot { background: linear-gradient(180deg, rgba(40, 30, 110, .45), rgba(255, 150, 80, .12)); opacity: .5; }
+.qgrade.g-dawn { background: linear-gradient(180deg, rgba(60, 60, 150, .4), rgba(255, 170, 140, .18)); }
+.qgrade.g-rain { background: linear-gradient(180deg, rgba(90, 120, 150, .5), rgba(200, 215, 225, .1)); }
+.qgrade.g-bamboo { background: linear-gradient(180deg, rgba(110, 200, 150, .32), rgba(255, 250, 200, .14)); }
+.qgrade.g-pit, .qgrade.g-stage { background: linear-gradient(180deg, rgba(255, 190, 90, .32), rgba(255, 230, 170, .08)); }

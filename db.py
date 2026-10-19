@@ -2,6 +2,7 @@
 汉助 HanZhu — база данных (SQLite, встроена в Python, ничего ставить не нужно).
 """
 import json
+import logging
 import os
 import sqlite3
 from contextlib import contextmanager
@@ -179,6 +180,29 @@ def init():
             c.execute("INSERT INTO discounts (user_id, friend_id, status, created) VALUES (?,?,?,?)",
                       (r["user_id"], 0, "queued", r["created"]))
             c.execute("UPDATE rewards SET done=1 WHERE id=?", (r["id"],))
+        # индексы: без них каждый запрос по пользователю перебирает всю таблицу, и чем больше людей, тем медленнее бот
+        for ddl in (
+            "CREATE INDEX IF NOT EXISTS ix_events_user ON events(user_id, kind)",
+            "CREATE INDEX IF NOT EXISTS ix_events_date ON events(date, kind)",
+            "CREATE INDEX IF NOT EXISTS ix_lessons_user ON lessons(user_id, date)",
+            "CREATE INDEX IF NOT EXISTS ix_payments_user ON payments(user_id)",
+            "CREATE INDEX IF NOT EXISTS ix_tests_user ON tests(user_id)",
+            "CREATE INDEX IF NOT EXISTS ix_schedule_user ON schedule(user_id)",
+            "CREATE INDEX IF NOT EXISTS ix_attendance_user ON attendance(user_id, lesson)",
+            "CREATE INDEX IF NOT EXISTS ix_homework_user ON homework(user_id, done)",
+            "CREATE INDEX IF NOT EXISTS ix_hwsubs_hw ON hw_subs(hw_id, user_id)",
+            "CREATE INDEX IF NOT EXISTS ix_moves_user ON moves(user_id, status)",
+            "CREATE INDEX IF NOT EXISTS ix_reviews_user ON reviews(user_id)",
+            "CREATE INDEX IF NOT EXISTS ix_referrals_ref ON referrals(referrer_id)",
+            "CREATE INDEX IF NOT EXISTS ix_tea_day ON tea_score(day)",
+            "CREATE INDEX IF NOT EXISTS ix_feed_user ON feed(user_id)",
+            "CREATE INDEX IF NOT EXISTS ix_rewards_user ON rewards(user_id, done)",
+            "CREATE INDEX IF NOT EXISTS ix_discounts_user ON discounts(user_id, status)",
+        ):
+            try:
+                c.execute(ddl)
+            except sqlite3.OperationalError as e:        # колонка есть не во всех версиях базы: не мешаем запуску
+                logging.warning("индекс не создан (%s): %s", ddl[:50], e)
 
 
 # ─── ПОЛЬЗОВАТЕЛИ ─────────────────────────────────────────────────────────────

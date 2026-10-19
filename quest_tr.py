@@ -12,7 +12,7 @@ CHAPTER = {
 
 CAST = {
     "me": ("Sen (qahramon)", "You (the hero)"),
-    "cc": ("Chacha, choy ruhi, yo'lboshchi", "Chacha, the tea spirit and guide"),
+    "cc": ("茶茶, choy ruhi, yo'lboshchi", "茶茶, the tea spirit and guide"),
     "li": ("Aeroport xodimasi", "Airport officer"),
     "wang": ("Taksi haydovchisi", "Taxi driver"),
     "lin": ("Mehmonxona administratori", "Hotel receptionist"),
@@ -34,7 +34,7 @@ SC = {
  "culture": ("«你叫什么名字？» — «isming nima?» degan oddiy savol. Juda odobli so'rash uchun: «您贵姓？» (Nín guìxìng?).",
              "“你叫什么名字？” is the everyday way to ask “What's your name?”. A very polite way is “您贵姓？” (Nín guìxìng?)."),
  "dialogue": [
-  ("Xitoyga xush kelibsan! Men Chachaman. Isming nima?", "Welcome to China! I'm Chacha. What's your name?"),
+  ("Xitoyga xush kelibsan! Men 茶茶. Isming nima?", "Welcome to China! I'm 茶茶. What's your name?"),
   ("Mening ismim {name}.", "My name is {name}."),
   ("Salom! Pekinga xush kelibsiz! Siz talabamisiz?", "Hello! Welcome to Beijing! Are you a student?"),
   ("Ha, men talabaman.", "Yes, I'm a student."),
@@ -116,7 +116,7 @@ SC = {
 "s5": {
  "title": ("Metro", "Metro"),
  "bg": ("Metro platformasi, olomon", "Metro platform, a crowd"),
- "obstacle": ("Metrodagi olomon: kerakli liniyani top va Chachani yo'qotma", "Metro crowd: find the right line and don't lose Chacha"),
+ "obstacle": ("Metrodagi olomon: kerakli liniyani top va 茶茶ni yo'qotma", "Metro crowd: find the right line and don't lose 茶茶"),
  "culture": ("Metro liniyalari raqami bilan ataladi: 二号线 (èr hào xiàn) — «2-liniya». 西直门 (Xīzhímén) — Shimoliy vokzal yaqinidagi o'tish tuguni. «请排队» (qǐng páiduì) — «navbatga turing», platformalardagi ibora.",
              "Metro lines are called by number: 二号线 (èr hào xiàn) means “Line 2”. Xizhimen (西直门) is a transfer hub near the North Station. “请排队” (qǐng páiduì), “please line up”, is a platform phrase."),
  "dialogue": [

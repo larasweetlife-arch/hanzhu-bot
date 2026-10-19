@@ -18,7 +18,7 @@ import db
 
 DATA_PATH = Path(__file__).parent / "quest_data"
 
-# ── правила экономики (1 монета ≈ 2 звезды: всё, что продаётся за звёзды, можно заработать монетами) ──
+# ── правила экономики (1 монета = 1 звезда: всё, что продаётся за звёзды, можно заработать монетами) ──
 LIVES_MAX = 5
 LIFE_REGEN_SEC = 3600           # +1 жизнь в час
 COIN_TASK_FIRST = 10            # задание с первой попытки
@@ -86,6 +86,8 @@ def load_chapters():
         _CACHE["ch"] = chs
         _CACHE["scenes"] = [s for c in chs for s in c["scenes"]]
         _CACHE["by_id"] = {s["id"]: s for s in _CACHE["scenes"]}
+        _CACHE["scene_ch"] = {s["id"]: ci for ci, c in enumerate(chs) for s in c["scenes"]}
+        _CACHE["scene_in"] = {s["id"]: k + 1 for c in chs for k, s in enumerate(c["scenes"])}
         _CACHE["cast"] = {}
         for c in chs:
             _CACHE["cast"].update(c["cast"])
@@ -136,6 +138,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS quest_score (
             user_id INTEGER, day TEXT, pts INTEGER DEFAULT 0, PRIMARY KEY (user_id, day)
         );
+        CREATE INDEX IF NOT EXISTS ix_qscore_day ON quest_score(day);
         CREATE TABLE IF NOT EXISTS quest_prize (
             user_id INTEGER PRIMARY KEY, ts TEXT, won INTEGER DEFAULT 0
         );
@@ -256,8 +259,8 @@ def state(uid, stars_on=True, donate=None):
     load_chapters()
     with _LOCK, db._conn() as c:
         ch = _row(c, "SELECT * FROM quest_char WHERE user_id=?", (uid,))
-        out = {"chapters": [{k: v for k, v in x["chapter"].items() if k in ("id", "title_zh", "title", "city", "goal", "next", "level")}
-                            for x in _CACHE["ch"]],
+        out = {"chapters": [dict({k: v for k, v in x["chapter"].items() if k in ("id", "title_zh", "title", "city", "goal", "next", "level")},
+                                 count=len(x["scenes"])) for x in _CACHE["ch"]],
                "stars_on": bool(stars_on), "donate": donate or {"on": False}, "constants": {
                    "lives_max": LIVES_MAX, "regen": LIFE_REGEN_SEC, "revives_per_day": REVIVES_PER_DAY, "cards_min": CARDS_MIN_SEC,
                    "scene_bonus": COIN_SCENE, "task_coins": COIN_TASK_FIRST}}
@@ -280,7 +283,8 @@ def state(uid, stars_on=True, donate=None):
             else:
                 status = "locked"
             run = runs.get(s["id"])
-            sc_out.append({"id": s["id"], "n": i + 1, "title": s["title"], "title_tr": s["title_tr"], "status": status,
+            sc_out.append({"id": s["id"], "n": _CACHE["scene_in"][s["id"]], "ch": _CACHE["scene_ch"][s["id"]],
+                           "title": s["title"], "title_tr": s["title_tr"], "status": status,
                            "boss": s["boss"], "tasks": len(s["tasks"]),
                            "progress": run["idx"] if (run and not run["replay"] and status == "current") else 0})
         free_left = 0 if day["free_used"] else 1
@@ -290,7 +294,8 @@ def state(uid, stars_on=True, donate=None):
         out["next_life_in"] = 0 if ch["lives"] >= LIVES_MAX else max(1, int(LIFE_REGEN_SEC - (time.time() - ch["lives_ts"])))
         out["scenes"] = sc_out
         out["today"] = {"free_left": free_left, "extra": day["extra"], "revives_left": max(0, REVIVES_PER_DAY - day["revives"]),
-                        "done_scenes": len(done), "chapter_done": len(done) >= len(_CACHE["scenes"])}
+                        "done_scenes": len(done), "chapter_done": len(done) >= len(_CACHE["scenes"]),
+                        "game_done": len(done) >= len(_CACHE["scenes"])}
         out["shop"] = shop_view(owned)
         out["prize"] = prize_view(c, uid)
         out["hide"] = bool(ch.get("hide"))
@@ -492,7 +497,12 @@ def answer(uid, sid, idx, a):
             res["mistakes"] = run["mistakes"]
             res["replay"] = replay
             done = done_ids(c, uid) | {sid}
-            res["chapter_done"] = len(done) >= len(scenes())
+            ci = _CACHE["scene_ch"].get(sid, 0)
+            chap_ids = {x["id"] for x in _CACHE["ch"][ci]["scenes"]}
+            res["chapter_done"] = chap_ids <= done
+            res["game_done"] = len(done) >= len(scenes())
+            res["chapter"] = ci
+            res["next_chapter"] = (_CACHE["ch"][ci + 1]["chapter"]["id"] if ci + 1 < len(_CACHE["ch"]) else None)
             nxt = next((x for x in scenes() if x["id"] not in done), None)
             res["next_scene"] = nxt["id"] if nxt else None
             day = _day_row(c, uid)
@@ -767,7 +777,7 @@ def parse_payload(payload):
 # ───────────────────────── бейджи путешествия ─────────────────────────
 
 JOURNEY_BADGES = ["j_first", "j_half", "j_chapter", "j_perfect", "j_streak3", "j_streak7", "j_coins", "j_wardrobe",
-                  "j_theme", "j_friend", "j_ranked", "j_winner"]
+                  "j_theme", "j_friend", "j_ranked", "j_winner", "j_xian", "j_chengdu"]
 BADGE_COINS = 300               # «Копилка»: столько монет заработано в игре за всё время
 
 
@@ -787,9 +797,10 @@ def _best_streak(days):
 def journey_badges(uid, friends=0, joined=False, wins=0):
     """{id бейджа: получен ли}. Считается из прогресса в игре «Путешествие по Китаю с 茶茶», навсегда: потерять нельзя."""
     load_chapters()
-    total = len(_CACHE["scenes"]) or 8
+    chs = _CACHE["ch"]
+    total = len(chs[0]["scenes"]) if chs else 8
     with db._conn() as c:
-        prog = c.execute("SELECT done_day, mistakes FROM quest_prog WHERE user_id=?", (uid,)).fetchall()
+        prog = c.execute("SELECT done_day, mistakes, scene_id FROM quest_prog WHERE user_id=?", (uid,)).fetchall()
         earned = c.execute("SELECT COALESCE(SUM(pts),0) FROM quest_score WHERE user_id=?", (uid,)).fetchone()[0]
         days = [r[0] for r in c.execute("SELECT day FROM quest_score WHERE user_id=? AND pts>0", (uid,)).fetchall()] + [r[0] for r in prog]
         ch = _row(c, "SELECT owned, hide FROM quest_char WHERE user_id=?", (uid,))
@@ -798,11 +809,16 @@ def journey_badges(uid, friends=0, joined=False, wins=0):
         except Exception:
             th = 0
     done = len(prog)
+    done_set = {r[2] for r in prog}
+
+    def chapter_clear(i):
+        return i < len(chs) and {x["id"] for x in chs[i]["scenes"]} <= done_set
     perfect = sum(1 for r in prog if not r[1])
     streak = _best_streak(days)
     skins = len(_owned(ch)) if ch else 0
     return {
-        "j_first": done >= 1, "j_half": done >= 4, "j_chapter": done >= total,
+        "j_first": done >= 1, "j_half": done >= 4, "j_chapter": chapter_clear(0) if chs else done >= total,
+        "j_xian": chapter_clear(1), "j_chengdu": chapter_clear(2),
         "j_perfect": perfect >= 1, "j_streak3": streak >= 3, "j_streak7": streak >= 7,
         "j_coins": earned >= BADGE_COINS, "j_wardrobe": skins > len(FREE_SKINS), "j_theme": th > 0,
         "j_friend": friends >= 1, "j_ranked": bool(joined) or bool(ch and not ch["hide"] and earned > 0), "j_winner": wins >= 1,

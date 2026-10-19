@@ -7,7 +7,7 @@ P = {}
 
 P["ru"] = {
     "qt_title": "🏆 <b>Рейтинг игры · эта неделя</b>", "qt_empty": "Пока никого в рейтинге. Пройди сцену в игре, и ты будешь первым(ой) 🍵", "qt_you": "ты",
-    "pz_win": "🎉 <b>Ты победил(а) в розыгрыше!</b>\n\nДля тебя нарисуем <b>уникальный наряд</b> для героя в игре «Путешествие по Китаю с 茶茶». Он будет только у тебя.\n\nНапиши мне прямо сюда, каким он должен быть: цвета, образ, детали, любимые мотивы. Сообщение придёт Ларе 🍵",
+    "pz_win": "🎉 <b>Ты победил(а) в розыгрыше!</b>\n\nДля тебя нарисуем <b>уникальный наряд</b> для героя в игре «Путешествие по Китаю с 茶茶». Он будет только у тебя.\n\nНапиши мне прямо сюда, каким он должен быть: цвета, образ, детали, любимые мотивы. Сообщение придёт Лазизе 🍵",
     "b_donate": "💝 Поддержать проект",
     "pr_quest": "🗺 Путешествие по Китаю с 茶茶",
     "dn_text": "💝 <b>Поддержать проект</b>\n\nЭтого бота и игру «Путешествие по Китаю с 茶茶» делает один человек: Лазиза придумывает сцены и диалоги и проверяет каждое слово.\n\nЕсли тебе нравится, можно помочь переводом или звёздами Telegram. Благодаря этому появятся глава 2 (Сиань), глава 3 (Чэнду), новые слова и наряды для героев.\n\nЭто всегда по желанию, учёба от поддержки не зависит 🍵",
@@ -39,7 +39,7 @@ P["uz"] = {
 
 P["en"] = {
     "qt_title": "🏆 <b>Game ranking · this week</b>", "qt_empty": "Nobody is on the board yet. Finish a scene in the game and you will be first 🍵", "qt_you": "you",
-    "pz_win": "🎉 <b>You won the draw!</b>\n\nWe will draw a <b>unique outfit</b> for your hero in “Journey Through China with 茶茶”. Only you will have it.\n\nWrite to me right here what it should be like: colours, style, details, favourite motifs. The message goes to Lara 🍵",
+    "pz_win": "🎉 <b>You won the draw!</b>\n\nWe will draw a <b>unique outfit</b> for your hero in “Journey Through China with 茶茶”. Only you will have it.\n\nWrite to me right here what it should be like: colours, style, details, favourite motifs. The message goes to Laziza 🍵",
     "b_donate": "💝 Support the project",
     "pr_quest": "🗺 Journey Through China with 茶茶",
     "dn_text": "💝 <b>Support the project</b>\n\nThis bot and the game “Journey Through China with 茶茶” are made by one person: Laziza invents the scenes and dialogues and checks every word.\n\nIf you like them, you can help with a transfer or Telegram Stars. That is how Chapter 2 (Xi'an), Chapter 3 (Chengdu), new words and new outfits for the heroes will appear.\n\nIt is always optional, and your learning does not depend on it 🍵",
@@ -55,7 +55,7 @@ P["en"] = {
 
 P["zh"] = {
     "qt_title": "🏆 <b>游戏排行榜 · 本周</b>", "qt_empty": "榜单上还没有人。在游戏里完成一幕，你就是第一名 🍵", "qt_you": "你",
-    "pz_win": "🎉 <b>你赢得了抽奖！</b>\n\n我们会为你在《和茶茶游中国》里的主角设计一套<b>独一无二的装扮</b>，只属于你。\n\n请直接在这里写下你想要的样子：颜色、风格、细节、喜欢的图案。消息会发给 Lara 🍵",
+    "pz_win": "🎉 <b>你赢得了抽奖！</b>\n\n我们会为你在《和茶茶游中国》里的主角设计一套<b>独一无二的装扮</b>，只属于你。\n\n请直接在这里写下你想要的样子：颜色、风格、细节、喜欢的图案。消息会发给 Laziza 🍵",
     "b_donate": "💝 支持项目",
     "pr_quest": "🗺 和茶茶游中国",
     "dn_text": "💝 <b>支持项目</b>\n\n这个机器人和游戏《和茶茶游中国》由一个人制作：Laziza 编写场景和对话，并核对每一个词。\n\n如果你喜欢，可以通过转账或 Telegram 星星支持。有了支持，才会有第 2 章（西安）、第 3 章（成都）、新词汇和主角的新装扮。\n\n这完全自愿，学习不受影响 🍵",
