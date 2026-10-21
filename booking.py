@@ -28,6 +28,7 @@ REMIND_BEFORE = timedelta(hours=3)
 
 esc = lambda s: html.escape(str(s), quote=False)
 ctx = {}                            # bot, owner_id, lang_of, notify_owner, ask_trial, labels
+hooks = {}                          # подключает tutors.py: on_book, editor_rows, editor_lines, can_publish, gate
 S = {}                              # диалоги редактирования: {user_id: {"tid": .., "field": ..}}
 
 FIELDS = {
@@ -62,6 +63,15 @@ def init_db():
         );
         CREATE INDEX IF NOT EXISTS ix_bk_start ON bookings(status, start);
         """)
+        cols = {r["name"] for r in c.execute("PRAGMA table_info(teachers)")}
+        if "tier" not in cols:
+            # версия 22: подписки репетиторов. Те, кто уже в списке, получают 30 дней высшего уровня, чтобы ничего не пропало внезапно
+            for col, typ in (("tier", "INTEGER"), ("tier_until", "TEXT"), ("agreed_ver", "INTEGER"), ("agreed_at", "TEXT")):
+                c.execute(f"ALTER TABLE teachers ADD COLUMN {col} {typ}")
+            owner = ctx.get("owner_id")
+            grace = (datetime.now(db.TZ).date() + timedelta(days=30)).isoformat()
+            c.execute("UPDATE teachers SET tier=3, tier_until=? WHERE user_id IS NOT ?", (grace, owner))
+            c.execute("UPDATE teachers SET tier=3 WHERE user_id IS ?", (owner,))
 
 
 def _one(sql, args=()):
@@ -84,10 +94,13 @@ def teacher_of_user(uid):
 
 
 def teachers(active_only=True):
-    return _all("SELECT * FROM teachers" + (" WHERE active=1" if active_only else "") + " ORDER BY id")
+    # в списке для учеников сначала репетиторы с высшим уровнем подписки, дальше по порядку добавления
+    return _all("SELECT * FROM teachers" + (" WHERE active=1" if active_only else "")
+                + " ORDER BY CASE WHEN COALESCE(tier,0)>=3 THEN 0 ELSE 1 END, id")
 
 
-_COLS = {"name", "tagline", "bio", "prices", "photo", "contact", "link", "hours", "duration", "active"}
+_COLS = {"name", "tagline", "bio", "prices", "photo", "contact", "link", "hours", "duration", "active",
+         "tier", "tier_until", "agreed_ver", "agreed_at"}
 
 
 def update(tid, **kw):
@@ -116,7 +129,7 @@ def seed_owner():
     if not oid or teacher_of_user(oid):
         return
     tc = add_teacher(oid, "Лазиза")
-    update(tc["id"], tagline="Китайский язык · Ташкент",
+    update(tc["id"], tier=3, tagline="Китайский язык · Ташкент",
            bio="Преподаватель китайского языка, Ташкент. Автор бота 汉助 и игры «Путешествие по Китаю с 茶茶».")
 
 
@@ -264,7 +277,8 @@ def start(uid, c=None):
         return post(uid, ts[0]["id"], c, single=True)
     rows = []
     for x in ts:
-        label = x["name"] + (f" · {x['tagline']}" if x.get("tagline") else "")
+        label = ("⭐ " if (x.get("tier") or 0) >= 3 and x.get("user_id") != ctx.get("owner_id") else "") \
+            + x["name"] + (f" · {x['tagline']}" if x.get("tagline") else "")
         rows.append([(label[:60], f"bk:t:{x['id']}")])
     my = active_bookings(uid=uid)
     if my:
@@ -391,6 +405,11 @@ def do_book(c, tid, stamp):
     if not (tc.get("link") or "").strip():
         note += "\n\n⚠️ У преподавателя не задана ссылка на занятие: пришли её ученику сама. Задать ссылку можно в /myteacher."
     notify_teacher(tc, note)
+    if hooks.get("on_book"):
+        try:
+            hooks["on_book"](tid, uid)
+        except Exception:
+            logging.exception("не удалось связать ученика с репетитором")
 
 
 def notify_teacher(tc, text):
@@ -511,6 +530,8 @@ def editor(uid, tid, mid=None):
              f"{_ok(tc['hours'])} Свободные часы: {esc(tc['hours'] or 'не заданы')}",
              f"⏱ Урок: {tc['duration'] or 60} мин", "",
              f"📋 Записей впереди: {nb}"]
+    if hooks.get("editor_lines"):
+        lines += hooks["editor_lines"](uid, tc)
     rows = [[("Имя", f"bt:f:{tid}:name"), ("Кратко", f"bt:f:{tid}:tagline")],
             [("Описание", f"bt:f:{tid}:bio"), ("Цены", f"bt:f:{tid}:prices")],
             [("Фото", f"bt:f:{tid}:photo"), ("Связь", f"bt:f:{tid}:contact")],
@@ -518,6 +539,8 @@ def editor(uid, tid, mid=None):
             [("Свободные часы", f"bt:f:{tid}:hours"), ("Длительность", f"bt:f:{tid}:duration")],
             [("👁 Как видят ученики", f"bt:pv:{tid}"), (f"📋 Записи ({nb})", f"bt:bk:{tid}")],
             [("⚪️ Скрыть от учеников" if tc["active"] else "🟢 Опубликовать", f"bt:pub:{tid}")]]
+    if hooks.get("editor_rows"):
+        rows += hooks["editor_rows"](uid, tc)
     if uid == ctx.get("owner_id"):
         rows.append([("⬅️ К списку", "bt:list")] + ([("🗑 Удалить", f"bt:del:{tid}")] if tc["user_id"] != uid else []))
     put(uid, mid, "\n".join(lines), ikb(rows))
@@ -720,6 +743,10 @@ def admin_callback(c):
             missing = [n for n, v in (("описание", tc["bio"]), ("свободные часы", tc["hours"])) if not v]
             if missing:
                 return bot.send_message(uid, "Чтобы опубликовать, заполни: " + ", ".join(missing) + ".")
+            if hooks.get("can_publish"):
+                ok_, why = hooks["can_publish"](tc)
+                if not ok_:
+                    return bot.send_message(uid, why, reply_markup=ikb(hooks["publish_rows"](tc)) if hooks.get("publish_rows") else None)
             update(tid, active=1)
             extra = "" if tc["link"] else "\n⚠️ Ссылка на занятие не задана: ученики получат запись без ссылки."
             bot.send_message(uid, "🟢 Профиль опубликован: ученики видят его в «Записаться на занятия»." + extra)
@@ -793,7 +820,9 @@ def register(bot, owner_id, lang_of, notify_owner, ask_trial, labels):
         uid = m.from_user.id
         tc = teacher_of_user(uid)
         if not tc:
-            return bot.send_message(uid, "Профиль преподавателя пока не создан. Попроси Лазизе добавить тебя.")
+            return bot.send_message(uid, "Профиль преподавателя пока не создан. Попроси Лазизу добавить тебя.")
+        if hooks.get("gate") and hooks["gate"](uid, tc):      # соглашение репетитора ещё не принято: сначала оно
+            return
         editor(uid, tc["id"])
 
     @bot.message_handler(commands=["teachers"])

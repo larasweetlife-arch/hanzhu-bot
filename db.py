@@ -175,6 +175,8 @@ def init():
         for col in ("media_kind", "media_id"):      # задание с вложениями: тип первого и список (тип, file_id) в JSON
             if col not in hcols:
                 c.execute(f"ALTER TABLE homework ADD COLUMN {col} TEXT")
+        if "teacher_id" not in hcols:               # чьё задание: пусто = Лазизы, число = id репетитора из teachers
+            c.execute("ALTER TABLE homework ADD COLUMN teacher_id INTEGER")
         gcols = {r["name"] for r in c.execute("PRAGMA table_info(game)")}
         if "pro_until" not in gcols:
             c.execute("ALTER TABLE game ADD COLUMN pro_until TEXT")
@@ -804,12 +806,12 @@ def payments_count(uid):
 
 # ─── ДОМАШНИЕ ЗАДАНИЯ ─────────────────────────────────────────────────────────
 
-def hw_add(uid, text, due, media=None):
-    """media = (kind, file_id) или None: к заданию приложены фото/видео/аудио/файл."""
+def hw_add(uid, text, due, media=None, teacher_id=None):
+    """media = (kind, file_id) или None: к заданию приложены фото/видео/аудио/файл. teacher_id: задание репетитора (пусто = Лазизы)."""
     kind, fid = (media or (None, None))
     with _conn() as c:
-        cur = c.execute("INSERT INTO homework (user_id, text, due, created, media_kind, media_id) VALUES (?,?,?,?,?,?)",
-                        (uid, text, due or None, today(), kind, fid))
+        cur = c.execute("INSERT INTO homework (user_id, text, due, created, media_kind, media_id, teacher_id) VALUES (?,?,?,?,?,?,?)",
+                        (uid, text, due or None, today(), kind, fid, teacher_id))
         return cur.lastrowid
 
 

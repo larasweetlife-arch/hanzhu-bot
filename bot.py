@@ -60,6 +60,7 @@ import dictionary
 import practice
 import quest
 import booking
+import tutors
 import themes
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
@@ -247,6 +248,9 @@ def kb_main(uid):
         else:
             k.row(t(lang, "b_friend"), t(lang, "b_trial"))
     k.row(t(lang, "b_sched"), t(lang, "b_help"))
+    extra = ([t(lang, "b_topics")] if tutors.TOPICS_ON else []) + ([t(lang, "b_records")] if tutors.has_records(uid) else [])
+    if extra:
+        k.row(*extra)
     k.row(t(lang, "b_donate"))
     return k
 
@@ -673,8 +677,8 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "20"
-VERSION_INFO = "домашние задания с фото, видео, аудио, голосовыми и файлами: Лазиза задаёт их, ученики сдают в любом из этих форматов или текстом"
+VERSION = "22"
+VERSION_INFO = "репетиторы: три уровня подписки, соглашение, домашки для их учеников, записи уроков без сохранения и пересылки; для всех: раздел «Обсуждения» о Китае"
 
 
 @bot.message_handler(commands=["version"])
@@ -2718,11 +2722,11 @@ def send_hw_card(u, h):
     return safe_send(u, txt, reply_markup=mk)
 
 
-def deliver_hw(uids, text, due, media=None):
+def deliver_hw(uids, text, due, media=None, teacher_id=None):
     ok, fail = [], []
     raw = json.dumps([list(x) for x in media]) if media else None
     for u in uids:
-        hid = db.hw_add(u, text, due, (media[0][0], raw) if media else None)
+        hid = db.hw_add(u, text, due, (media[0][0], raw) if media else None, teacher_id)
         sent = send_hw_card(u, db.hw_get(hid))
         (ok if sent else fail).append(u)
     return ok, fail
@@ -2750,14 +2754,48 @@ def hw_sub_state(uid):
     return st
 
 
+def hw_boss(h):
+    """Кому идёт сдача: репетитору, который задал домашку, или Лазизе."""
+    tid = (h or {}).get("teacher_id")
+    if tid:
+        tc = booking.teacher(tid)
+        if tc and tc.get("user_id"):
+            return tc["user_id"]
+    return OWNER_ID
+
+
+def hw_boss_name(h):
+    """Имя репетитора для текстов ученику; пусто, если задание Лазизы (там старые тексты про Лазизу)."""
+    tid = (h or {}).get("teacher_id")
+    tc = booking.teacher(tid) if tid else None
+    return esc(tc["name"]) if tc and tc.get("user_id") != OWNER_ID else ""
+
+
+def hw_notify(h, uid, text, **kw):
+    """Сообщение о сдаче тому, кто проверяет. Ответом на него можно написать ученику."""
+    boss = hw_boss(h)
+    try:
+        sent = bot.send_message(boss, text, **kw)
+    except Exception as e:
+        logging.warning("не удалось сообщить о сдаче %s: %s", boss, e)
+        return None
+    if boss == OWNER_ID:
+        db.save_inbox(sent.message_id, uid)
+    else:
+        with db._conn() as c:
+            c.execute("INSERT OR REPLACE INTO t_inbox (chat_id, msg_id, user_id) VALUES (?,?,?)", (boss, sent.message_id, uid))
+    return sent
+
+
 def take_submission(uid, m):
     st = hw_sub_state(uid)
     d, lang = st["data"], lang_of(uid)
     h = db.hw_get(d["hid"]) or {"text": ""}
+    boss = hw_boss(h)
     if d["n"] == 0:
-        notify_owner(f"📥 <b>{_name_of(uid)}</b> присылает домашку «{esc(h['text'][:80])}»:")
+        hw_notify(h, uid, f"📥 <b>{_name_of(uid)}</b> присылает домашку «{esc(h['text'][:80])}»:")
     try:
-        bot.copy_message(OWNER_ID, m.chat.id, m.message_id)
+        bot.copy_message(boss, m.chat.id, m.message_id)
     except Exception as e:
         logging.warning("не удалось переслать домашку: %s", e)
         return bot.send_message(uid, t(lang, "hw_bad_fmt"))
@@ -2779,12 +2817,11 @@ def finish_submission(uid):
     h = db.hw_get(d["hid"]) or {"text": ""}
     db.hw_done(d["hid"])
     sid = db.sub_add(d["hid"], uid, d["n"])
-    sent = notify_owner(f"✅ <b>{_name_of(uid)}</b> сдал(а) домашку «{esc(h['text'][:80])}»: файлов/сообщений {d['n']}.\n\n"
-                        f"<i>Ответь на это сообщение, и я перешлю ответ ученику.</i>",
-                        reply_markup=ikb([[("✅ Принять", f"hwa:{sid}"), ("🔁 Доработать", f"hwr:{sid}")]]))
-    if sent:
-        db.save_inbox(sent.message_id, uid)
-    bot.send_message(uid, t(lang, "hw_sent"), reply_markup=kb_main(uid))
+    hw_notify(h, uid, f"✅ <b>{_name_of(uid)}</b> сдал(а) домашку «{esc(h['text'][:80])}»: файлов/сообщений {d['n']}.\n\n"
+                      f"<i>Ответь на это сообщение, и я перешлю ответ ученику.</i>",
+              reply_markup=ikb([[("✅ Принять", f"hwa:{sid}"), ("🔁 Доработать", f"hwr:{sid}")]]))
+    tn = hw_boss_name(h)
+    bot.send_message(uid, t(lang, "hw_sent_t", name=tn) if tn else t(lang, "hw_sent"), reply_markup=kb_main(uid))
     return True
 
 
@@ -2880,13 +2917,47 @@ def cb_hw_media_next(c):
     return ask_hw_due(uid, st)
 
 
+_REPLY_GROUPS = {}                    # альбом в ответе: заголовок «💬 Laziza» показываем один раз
+
+
+def owner_reply_media(m):
+    """Лазиза отвечает на сообщение ученика (сдача, вопрос) не текстом, а вложением: уходит ученику как есть."""
+    uid = m.from_user.id
+    if not (is_owner(uid) and m.reply_to_message):
+        return False
+    target = db.inbox_user(m.reply_to_message.message_id)
+    if not target:
+        return False
+    gid = getattr(m, "media_group_id", None)
+    first = not (gid and _REPLY_GROUPS.get(gid) == target)      # у альбома заголовок и «Отправила» только на первом файле
+    try:
+        if first:
+            bot.send_message(target, "💬 Laziza:")
+        bot.copy_message(target, m.chat.id, m.message_id)
+    except Exception as e:
+        logging.warning("ответ ученику не ушёл: %s", e)
+        bot.send_message(uid, "Не получилось отправить: человек мог закрыть бота.")
+        return True
+    if gid:
+        if len(_REPLY_GROUPS) > 50:
+            _REPLY_GROUPS.clear()
+        _REPLY_GROUPS[gid] = target
+    if first:
+        bot.send_message(uid, "✅ Отправила")
+    return True
+
+
 @bot.message_handler(content_types=["photo", "document", "voice", "audio", "video", "video_note", "animation"])
 def on_file(m):
     uid = m.from_user.id
     lang = lang_of(uid)
+    if tutors.on_media(m):                      # вложения репетитора: домашка, запись урока, ответ ученику
+        return
     if booking.on_photo(m):                     # фото для поста преподавателя
         return
     if owner_hw_media(m):                       # вложение к заданию от Лазизы
+        return
+    if owner_reply_media(m):                    # её ответ ученику фото/видео/аудио/голосовым/файлом
         return
     if not hw_sub_state(uid):
         if not is_owner(uid) and db.hw_open(uid):
@@ -2910,23 +2981,38 @@ def _sub_answer(c, ok):
         bot.edit_message_reply_markup(c.message.chat.id, c.message.message_id, reply_markup=None)
     except Exception:
         pass
+    tn = hw_boss_name(h)
     if ok:
-        safe_send(u, t(lang, "hw_accepted", text=esc(h["text"][:80])))
+        safe_send(u, t(lang, "hw_accepted_t", name=tn, text=esc(h["text"][:80])) if tn else t(lang, "hw_accepted", text=esc(h["text"][:80])))
     else:
         db.hw_reopen(sub["hw_id"])
-        safe_send(u, t(lang, "hw_redo", text=esc(h["text"][:80])))
+        safe_send(u, t(lang, "hw_redo_t", name=tn, text=esc(h["text"][:80])) if tn else t(lang, "hw_redo", text=esc(h["text"][:80])))
         if h.get("id"):
             send_hw_card(u, h)
     bot.send_message(c.message.chat.id, f"{'✅ Принято' if ok else '🔁 Отправила на доработку'}: {_name_of(u)}")
 
 
+def hw_boss_only(handler):
+    """Принять или вернуть на доработку может тот, кому ушла сдача: Лазиза или репетитор, который задал задание."""
+    def wrapper(c):
+        try:
+            sub = db.sub_get(int(c.data.split(":")[1]))
+            h = db.hw_get(sub["hw_id"]) if sub else None
+        except (ValueError, IndexError, TypeError, KeyError):
+            h = None
+        if not (is_owner(c.from_user.id) or (h and hw_boss(h) == c.from_user.id)):
+            return bot.answer_callback_query(c.id)
+        return handler(c)
+    return wrapper
+
+
 @bot.callback_query_handler(func=lambda c: c.data.startswith("hwa:"))
-@owner_only
+@hw_boss_only
 def cb_sub_ok(c): _sub_answer(c, True)
 
 
 @bot.callback_query_handler(func=lambda c: c.data.startswith("hwr:"))
-@owner_only
+@hw_boss_only
 def cb_sub_redo(c): _sub_answer(c, False)
 
 
@@ -3232,17 +3318,25 @@ def cmd_stickers(m):
 
 def menu_labels(lang):
     keys = ("b_word", "b_chengyu", "b_fact", "b_tr", "b_progress", "b_lang", "b_grammar", "b_texts",
-            "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_book", "b_channel", "b_help", "b_donate")
+            "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_book", "b_channel", "b_help", "b_donate",
+            "b_topics", "b_records")
     return {t(lang, k) for k in keys}
 
 
 booking.register(bot, OWNER_ID, lang_of, notify_owner, lambda u: ask_trial(u), menu_labels)
+tutors.register(bot, OWNER_ID, lang_of, dict(
+    deliver_hw=lambda *a, **kw: deliver_hw(*a, **kw), hw_media_of=lambda m: hw_media_of(m),
+    hw_default_text=lambda media, due=None: hw_default_text(media, due), parse_due=lambda s, d: practice.parse_due(s, d),
+    HW_MEDIA_MAX=HW_MEDIA_MAX, labels=menu_labels))
 
 
 @bot.message_handler(func=lambda m: True, content_types=["text"])
 def on_text(m):
     uid = m.from_user.id
     txt = (m.text or "").strip()
+
+    if tutors.on_text(m):                       # репетиторы: домашки, записи, ответы ученикам; обсуждения
+        return
 
     # ответ преподавателя на пересланный вопрос → уходит ученику
     if is_owner(uid) and m.reply_to_message:
@@ -3444,7 +3538,7 @@ def on_text(m):
                t(lang, "b_grammar"): send_grammar, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
                t(lang, "b_sched"): send_schedule, t(lang, "b_practice"): send_practice,
                t(lang, "b_friend"): send_friend, t(lang, "b_trial"): ask_trial, t(lang, "b_rules"): send_rules,
-               t(lang, "b_book"): booking.start}
+               t(lang, "b_book"): booking.start, t(lang, "b_topics"): tutors.send_topics, t(lang, "b_records"): tutors.send_records}
     if txt in actions:
         return actions[txt](uid)
     if txt == t(lang, "b_channel"):
@@ -3778,7 +3872,7 @@ if __name__ == "__main__":
                 scope=types.BotCommandScopeChat(OWNER_ID))
     except Exception as e:
         logging.warning("не удалось задать команды: %s", e)
-    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook)), daemon=True).start()
+    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook)), daemon=True).start()
     start_webapp()
     announce_version()
     print("🐉 汉助 HanZhu запущен. Останови сочетанием Ctrl+C.")

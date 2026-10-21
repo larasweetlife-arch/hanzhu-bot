@@ -203,6 +203,10 @@ check("new teacher notified", last("msg", 6001) and "myteacher" in last("msg", 6
 for f, v in (("bio", "Преподаватель HSK, 5 лет опыта"), ("hours", "вт 10:00, чт 10:00")):
     setf(6001, t2["id"], f, v)
 click(6001, f"bt:pub:{t2['id']}")
+check("v22: без соглашения и подписки опубликовать нельзя", booking.teacher(t2["id"])["active"] == 0)
+booking.update(t2["id"], tier=1, tier_until=(datetime.now(db.TZ) + timedelta(days=30)).strftime("%Y-%m-%d"),
+               agreed_ver=1, agreed_at="test")
+click(6001, f"bt:pub:{t2['id']}")
 check("second teacher published (no link warning)", booking.teacher(t2["id"])["active"] == 1)
 click(6001, f"bt:e:{tid}")
 check("teacher can't open someone else's profile", True)
