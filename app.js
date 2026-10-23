@@ -233,11 +233,13 @@
     const seg = h("div", { class: "seg fill", style: "margin-bottom:4px" }, [[null, "pg_mine"], ["about", "pg_about"]].map(([id, key]) =>
       h("button", { class: (S.sub || null) === id ? "on" : "", onclick: () => { S.sub = id; render(); window.scrollTo(0, 0); } }, tr(key))));
     if (S.sub === "about") return h("div", {}, seg, viewAbout());
+    if (S.sub === "ach" && window.PG) return window.PG.ach();
+    if (S.sub === "set" && window.PG) return window.PG.set();
     const c = S.today && S.today.cards;
     const words = h("div", { class: "card" }, h("h3", {}, "🗂 " + tr("pg_words")),
       c && c.total ? h("div", { class: "sgrid", style: "margin-top:8px" }, [[c.known, "pg_known"], [c.total, "pg_total"], [c.due, "pg_due"]].map(([v, k]) => h("div", {}, h("b", {}, v), h("span", {}, tr(k)))))
         : h("div", { class: "muted", style: "margin-top:6px" }, c ? tr("pg_words_empty") : "…"));
-    return h("div", {}, seg, words, viewMe());
+    return h("div", {}, seg, window.PG ? window.PG.path() : null, words, window.PG ? window.PG.entries() : null, viewMe());
   }
 
   // ── вкладка «Играть» ──
@@ -498,9 +500,6 @@
       h("div", { class: "sgrid" }, [[s.points, "s_points"], [acc + "%", "s_acc"], [s.days, "s_days"], [m.play_streak, "streak"]].map(([v, k]) => h("div", {}, h("b", {}, v), h("span", {}, tr(k)))))));
     if (window.TH) out.push(window.TH.card());
     out.push(statTiles(m));
-    const bs = m.badges, ids = Object.keys(BADGE_ICON).filter((k) => k in bs);
-    out.push(h("div", { class: "card" }, h("h3", {}, "🏵 " + tr("badges") + " · " + ids.filter((k) => bs[k]).length + "/" + ids.length),
-      h("div", { class: "grid3", style: "margin-top:10px" }, ids.map((k) => { const [n, d] = tr("b_" + k); return h("div", { class: "badge" + (bs[k] ? "" : " lock") }, h("div", { class: "em" }, BADGE_ICON[k]), h("b", {}, n), h("span", {}, d)); }))));
     const sw = h("div", { class: "switch" + (m.joined ? " on" : ""), role: "switch", "aria-checked": String(m.joined), onclick: () => (m.nick ? setJoined(!m.joined) : (toast(tr("visible_need")), nickSheet(true))) });
     out.push(h("div", { class: "card" }, h("h3", {}, "⚙️ " + tr("settings")),
       h("div", { class: "setting" }, h("div", { class: "tx" }, h("b", {}, tr("visible")), h("span", { class: "muted" }, tr("visible_sub"))), sw),
@@ -540,7 +539,7 @@
     return h("div", {}, creator, how, why, supportCard(), lazyDoc("rules", tr("rules")), lazyDoc("privacy", tr("privacy")), h("div", { class: "foot" }, tr("version")), window.HZ ? window.HZ.credit() : null);
   }
 
-  window.QY = { go, fmtDate, speak, stopSpeak, inviteCard, h, tr, api, safe, toast, sheet, haptic, confetti, openTg, openLink, render, S };
+  window.QY = { badgeIcons: BADGE_ICON, LANGS, setLang, go, fmtDate, speak, stopSpeak, inviteCard, h, tr, api, safe, toast, sheet, haptic, confetti, openTg, openLink, render, S };
 
   // ── запуск ──
   function showNoTg() {

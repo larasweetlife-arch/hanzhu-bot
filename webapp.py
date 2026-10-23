@@ -34,6 +34,7 @@ import themes
 import hanzi
 import phonquiz
 import locker
+import chacha
 import tts
 from texts import T, t
 
@@ -110,6 +111,7 @@ def create_app(deps):
     PAY = deps.get("pay") or {}
     themes.configure(OWNER, TOKEN)
     themes.init_db()
+    chacha.init_db()
 
     def lives_max(g):
         return practice.LIVES_PER_DAY * (db.PRO_MULT if db.pro_active(g) else 1)
@@ -149,7 +151,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "progress.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -217,7 +219,7 @@ def create_app(deps):
                      "days_left": (datetime.strptime(end, "%Y-%m-%d").date() - now_tz().date()).days + 1,
                      "min": practice.BOARD_MIN_POINTS, "cap": practice.BOARD_DAILY_CAP},
             "season": {"ym": ym, "points": season["points"], "correct": season["correct"], "wrong": season["wrong"], "days": season["days"]},
-            "acc": acc, "play_streak": pstreak, "badges": quest.journey_badges(uid, friends=rs["joined"], joined=joined, wins=themes.wins(uid)["total"]),
+            "acc": acc, "play_streak": pstreak, "badges": {**quest.journey_badges(uid, friends=rs["joined"], joined=joined, wins=themes.wins(uid)["total"]), **locker.stage_badges(uid)},
             "gift": {"opened": bool(gift), "kind": gift["kind"] if gift else None, "amount": gift["amount"] if gift else None,
                      "streak": gstreak},
             "invite": {"link": link, "joined": rs["joined"], "trial": rs["trial"], "paid": rs["paid"],
@@ -358,7 +360,7 @@ def create_app(deps):
                       "done": sum(1 for x in in_ch if x["status"] == "done"), "count": len(in_ch), "finished": cur is None, "today": qd}
         except Exception:
             logging.exception("today: путешествие")
-        return jsonify({"goal": {"done": correct, "target": DAILY_GOAL}, "quest": qs, "cards": {"total": total, "due": due, "known": known},
+        return jsonify({"goal": {"done": correct, "target": db.pref_goal(uid) or DAILY_GOAL}, "quest": qs, "cards": {"total": total, "due": due, "known": known},
                         "hanzi": hanzi.day_char(day, lang), "hz_done": hz > 0})
 
     # ── шкафчик (v29) ──
@@ -389,6 +391,53 @@ def create_app(deps):
     def api_locker_know(tg, lang, u):
         ok = locker.know(tg["id"], str(_jb().get("zh") or ""))
         return (jsonify({"ok": True}), 200) if ok else (jsonify({"error": "none"}), 404)
+
+    # ── этапы и настройки обучения (v30) ──
+    GOALS = (5, 10, 20)
+    FREQS = (1, 2, 3, 0)
+
+    @app.route("/api/stages", methods=["POST"])
+    @need_auth
+    def api_stages(tg, lang, u):
+        return jsonify(locker.stages(tg["id"]))
+
+    def settings_view(uid, lang):
+        user = db.get_user(uid) or {}
+        ru_levels = T["ru"]["levels"]
+        lvl = ru_levels.index(user["level"]) if user.get("level") in ru_levels else None
+        return {"levels": T.get(lang, T["ru"])["levels"], "level": lvl,
+                "goals": list(GOALS), "goal": db.pref_goal(uid) or DAILY_GOAL,
+                "freqs": [{"n": n, "label": chacha.freq_label(lang, n)} for n in FREQS], "freq": chacha.freq_of(uid)}
+
+    @app.route("/api/settings", methods=["POST"])
+    @need_auth
+    def api_settings(tg, lang, u):
+        return jsonify(settings_view(tg["id"], lang))
+
+    @app.route("/api/settings/set", methods=["POST"])
+    @need_auth
+    def api_settings_set(tg, lang, u):
+        uid, b = tg["id"], _jb()
+        try:
+            v = int(b.get("v"))
+        except (TypeError, ValueError):
+            return jsonify({"error": "bad"}), 400
+        k = b.get("k")
+        if k == "level":
+            if not 0 <= v < len(T["ru"]["levels"]):
+                return jsonify({"error": "bad"}), 400
+            db.save_user(uid, level=T["ru"]["levels"][v])
+        elif k == "goal":
+            if v not in GOALS:
+                return jsonify({"error": "bad"}), 400
+            db.pref_goal_set(uid, v)
+        elif k == "freq":
+            if v not in FREQS:
+                return jsonify({"error": "bad"}), 400
+            chacha.set_row(uid, freq=v, asked=1, blocked=0, last_cut=None)
+        else:
+            return jsonify({"error": "bad"}), 400
+        return jsonify(settings_view(uid, lang))
 
     @app.route("/api/phon/quiz", methods=["POST"])
     @need_auth

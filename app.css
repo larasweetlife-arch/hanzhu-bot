@@ -309,3 +309,19 @@ details ol li:last-child { margin-bottom: 0; }
 .lk-ex div { margin-top: 4px; }
 .lk-btns { display: flex; gap: 10px; margin-top: 14px; }
 .lk-btns .btn { flex: 1; }
+
+/* ── Прогресс (v30): путь, этапы, настройки ── */
+.pg-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.pg-st { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 16px; background: var(--bg2); border: 1px solid transparent; }
+.pg-st.cur { background: var(--mist); border-color: var(--jade); }
+.pg-n { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--card); border: 1px solid var(--line); font-size: 20px; line-height: 1; color: var(--mute); }
+.pg-st.cur .pg-n { background: var(--jade); color: var(--onjade); border-color: var(--jade); }
+.pg-st.done .pg-n { background: var(--ok-bg); color: var(--ok); border-color: transparent; font-family: var(--sans); font-weight: 800; }
+.pg-b { flex: 1; min-width: 0; }
+.pg-t { display: flex; gap: 8px; align-items: center; }
+.pg-t i { font-style: normal; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--card); color: var(--jade); }
+.pg-bar { height: 8px; border-radius: 99px; background: var(--card); margin: 6px 0 4px; overflow: hidden; }
+.pg-bar span { display: block; height: 100%; border-radius: 99px; background: var(--jade2); }
+.pg-st.done .pg-bar span { background: var(--ok); }
+.pg-c { font-size: 12.5px; }
+.seg.pg-wrap { flex-wrap: wrap; overflow: visible; }

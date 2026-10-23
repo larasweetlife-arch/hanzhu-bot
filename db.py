@@ -86,6 +86,7 @@ def init():
             user_id INTEGER NOT NULL, zh TEXT NOT NULL, box INTEGER NOT NULL DEFAULT 0, due TEXT NOT NULL,
             PRIMARY KEY (user_id, zh)
         );
+        CREATE TABLE IF NOT EXISTS prefs (user_id INTEGER PRIMARY KEY, goal INTEGER);
         CREATE TABLE IF NOT EXISTS game (
             user_id INTEGER PRIMARY KEY, coins INTEGER NOT NULL DEFAULT 0, served INTEGER NOT NULL DEFAULT 0,
             streak INTEGER NOT NULL DEFAULT 0, lives INTEGER NOT NULL DEFAULT 5, lives_date TEXT, bonus_lives INTEGER NOT NULL DEFAULT 0
@@ -598,7 +599,7 @@ def delete_user(uid):
     """Стирает всё, что бот знает об этом человеке. Данные других людей не трогает."""
     with _conn() as c:
         for table in ("lessons", "payments", "tests", "schedule", "attendance", "events", "sent", "seen",
-                      "cards", "game", "homework", "moves", "reviews", "kpi", "marathon", "hw_subs", "grp_members", "tea_score", "board", "rewards", "discounts", "lx_requests", "feed", "gifts"):
+                      "cards", "prefs", "game", "homework", "moves", "reviews", "kpi", "marathon", "hw_subs", "grp_members", "tea_score", "board", "rewards", "discounts", "lx_requests", "feed", "gifts"):
             c.execute(f"DELETE FROM {table} WHERE user_id=?", (uid,))
         c.execute("DELETE FROM parents WHERE parent_id=? OR child_id=?", (uid, uid))
         c.execute("DELETE FROM par_codes WHERE child_id=?", (uid,))
@@ -643,6 +644,7 @@ def export_user(uid):
             "reviews": rows("SELECT rating, text, public, date FROM reviews WHERE user_id=? ORDER BY id"),
             "kpi_notes": rows("SELECT date, note FROM kpi WHERE user_id=? ORDER BY id"),
             "flashcards": rows("SELECT zh, box, due FROM cards WHERE user_id=? ORDER BY zh"),
+            "learning_settings": rows("SELECT goal FROM prefs WHERE user_id=?"),
             "game": rows("SELECT coins, served FROM game WHERE user_id=?"),
             "tea_score": rows("SELECT day, points, correct, wrong FROM tea_score WHERE user_id=? ORDER BY day"),
             "weekly_rating": rows("SELECT joined, nick FROM board WHERE user_id=?"),
@@ -726,6 +728,18 @@ def cards_all(uid):
     """{слово: (ящик, дата повтора)} для шкафчика"""
     with _conn() as c:
         return {r["zh"]: (r["box"], r["due"]) for r in c.execute("SELECT zh, box, due FROM cards WHERE user_id=?", (uid,))}
+
+
+def pref_goal(uid):
+    """Своя цель дня (число правильных ответов) или None, если не выбрана."""
+    with _conn() as c:
+        r = c.execute("SELECT goal FROM prefs WHERE user_id=?", (uid,)).fetchone()
+    return int(r["goal"]) if r and r["goal"] else None
+
+
+def pref_goal_set(uid, goal):
+    with _conn() as c:
+        c.execute("INSERT INTO prefs (user_id, goal) VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET goal=excluded.goal", (uid, int(goal)))
 
 
 def card_stats(uid):

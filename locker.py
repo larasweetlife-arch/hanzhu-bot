@@ -165,3 +165,35 @@ def know(uid, zh):
     db.card_set(uid, zh, KNOWN_BOX, practice.next_due(KNOWN_BOX, db.today()))
     db.log_event(uid, "locker_know")
     return True
+
+
+# ─── ЭТАПЫ (v30): уровни HSK, этап пройден, когда все слова уровня в «Помню» ───
+
+def stages(uid):
+    """[{level, total, known, done}] для HSK 1–6 и 7–9 (одним этапом) + номер текущего этапа (первый не пройденный)."""
+    I = _build()
+    if "stage_totals" not in I:
+        tot, lv_of = {}, {}
+        for w in I["words"]:
+            lv = w.get("hsk") or 0
+            if 1 <= lv <= 7:
+                tot[lv] = tot.get(lv, 0) + 1
+                lv_of[w["zh"]] = lv
+        I["stage_totals"], I["stage_level"] = tot, lv_of
+    known = {}
+    for zh, (box, _due) in db.cards_all(uid).items():
+        lv = I["stage_level"].get(zh)
+        if lv and box >= KNOWN_BOX:
+            known[lv] = known.get(lv, 0) + 1
+    out = []
+    for lv in range(1, 8):
+        total = I["stage_totals"].get(lv, 0)
+        k = known.get(lv, 0)
+        out.append({"level": lv, "total": total, "known": k, "done": total > 0 and k >= total})
+    cur = next((s["level"] for s in out if not s["done"] and s["total"]), None)
+    return {"stages": out, "current": cur}
+
+
+def stage_badges(uid):
+    """{s_hsk1: получен ли, ...}: по одному значку за пройденный этап"""
+    return {f"s_hsk{s['level']}": s["done"] for s in stages(uid)["stages"]}
