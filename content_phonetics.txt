@@ -1,0 +1,284 @@
+# Теория фонетики для раздела «🔊 Фонетика» в меню бота. Этот файл правит Лазиза.
+# Формат: строка «## раздел язык», ниже текст до следующей строки «## ...». Разделы: intro, tones, initials, finals, sandhi. Языки: ru, uz, en, zh.
+# Можно использовать теги <b>жирный</b>, <i>курсив</i>, <code>моноширинный</code>. Другие символы < и > писать нельзя.
+# Если для языка текста нет, показывается русский. Если в тегах ошибка, бот покажет текст без оформления.
+
+## intro ru
+🔊 <b>Фонетика</b>
+
+Здесь коротко о том, как звучит китайский: тоны, согласные, гласные и правила, по которым тоны меняются. Выбери тему. В каждой теме можно послушать примеры.
+
+А когда будешь готов(а) тренироваться, жми «🎯 Потренироваться»: там упражнения на слух и проверка произношения голосом.
+
+## intro uz
+🔊 <b>Fonetika</b>
+
+Bu yerda xitoy tili qanday jaranglashi haqida qisqacha: ohanglar, undoshlar, unlilar va ohanglar o‘zgarish qoidalari. Mavzuni tanlang. Har bir mavzuda namunalarni tinglash mumkin.
+
+Mashq qilishga tayyor bo‘lsangiz, «🎯 Mashq qilish» tugmasini bosing: u yerda eshitib tanlash mashqlari va ovoz bilan talaffuzni tekshirish bor.
+
+## intro en
+🔊 <b>Phonetics</b>
+
+A short guide to how Chinese sounds: tones, consonants, vowels and the rules by which tones change. Pick a topic. Each topic has audio examples.
+
+When you are ready to practise, tap “🎯 Practise”: there are listening exercises and a voice check.
+
+## intro zh
+🔊 <b>语音</b>
+
+这里简要介绍汉语的发音：声调、声母、韵母和变调规则。选一个主题，每个主题都可以听示范。
+
+想练习时，点“🎯 去练习”：有听力练习和语音检查。
+
+## tones ru
+🎵 <b>Тоны</b>
+
+В китайском высота голоса меняет смысл слога:
+mā — мама · má — конопля · mǎ — лошадь · mà — ругать
+
+<b>1-й тон</b> ˉ  → ровный и высокий. Держи одну высоту, как будто тянешь ноту: mā
+<b>2-й тон</b> ˊ  ↗ растёт вверх, как в удивлённом «что?»: má
+<b>3-й тон</b> ˇ  ↘↗ вниз и немного вверх. В быстрой речи часто звучит только низко и коротко: mǎ
+<b>4-й тон</b> ˋ  ↘ резко вниз, как строгое «нет!»: mà
+<b>Лёгкий тон</b> — слабый короткий слог без своего «рисунка», его высота зависит от соседа: māma (мама), xièxie (спасибо).
+
+💡 Совет: не бойся «петь». Новичкам лучше сказать слишком выразительно, чем плоско.
+
+## tones uz
+🎵 <b>Ohanglar</b>
+
+Xitoy tilida ovoz balandligi bo‘g‘inning ma’nosini o‘zgartiradi:
+mā — ona · má — kanop · mǎ — ot · mà — so‘kmoq
+
+<b>1-ohang</b> ˉ  → tekis va baland. Bir balandlikda cho‘zib ayting: mā
+<b>2-ohang</b> ˊ  ↗ yuqoriga ko‘tariladi, hayron bo‘lib «nima?» deganday: má
+<b>3-ohang</b> ˇ  ↘↗ pastga, keyin biroz yuqoriga. Tez nutqda ko‘pincha faqat past va qisqa eshitiladi: mǎ
+<b>4-ohang</b> ˋ  ↘ keskin pastga, qat’iy «yo‘q!» deganday: mà
+<b>Yengil ohang</b> — kuchsiz, qisqa bo‘g‘in, o‘z balandligi yo‘q, u qo‘shnisiga bog‘liq: māma (ona), xièxie (rahmat).
+
+💡 Maslahat: «kuylashdan» qo‘rqmang. Boshlovchiga tekis aytgandan ko‘ra ortiqcha ifodali aytgan yaxshi.
+
+## tones en
+🎵 <b>Tones</b>
+
+In Chinese the pitch of your voice changes the meaning of a syllable:
+mā — mother · má — hemp · mǎ — horse · mà — to scold
+
+<b>Tone 1</b> ˉ  → high and level. Hold one pitch, like a sung note: mā
+<b>Tone 2</b> ˊ  ↗ rises, like a surprised “what?”: má
+<b>Tone 3</b> ˇ  ↘↗ falls, then rises a little. In fast speech it is often only low and short: mǎ
+<b>Tone 4</b> ˋ  ↘ falls sharply, like a firm “no!”: mà
+<b>Neutral tone</b> is a weak, short syllable with no tone shape of its own; its pitch depends on the neighbour: māma (mum), xièxie (thanks).
+
+💡 Tip: don’t be afraid to “sing”. As a beginner it is better to over-do the tones than to sound flat.
+
+## tones zh
+🎵 <b>声调</b>
+
+汉语里，音高会改变音节的意思：
+mā 妈 · má 麻 · mǎ 马 · mà 骂
+
+<b>第一声</b> ˉ  → 高而平。保持同一个高度：mā
+<b>第二声</b> ˊ  ↗ 上升，像惊讶地问“什么？”：má
+<b>第三声</b> ˇ  ↘↗ 先降后稍升。快速说话时常常只有低而短的部分：mǎ
+<b>第四声</b> ˋ  ↘ 急速下降，像坚决地说“不！”：mà
+<b>轻声</b>：又轻又短，没有自己固定的调形，高低由前一个字决定：māma（妈妈）、xièxie（谢谢）。
+
+💡 小提示：别怕“唱”出来。初学者宁可夸张一点，也不要说得太平。
+
+## initials ru
+🔤 <b>Инициали (согласные в начале слога)</b>
+
+Их 21: b p m f · d t n l · g k h · j q x · zh ch sh r · z c s
+
+<b>Главное правило: придыхание.</b> Пары b/p, d/t, g/k, j/q, zh/ch, z/c различаются не «звонкостью», как в русском, а выдохом. p, t, k, q, ch, c говорятся с сильным выдохом (поднеси листок бумаги ко рту: он должен дрогнуть). b, d, g, j, zh, z без выдоха, как «п, т, к» в русском «спорт».
+
+<b>Что трудно для русскоязычных:</b>
+· <b>j q x</b>: мягкие, язык у нёба. j ≈ мягкое «дзь» без выдоха, q ≈ «чь» с выдохом, x ≈ мягкое «сь/щь».
+· <b>zh ch sh r</b>: кончик языка поднят к нёбу. zh ≈ твёрдое «дж», ch ≈ твёрдое «ч» с выдохом, sh ≈ «ш», r ≈ что-то среднее между «ж» и «р».
+· <b>z c s</b>: z ≈ «дз», c ≈ «ц» с выдохом, s ≈ «с». Язык у зубов.
+· <b>h</b>: глубже и грубее русского «х».
+
+Нажми на кнопку, чтобы послушать группу звуков.
+
+## initials uz
+🔤 <b>Undoshlar (bo‘g‘in boshida)</b>
+
+Ular 21 ta: b p m f · d t n l · g k h · j q x · zh ch sh r · z c s
+
+<b>Asosiy qoida: nafas bilan aytish.</b> b/p, d/t, g/k, j/q, zh/ch, z/c juftliklari jarangli-jarangsiz bilan emas, nafas bilan farqlanadi. p, t, k, q, ch, c kuchli nafas bilan aytiladi (og‘zingizga qog‘oz tutib ko‘ring: u qimirlashi kerak). b, d, g, j, zh, z nafassiz aytiladi.
+
+<b>Qiyin joylari:</b>
+· <b>j q x</b>: yumshoq, til tanglayga yaqin. j ≈ yumshoq «dzь» nafassiz, q ≈ «chь» nafas bilan, x ≈ yumshoq «sь/shь».
+· <b>zh ch sh r</b>: til uchi tanglayga ko‘tariladi. zh ≈ qattiq «dj», ch ≈ qattiq «ch» nafas bilan, sh ≈ «sh», r ≈ «j» va «r» o‘rtasidagi tovush.
+· <b>z c s</b>: z ≈ «dz», c ≈ «ts» nafas bilan, s ≈ «s». Til tishlarga yaqin.
+· <b>h</b>: o‘zbekcha «h» ga o‘xshash, lekin biroz bo‘g‘izdan.
+
+Tovushlar guruhini tinglash uchun tugmani bosing.
+
+## initials en
+🔤 <b>Initials (consonants at the start of a syllable)</b>
+
+There are 21: b p m f · d t n l · g k h · j q x · zh ch sh r · z c s
+
+<b>Key rule: aspiration.</b> The pairs b/p, d/t, g/k, j/q, zh/ch, z/c differ by a puff of air, not by voicing. p, t, k, q, ch, c have a strong puff (hold a strip of paper to your mouth: it should flutter). b, d, g, j, zh, z have none, like the p, t, k in English “spy, sty, sky”.
+
+<b>What is hard:</b>
+· <b>j q x</b>: soft, tongue near the palate. j ≈ a soft “dj” without a puff, q ≈ a soft “ch” with a puff, x ≈ a soft “sh/s”.
+· <b>zh ch sh r</b>: tongue tip curled up. zh ≈ “j” as in “judge” (no puff), ch ≈ “ch” with a puff, sh ≈ “sh”, r ≈ between “r” and the “s” in “measure”.
+· <b>z c s</b>: z ≈ “ds”, c ≈ “ts” with a puff, s ≈ “s”. Tongue behind the teeth.
+· <b>h</b>: rougher and deeper than English “h”.
+
+Tap a button to hear a group of sounds.
+
+## initials zh
+🔤 <b>声母（音节开头的辅音）</b>
+
+共 21 个：b p m f · d t n l · g k h · j q x · zh ch sh r · z c s
+
+<b>关键：送气。</b>b/p、d/t、g/k、j/q、zh/ch、z/c 的区别不在清浊，而在是否送气。p、t、k、q、ch、c 要送气（拿一张纸放在嘴前，纸会动）；b、d、g、j、zh、z 不送气。
+
+<b>难点：</b>
+· <b>j q x</b>：舌面音，舌面靠近硬腭。
+· <b>zh ch sh r</b>：翘舌音，舌尖向上卷起。
+· <b>z c s</b>：平舌音，舌尖抵住上齿背。
+· <b>h</b>：发音部位靠后，气流较粗。
+
+点按钮听这一组声母。
+
+## finals ru
+🔠 <b>Финали (всё, что идёт после согласного)</b>
+
+<b>Простые:</b> a · o · e · i · u · ü
+· a ≈ «а», o ≈ «уо», e ≈ «ы» из глубины горла (без округления губ), i ≈ «и», u ≈ «у», ü ≈ «ю» без «й»: губы трубочкой, а язык как для «и».
+· После z c s zh ch sh r буква i читается не как «и», а как глухое «ы»: zi, ci, si, zhi, chi, shi, ri.
+
+<b>Сложные:</b> ai ei ao ou · an en ang eng ong · ia ie iao iu ian in iang ing iong · ua uo uai ui uan un uang · üe üan ün · er
+
+<b>Правила записи:</b>
+· В начале слога i → y, u → w: yi, wu, yu.
+· После j q x и y буква u читается как ü: ju, qu, xu, yu.
+· an/en: язык касается дёсен; ang/eng/ong: язык не касается, звук уходит назад, как «нг».
+
+Нажми на кнопку, чтобы послушать группу финалей.
+
+## finals uz
+🔠 <b>Unlilar (undoshdan keyin keladigan qism)</b>
+
+<b>Oddiy:</b> a · o · e · i · u · ü
+· a ≈ «a», o ≈ «uo», e ≈ bo‘g‘izdan «ы»ga o‘xshash (lablar yumaloqlanmaydi), i ≈ «i», u ≈ «u», ü ≈ «yu» (y siz): lablar yumaloq, til esa «i» dagidek.
+· z c s zh ch sh r dan keyin i «i» emas, jarangsiz «ы» kabi o‘qiladi: zi, ci, si, zhi, chi, shi, ri.
+
+<b>Murakkab:</b> ai ei ao ou · an en ang eng ong · ia ie iao iu ian in iang ing iong · ua uo uai ui uan un uang · üe üan ün · er
+
+<b>Yozuv qoidalari:</b>
+· Bo‘g‘in boshida i → y, u → w: yi, wu, yu.
+· j q x va y dan keyin u harfi ü deb o‘qiladi: ju, qu, xu, yu.
+· an/en: til milkka tegadi; ang/eng/ong: til tegmaydi, tovush orqaga ketadi, «ng» kabi.
+
+Unlilar guruhini tinglash uchun tugmani bosing.
+
+## finals en
+🔠 <b>Finals (everything after the consonant)</b>
+
+<b>Simple:</b> a · o · e · i · u · ü
+· a ≈ “ah”, o ≈ “uo”, e ≈ a deep “uh” (lips not rounded), i ≈ “ee”, u ≈ “oo”, ü ≈ French “u”: round your lips and say “ee”.
+· After z c s zh ch sh r the letter i is not “ee” but a buzzy vowel: zi, ci, si, zhi, chi, shi, ri.
+
+<b>Compound:</b> ai ei ao ou · an en ang eng ong · ia ie iao iu ian in iang ing iong · ua uo uai ui uan un uang · üe üan ün · er
+
+<b>Spelling rules:</b>
+· At the start of a syllable i → y and u → w: yi, wu, yu.
+· After j q x and y the letter u is read as ü: ju, qu, xu, yu.
+· an/en: the tongue touches the gum ridge; ang/eng/ong: it does not, the sound goes back, like “ng”.
+
+Tap a button to hear a group of finals.
+
+## finals zh
+🔠 <b>韵母（声母后面的部分）</b>
+
+<b>单韵母：</b>a · o · e · i · u · ü
+· ü：嘴唇圆起来，舌位和发 i 时一样。
+· z c s zh ch sh r 后面的 i 不读 i，而是一个特殊的舌尖元音：zi、ci、si、zhi、chi、shi、ri。
+
+<b>复韵母和鼻韵母：</b>ai ei ao ou · an en ang eng ong · ia ie iao iu ian in iang ing iong · ua uo uai ui uan un uang · üe üan ün · er
+
+<b>拼写规则：</b>
+· 音节开头 i 写成 y，u 写成 w：yi、wu、yu。
+· j q x 和 y 后面的 u 读 ü：ju、qu、xu、yu。
+· an/en 舌尖抵上齿龈；ang/eng/ong 舌尖不抵，声音往后收，像 “ng”。
+
+点按钮听这一组韵母。
+
+## sandhi ru
+🔄 <b>Изменения тонов</b>
+
+В живой речи некоторые тоны меняются. В пиньине их обычно пишут по исходным правилам, а читают так:
+
+<b>1. Два третьих тона подряд</b>: первый читается как второй.
+你好 nǐ hǎo → ní hǎo · 很好 hěn hǎo → hén hǎo
+
+<b>2. 不 bù</b>: перед четвёртым тоном читается bú.
+不是 bú shì · 不去 bú qù · но 不好 bù hǎo, 不来 bù lái
+
+<b>3. 一 yī</b>:
+· сам по себе, в числах и датах: yī
+· перед четвёртым тоном: yí — 一个 yí gè
+· перед первым, вторым, третьим: yì — 一天 yì tiān, 一年 yì nián, 一起 yì qǐ
+
+Нажми на пример, чтобы послушать.
+
+## sandhi uz
+🔄 <b>Ohanglarning o‘zgarishi</b>
+
+Jonli nutqda ba’zi ohanglar o‘zgaradi. Pinyinda odatda asl ohang yoziladi, o‘qilganda esa quyidagicha:
+
+<b>1. Ketma-ket ikkita 3-ohang</b>: birinchisi 2-ohang kabi o‘qiladi.
+你好 nǐ hǎo → ní hǎo · 很好 hěn hǎo → hén hǎo
+
+<b>2. 不 bù</b>: 4-ohang oldidan bú o‘qiladi.
+不是 bú shì · 不去 bú qù · lekin 不好 bù hǎo, 不来 bù lái
+
+<b>3. 一 yī</b>:
+· o‘zi, sonlarda va sanalarda: yī
+· 4-ohang oldidan: yí — 一个 yí gè
+· 1, 2, 3-ohang oldidan: yì — 一天 yì tiān, 一年 yì nián, 一起 yì qǐ
+
+Tinglash uchun misolni bosing.
+
+## sandhi en
+🔄 <b>Tone changes</b>
+
+In real speech some tones change. Pinyin usually keeps the dictionary tone, but you say it like this:
+
+<b>1. Two third tones in a row</b>: the first one is said as tone 2.
+你好 nǐ hǎo → ní hǎo · 很好 hěn hǎo → hén hǎo
+
+<b>2. 不 bù</b>: before a fourth tone it is said bú.
+不是 bú shì · 不去 bú qù · but 不好 bù hǎo, 不来 bù lái
+
+<b>3. 一 yī</b>:
+· on its own, in numbers and dates: yī
+· before a fourth tone: yí — 一个 yí gè
+· before tones 1, 2, 3: yì — 一天 yì tiān, 一年 yì nián, 一起 yì qǐ
+
+Tap an example to hear it.
+
+## sandhi zh
+🔄 <b>变调</b>
+
+说话时有些声调会变。拼音通常写原调，但实际这样读：
+
+<b>1. 两个第三声连在一起</b>：前一个读第二声。
+你好 nǐ hǎo → ní hǎo · 很好 hěn hǎo → hén hǎo
+
+<b>2. 不 bù</b>：在第四声前读 bú。
+不是 bú shì · 不去 bú qù · 但 不好 bù hǎo、不来 bù lái
+
+<b>3. 一 yī</b>：
+· 单独、数字和日期里：yī
+· 第四声前：yí — 一个 yí gè
+· 第一、二、三声前：yì — 一天 yì tiān、一年 yì nián、一起 yì qǐ
+
+点例子听示范。
