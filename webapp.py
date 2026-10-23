@@ -33,6 +33,7 @@ import quest
 import themes
 import hanzi
 import phonquiz
+import locker
 import tts
 from texts import T, t
 
@@ -148,7 +149,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -359,6 +360,35 @@ def create_app(deps):
             logging.exception("today: путешествие")
         return jsonify({"goal": {"done": correct, "target": DAILY_GOAL}, "quest": qs, "cards": {"total": total, "due": due, "known": known},
                         "hanzi": hanzi.day_char(day, lang), "hz_done": hz > 0})
+
+    # ── шкафчик (v29) ──
+    @app.route("/api/locker", methods=["POST"])
+    @need_auth
+    def api_locker(tg, lang, u):
+        return jsonify(locker.drawers(tg["id"]))
+
+    @app.route("/api/locker/list", methods=["POST"])
+    @need_auth
+    def api_locker_list(tg, lang, u):
+        b = _jb()
+        flt = b.get("flt") if b.get("flt") in ("learn", "known", "due") else "all"
+        try:
+            off = int(b.get("offset") or 0)
+        except (TypeError, ValueError):
+            off = 0
+        return jsonify(locker.listing(tg["id"], lang, str(b.get("drawer") or ""), flt, str(b.get("q") or ""), off))
+
+    @app.route("/api/locker/word", methods=["POST"])
+    @need_auth
+    def api_locker_word(tg, lang, u):
+        w = locker.word(tg["id"], lang, str(_jb().get("zh") or ""))
+        return (jsonify(w), 200) if w else (jsonify({"error": "none"}), 404)
+
+    @app.route("/api/locker/know", methods=["POST"])
+    @need_auth
+    def api_locker_know(tg, lang, u):
+        ok = locker.know(tg["id"], str(_jb().get("zh") or ""))
+        return (jsonify({"ok": True}), 200) if ok else (jsonify({"error": "none"}), 404)
 
     @app.route("/api/phon/quiz", methods=["POST"])
     @need_auth

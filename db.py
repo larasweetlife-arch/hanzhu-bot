@@ -722,6 +722,12 @@ def card_set(uid, zh, box, due):
         c.execute("UPDATE cards SET box=?, due=? WHERE user_id=? AND zh=?", (box, due, uid, zh))
 
 
+def cards_all(uid):
+    """{слово: (ящик, дата повтора)} для шкафчика"""
+    with _conn() as c:
+        return {r["zh"]: (r["box"], r["due"]) for r in c.execute("SELECT zh, box, due FROM cards WHERE user_id=?", (uid,))}
+
+
 def card_stats(uid):
     """(всего, к повторению сегодня, выучено: ящик 4 и выше)"""
     with _conn() as c:
