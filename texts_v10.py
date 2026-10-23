@@ -29,7 +29,7 @@ P["ru"] = {
     "lx_off": "Чтобы продолжить прямо сейчас, напиши Лазизе: она подскажет, как оплатить. Ответ придёт сюда.",
     # ── ники ──
     "top_consent": "Если вступишь в рейтинг, другие игроки увидят в таблице только твой ник и очки. Настоящее имя знает "
-                   "только Лазиза: ей нужно знать победителя, чтобы вручить приз. Согласен(на)?",
+                   "только администратор проекта: это нужно, чтобы вручить приз победителю. Согласен(на)?",
     "top_consent_yes": "✅ Да, выбрать ник",
     "nk_ask": "Придумай ник для рейтинга ({min}–{max} знаков: буквы, цифры, пробел, _ . -).\n\nНе пиши настоящее имя, "
               "фамилию, телефон и @username. Например: «Зелёный Дракон» или «Tea Fox».",
@@ -50,7 +50,7 @@ P["ru"] = {
     "pa_new": "👨‍👩‍👧 <b>Ссылка для родителей</b>\n\nПерешли её маме или папе. Раз в неделю, в воскресенье вечером, они будут получать "
               "короткую сводку: занятия, тесты, домашки, активность в практике, расписание на неделю и напоминание об оплате. "
               "Родитель не видит твои слова, ответы и переписку.\n\n{link}\n\nОтключить родителя можно в любой момент: /parents",
-    "pa_consent": "Здравствуйте! Вы подключаетесь к недельной сводке по ученику «{child}» (занятия Лазизы Ропижоновой, 汉助).\n\n"
+    "pa_consent": "Здравствуйте! Вы подключаетесь к недельной сводке по ученику «{child}» (занятия в проекте 汉助).\n\n"
                   "Каждое воскресенье вечером я пришлю: сколько было занятий, результаты тестов, домашние задания, активность "
                   "в практике, расписание на следующую неделю и напоминание об оплате. Больше ничего: личные сообщения, "
                   "слова и ответы ребёнка вам не показываются. Данные хранятся по правилам /privacy.\n\n"
@@ -106,7 +106,7 @@ P["uz"] = {
     "lx_no": "To'lov hozircha topilmadi. Agar to'lagan bo'lsangiz, Lazizaga chek yoki operatsiya raqamini yuboring.",
     "lx_off": "Hoziroq davom etish uchun Lazizaga yozing: u qanday to'lashni aytadi. Javob shu yerga keladi.",
     "top_consent": "Reytingga qo'shilsangiz, boshqa o'yinchilar jadvalda faqat taxallusingiz va ochkolaringizni ko'radi. Haqiqiy ismingizni "
-                   "faqat Laziza biladi: g'olibga sovg'a berish uchun unga kerak. Rozimisiz?",
+                   "faqat loyiha administratori biladi: g'olibga sovg'a berish uchun unga kerak. Rozimisiz?",
     "top_consent_yes": "✅ Ha, taxallus tanlayman",
     "nk_ask": "Reyting uchun taxallus o'ylab toping ({min}–{max} belgi: harf, raqam, bo'sh joy, _ . -).\n\nHaqiqiy ism, "
               "familiya, telefon va @username yozmang. Masalan: «Yashil Ajdar» yoki «Tea Fox».",
@@ -126,7 +126,7 @@ P["uz"] = {
     "pa_new": "👨‍👩‍👧 <b>Ota-ona uchun havola</b>\n\nUni dadangiz yoki onangizga yuboring. Haftada bir marta, yakshanba kechqurun ular qisqa "
               "xulosa oladi: darslar, testlar, uy vazifalari, mashqdagi faollik, haftalik jadval va to'lov eslatmasi. "
               "Ota-ona sizning so'zlaringiz, javoblaringiz va yozishmangizni ko'rmaydi.\n\n{link}\n\nOta-onani istalgan vaqtda o'chirish mumkin: /parents",
-    "pa_consent": "Assalomu alaykum! Siz «{child}» o'quvchisi bo'yicha haftalik xulosaga ulanyapsiz (Laziza Ropijonova, 汉助 darslari).\n\n"
+    "pa_consent": "Assalomu alaykum! Siz «{child}» o'quvchisi bo'yicha haftalik xulosaga ulanyapsiz (汉助 loyihasidagi darslar).\n\n"
                   "Har yakshanba kechqurun yuboraman: nechta dars bo'lgani, test natijalari, uy vazifalari, mashqdagi faollik, "
                   "keyingi hafta jadvali va to'lov eslatmasi. Boshqa hech narsa: bolaning shaxsiy xabarlari, so'zlari va javoblari "
                   "sizga ko'rsatilmaydi. Ma'lumotlar /privacy qoidalariga ko'ra saqlanadi.\n\n"
@@ -181,7 +181,7 @@ P["en"] = {
     "lx_ok": "Done! Extended practice is on until {until}: {pro} lives a day. Enjoy the game 🍵",
     "lx_no": "The payment has not been found yet. If you have already paid, send Laziza the receipt or the transaction number.",
     "lx_off": "To continue right now, write to Laziza: she will tell you how to pay. The reply will come here.",
-    "top_consent": "If you join the ranking, other players will see only your nickname and points in the table. Only Laziza knows your real "
+    "top_consent": "If you join the ranking, other players will see only your nickname and points in the table. Only the project administrator knows your real "
                    "name: she needs it to hand over the prize to the winner. Do you agree?",
     "top_consent_yes": "✅ Yes, choose a nickname",
     "nk_ask": "Make up a nickname for the ranking ({min}–{max} characters: letters, digits, space, _ . -).\n\nDo not write your real name, "
@@ -202,7 +202,7 @@ P["en"] = {
     "pa_new": "👨‍👩‍👧 <b>Link for parents</b>\n\nForward it to your mum or dad. Once a week, on Sunday evening, they will get a short "
               "summary: lessons, tests, homework, practice activity, next week's schedule and a payment reminder. "
               "Parents do not see your words, answers or chats.\n\n{link}\n\nYou can disconnect a parent at any time: /parents",
-    "pa_consent": "Hello! You are connecting to the weekly summary for the student “{child}” (lessons with Laziza Ropijonova, 汉助).\n\n"
+    "pa_consent": "Hello! You are connecting to the weekly summary for the student “{child}” (lessons in the 汉助 project).\n\n"
                   "Every Sunday evening I will send: how many lessons took place, test results, homework, practice activity, "
                   "next week's schedule and a payment reminder. Nothing else: the child's private messages, words and answers "
                   "are not shown to you. Data is kept under the /privacy rules.\n\n"
@@ -255,7 +255,7 @@ P["zh"] = {
     "lx_ok": "好了！加强练习已开通至 {until}：每天 {pro} 条命。玩得开心 🍵",
     "lx_no": "暂时没有找到这笔付款。如果你已经付款，请把收据或交易号发给 Laziza。",
     "lx_off": "想立刻继续的话，请给 Laziza 留言，她会告诉你如何付款。回复会发到这里。",
-    "top_consent": "加入排行榜后，其他玩家只会在榜上看到你的昵称和积分。你的真实姓名只有 Laziza 知道：她需要知道冠军是谁才能发奖。你同意吗？",
+    "top_consent": "加入排行榜后，其他玩家只会在榜上看到你的昵称和积分。你的真实姓名只有项目管理员知道：她需要知道冠军是谁才能发奖。你同意吗？",
     "top_consent_yes": "✅ 同意，去取昵称",
     "nk_ask": "为排行榜取个昵称（{min}–{max} 个字符：字母、数字、空格、_ . -）。\n\n不要写真实姓名、姓氏、电话和 @用户名。例如：“绿色小龙”或“Tea Fox”。",
     "nk_len": "昵称需要 {min} 到 {max} 个字符，请再试一次。",
@@ -273,7 +273,7 @@ P["zh"] = {
     "pa_btn": "👨‍👩‍👧 家长入口",
     "pa_new": "👨‍👩‍👧 <b>家长链接</b>\n\n请转发给爸爸或妈妈。每周日晚上，他们会收到一份简短总结：上课情况、测验、作业、练习活跃度、下周课表和付款提醒。"
               "家长看不到你的单词、答案和聊天内容。\n\n{link}\n\n你可以随时取消家长的连接：/parents",
-    "pa_consent": "您好！您正在连接学生“{child}”的每周总结（Laziza Ropijonova 的课程，汉助）。\n\n"
+    "pa_consent": "您好！您正在连接学生“{child}”的每周总结（汉助 项目中的课程）。\n\n"
                   "每周日晚上我会发送：上了几节课、测验成绩、作业、练习活跃度、下周课表和付款提醒。仅此而已：孩子的私人消息、单词和答案不会展示给您。"
                   "数据按 /privacy 规则保存。\n\n您可以随时用 /stop 取消。确认连接吗？",
     "pa_yes": "✅ 连接", "pa_no": "取消",
@@ -308,36 +308,36 @@ P["zh"] = {
 
 # Правки уже существующих текстов: имя → ник. (старое → новое), применяются в texts.py
 RULES_PATCH = {
-    "ru": [("только твоё первое имя и очки", "только твой ник и очки. Ник придумываешь ты, настоящее имя не показывается, его знает только Лазиза "
-                                             "(ей нужно знать победителя, чтобы вручить приз). Ник можно менять раз в 7 дней, а неподходящий ник Лазиза вправе сбросить"),
+    "ru": [("только твоё первое имя и очки", "только твой ник и очки. Ник придумываешь ты, настоящее имя не показывается, его знает только администратор проекта "
+                                             "(это нужно, чтобы вручить приз победителю). Ник можно менять раз в 7 дней, а неподходящий ник администратор вправе сбросить"),
            ("В имени, в сообщениях", "В нике, в сообщениях"),
-           ("В таблице видно только первое имя и очки.", "В таблице видны только ник и очки, настоящее имя знает только Лазиза.")],
+           ("В таблице видно только первое имя и очки.", "В таблице видны только ник и очки, настоящее имя знает только администратор проекта.")],
     "uz": [("faqat ismingizning birinchi so'zini va ochkolaringizni ko'radi", "faqat taxallusingiz va ochkolaringizni ko'radi. Taxallusni o'zingiz o'ylab topasiz, haqiqiy ism "
-                                                                              "ko'rsatilmaydi, uni faqat Laziza biladi (g'olibga sovg'a berish uchun). Taxallusni 7 kunda bir marta o'zgartirish mumkin, "
-                                                                              "mos kelmaydigan taxallusni Laziza bekor qilishi mumkin"),
+                                                                              "ko'rsatilmaydi, uni faqat loyiha administratori biladi (g'olibga sovg'a berish uchun). Taxallusni 7 kunda bir marta o'zgartirish mumkin, "
+                                                                              "mos kelmaydigan taxallusni loyiha administratori bekor qilishi mumkin"),
            ("Ismda, xabarlarda", "Taxallusda, xabarlarda"),
-           ("Jadvalda faqat birinchi ism va ochkolar ko'rinadi.", "Jadvalda faqat taxallus va ochkolar ko'rinadi, haqiqiy ismni faqat Laziza biladi.")],
-    "en": [("only your first name and your points", "only your nickname and your points. You make the nickname up yourself, your real name is not shown and only Laziza knows it "
-                                                   "(she needs it to hand the prize to the winner). You can change the nickname once every 7 days, and Laziza may reset an unsuitable one"),
+           ("Jadvalda faqat birinchi ism va ochkolar ko'rinadi.", "Jadvalda faqat taxallus va ochkolar ko'rinadi, haqiqiy ismni faqat loyiha administratori biladi.")],
+    "en": [("only your first name and your points", "only your nickname and your points. You make the nickname up yourself, your real name is not shown and only the project administrator knows it "
+                                                   "(she needs it to hand the prize to the winner). You can change the nickname once every 7 days, and the administrator may reset an unsuitable one"),
            ("In your name, your messages", "In your nickname, your messages"),
-           ("The table shows only your first name and points.", "The table shows only your nickname and points; only Laziza knows your real name.")],
-    "zh": [("其他玩家只会看到你名字的第一个词和你的积分", "其他玩家只会看到你的昵称和你的积分。昵称由你自己取，真实姓名不会显示，只有 Laziza 知道（她需要知道冠军是谁才能发奖）。"
-                                                  "昵称每 7 天可更改一次，不合适的昵称 Laziza 有权重置"),
+           ("The table shows only your first name and points.", "The table shows only your nickname and points; only the project administrator knows your real name.")],
+    "zh": [("其他玩家只会看到你名字的第一个词和你的积分", "其他玩家只会看到你的昵称和你的积分。昵称由你自己取，真实姓名不会显示，只有项目管理员知道（她需要知道冠军是谁才能发奖）。"
+                                                  "昵称每 7 天可更改一次，不合适的昵称管理员有权重置"),
            ("在名字、消息和奖品课主题中", "在昵称、消息和奖品课主题中"),
-           ("排行榜上只显示名字的第一个词和积分。", "排行榜上只显示昵称和积分，真实姓名只有 Laziza 知道。")],
+           ("排行榜上只显示名字的第一个词和积分。", "排行榜上只显示昵称和积分，真实姓名只有项目管理员知道。")],
 }
 
 PRIVACY_PATCH = {
     "ru": ("· если вступишь в рейтинг недели: твоё первое имя и очки видны другим участникам (выйти можно в любой момент)\n",
-           "· если вступишь в рейтинг недели: другим участникам видны только твой ник и очки, настоящее имя знает только Лазиза (выйти можно в любой момент)\n"
+           "· если вступишь в рейтинг недели: другим участникам видны только твой ник и очки, настоящее имя знает только администратор проекта (выйти можно в любой момент)\n"
            "· если подключишь родителя: раз в неделю он получает итоги (занятия, тесты, домашки, активность в практике, расписание, остаток оплаченных занятий), но не твои слова и переписку; отключить можно в любой момент (/parents)\n"),
     "uz": ("· hafta reytingiga qo'shilsangiz: ismingizning birinchi so'zi va ochkolaringiz boshqa ishtirokchilarga ko'rinadi (istalgan vaqtda chiqish mumkin)\n",
-           "· hafta reytingiga qo'shilsangiz: boshqa ishtirokchilarga faqat taxallusingiz va ochkolaringiz ko'rinadi, haqiqiy ismni faqat Laziza biladi (istalgan vaqtda chiqish mumkin)\n"
+           "· hafta reytingiga qo'shilsangiz: boshqa ishtirokchilarga faqat taxallusingiz va ochkolaringiz ko'rinadi, haqiqiy ismni faqat loyiha administratori biladi (istalgan vaqtda chiqish mumkin)\n"
            "· ota-onani ulasangiz: u haftada bir marta xulosa oladi (darslar, testlar, uy vazifalari, mashqdagi faollik, jadval, to'langan darslar qoldig'i), lekin so'zlaringiz va yozishmangizni ko'rmaydi; istalgan vaqtda o'chirish mumkin (/parents)\n"),
     "en": ("· if you join the weekly ranking: your first name and points are visible to other participants (you can leave at any time)\n",
-           "· if you join the weekly ranking: other participants see only your nickname and points, and only Laziza knows your real name (you can leave at any time)\n"
+           "· if you join the weekly ranking: other participants see only your nickname and points, and only the project administrator knows your real name (you can leave at any time)\n"
            "· if you connect a parent: once a week they get a summary (lessons, tests, homework, practice activity, schedule, balance of paid lessons) but not your words or chats; you can disconnect them at any time (/parents)\n"),
     "zh": ("· 如果你加入每周排行榜：你名字的第一个词和积分会被其他参与者看到（可随时退出）\n",
-           "· 如果你加入每周排行榜：其他参与者只能看到你的昵称和积分，真实姓名只有 Laziza 知道（可随时退出）\n"
+           "· 如果你加入每周排行榜：其他参与者只能看到你的昵称和积分，真实姓名只有项目管理员知道（可随时退出）\n"
            "· 如果你连接了家长：家长每周会收到一份总结（上课、测验、作业、练习活跃度、课表、已付费课时余额），看不到你的单词和聊天内容；可随时取消（/parents）\n"),
 }

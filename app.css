@@ -189,6 +189,7 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
 .creator { text-align: center; }
 .photo { width: 164px; height: 190px; margin: 4px auto 14px; border-radius: 82px 82px 22px 22px; overflow: hidden; border: 4px solid var(--card); box-shadow: 0 0 0 2px var(--jade2), var(--shadow); position: relative; }
 .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; display: block; }
+.creator .mark { width: 76px; height: 76px; margin: 2px auto 10px; border-radius: 22px; display: grid; place-items: center; font-size: 44px; font-weight: 900; color: #fff; background: linear-gradient(145deg, var(--jade2), var(--jade)); box-shadow: var(--shadow); }
 .creator h2 { font-size: 24px; }
 .creator .role { color: var(--jade); font-weight: 600; margin-top: 2px; }
 .creator p { text-align: left; margin: 12px 0 0; }
@@ -199,6 +200,7 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
 .chip b { font-size: 14.5px; }
 .ig { background: linear-gradient(45deg, #f9a03f, #dd2a7b 55%, #8134af); }
 .tg { background: #2a9ad8; }
+.th { background: #111; }
 details { margin-top: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 4px 16px; }
 details summary { list-style: none; padding: 14px 0; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
 details summary::-webkit-details-marker { display: none; }
@@ -325,3 +327,19 @@ details ol li:last-child { margin-bottom: 0; }
 .pg-st.done .pg-bar span { background: var(--ok); }
 .pg-c { font-size: 12.5px; }
 .seg.pg-wrap { flex-wrap: wrap; overflow: visible; }
+
+/* ── Согласие (v31) ── */
+.cs { min-height: 100vh; padding: 14px 16px calc(96px + env(safe-area-inset-bottom)); max-width: 560px; margin: 0 auto; }
+.cs-top { display: flex; gap: 12px; align-items: center; }
+.cs-lang { flex: 1; }
+.cs-lang button { padding: 8px 4px; font-size: 13px; }
+.cs-card { margin-top: 14px; }
+.cs-h { font-size: 16px; margin: 14px 0 6px; }
+.cs-h:first-child { margin-top: 0; font-size: 20px; }
+.cs-p { margin: 6px 0; font-size: 14.5px; line-height: 1.5; }
+.cs-li { display: flex; gap: 8px; font-size: 14.5px; line-height: 1.45; margin: 5px 0; }
+.cs-li span:first-child { color: var(--jade); font-weight: 800; }
+.cs-note { margin-top: 12px; font-size: 13.5px; text-align: center; }
+.cs-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 10px; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(14px); border-top: 1px solid var(--line); max-width: 560px; margin: 0 auto; }
+.cs-bar .btn { flex: 1; }
+.cs-bar .btn:first-child { flex: 1.4; }

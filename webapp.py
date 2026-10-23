@@ -35,6 +35,7 @@ import hanzi
 import phonquiz
 import locker
 import chacha
+import consent
 import tts
 from texts import T, t
 
@@ -43,6 +44,7 @@ STATIC = os.path.join(HERE, "webapp_static")
 INIT_MAX_AGE = 24 * 3600
 CHANNEL_URL = "https://t.me/qing_laoshi"
 INSTAGRAM_URL = "https://instagram.com/lllaziza_r"
+THREADS_URL = "https://www.threads.com/@laziza.chinese"
 LANGS = ("ru", "uz", "en", "zh")
 
 ORDERS = {}                 # uid → текущий заказ в тренировке слов {order, seq, answered, queue, gap, recent, ts}
@@ -116,12 +118,17 @@ def create_app(deps):
     def lives_max(g):
         return practice.LIVES_PER_DAY * (db.PRO_MULT if db.pro_active(g) else 1)
 
-    def authed():
-        """(tg_user, lang, db_user) или None. Новому человеку заводим минимальную запись, чтобы хранить язык."""
+    CONSENT_ON = os.environ.get("CONSENT_OFF", "") != "1"       # CONSENT_OFF=1 нужен только тестам и аварийному отключению
+
+    def authed(free=False):
+        """(tg_user, lang, db_user), None (нет входа) или "consent" (нет согласия нужной версии).
+        Новому человеку заводим минимальную запись, чтобы хранить язык, но только после согласия."""
         tg = verify_init_data(request.headers.get("X-Init-Data", ""), TOKEN)
         if not tg:
             return None
         uid = tg["id"]
+        if CONSENT_ON and not free and db.consent_get(uid) < consent.CONSENT_VERSION:
+            return "consent"
         u = db.get_user(uid)
         if not u:
             code = (tg.get("language_code") or "")[:2].lower()
@@ -131,14 +138,19 @@ def create_app(deps):
         lang = u.get("lang") if u.get("lang") in LANGS else "ru"
         return tg, lang, u
 
-    def need_auth(fn):
+    def need_auth(fn, free=False):
         def wrapper(*a, **kw):
-            r = authed()
+            r = authed(free)
             if not r:
                 return jsonify({"error": "auth"}), 401
+            if r == "consent":
+                return jsonify({"error": "consent"}), 403
             return fn(r[0], r[1], r[2], *a, **kw)
         wrapper.__name__ = fn.__name__
         return wrapper
+
+    def need_auth_free(fn):
+        return need_auth(fn, free=True)
 
     # ── статические файлы ──
     @app.after_request
@@ -151,7 +163,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "progress.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "progress.js", "consent.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -227,7 +239,7 @@ def create_app(deps):
             "pay": {"on": bool(PAY.get("info") or PAY.get("url")), "price": PAY.get("price") or "", "info": PAY.get("info") or "",
                     "url": PAY.get("url") or "", "days": PAY.get("days") or 30, "pro_lives": practice.LIVES_PER_DAY * db.PRO_MULT},
             "limits": {"nick_min": practice.NICK_MIN, "nick_max": practice.NICK_MAX},
-            "links": {"instagram": INSTAGRAM_URL, "channel": CHANNEL_URL},
+            "links": {"instagram": INSTAGRAM_URL, "channel": CHANNEL_URL, "threads": THREADS_URL},
         }
 
     @app.route("/api/tts")
@@ -391,6 +403,48 @@ def create_app(deps):
     def api_locker_know(tg, lang, u):
         ok = locker.know(tg["id"], str(_jb().get("zh") or ""))
         return (jsonify({"ok": True}), 200) if ok else (jsonify({"error": "none"}), 404)
+
+    # ── согласие и удаление данных (v31) ──
+    @app.route("/api/consent", methods=["POST"])
+    def api_consent():
+        """Нужно ли показать экран согласия. Записи о человеке не создаёт."""
+        tg = verify_init_data(request.headers.get("X-Init-Data", ""), TOKEN)
+        if not tg:
+            return jsonify({"error": "auth"}), 401
+        lang = str(_jb().get("lang") or (tg.get("language_code") or "")[:2]).lower()
+        lang = lang if lang in LANGS else "ru"
+        return jsonify({"ok": (not CONSENT_ON) or db.consent_get(tg["id"]) >= consent.CONSENT_VERSION, "ver": consent.CONSENT_VERSION,
+                        "lang": lang, "blocks": consent.blocks(lang)})
+
+    @app.route("/api/consent/accept", methods=["POST"])
+    @need_auth_free
+    def api_consent_accept(tg, lang, u):
+        want = str(_jb().get("lang") or "")
+        if want in LANGS:
+            db.save_user(tg["id"], lang=want)
+            lang = want
+        db.consent_set(tg["id"], consent.CONSENT_VERSION, lang)
+        return jsonify({"ok": True})
+
+    @app.route("/api/delete/check", methods=["POST"])
+    @need_auth
+    def api_delete_check(tg, lang, u):
+        why = db.delete_blocker(tg["id"], OWNER)
+        return jsonify({"ok": why is None, "why": why})
+
+    @app.route("/api/delete", methods=["POST"])
+    @need_auth
+    def api_delete(tg, lang, u):
+        uid = tg["id"]
+        why = db.delete_blocker(uid, OWNER)
+        if why:
+            return jsonify({"ok": False, "why": why}), 403
+        db.delete_user(uid)
+        try:
+            deps["notify_owner"](f"🗑 {html.escape(u.get('name') or '?')} (@{html.escape(u.get('username') or '—')}) удалил(а) свои данные в мини-аппе.")
+        except Exception:
+            logging.exception("delete: уведомление владельцу")
+        return jsonify({"ok": True})
 
     # ── этапы и настройки обучения (v30) ──
     GOALS = (5, 10, 20)

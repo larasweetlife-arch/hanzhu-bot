@@ -1,0 +1,89 @@
+# Текст согласия в мини-аппе (v31). Правишь здесь.
+# Формат: строка "## язык" начинает текст на этом языке (ru, uz, en, zh).
+# Внутри: строка "# Заголовок" — подзаголовок, строка "· пункт" — пункт списка, остальное — абзац.
+# ВАЖНО: если меняешь текст по существу, увеличь CONSENT_VERSION в consent.py, тогда все подтвердят согласие заново.
+# Это рабочий черновик, а не юридический документ: перед запуском его должен прочитать юрист.
+
+## ru
+# Согласие на обработку данных
+Мини-приложение 汉助 — часть бота @hanzhu_chinesebot. Его ведёт администратор проекта, самозанятое лицо.
+# Что хранится
+· Telegram ID, @username, имя, язык и уровень
+· твой прогресс: слова в карточках, ответы в тренировке, очки, монеты, звания, герой и пройденные сцены путешествия
+· ник и очки, если вступишь в рейтинг недели (другим видны только они)
+· покупки за звёзды Telegram, чтобы делать возвраты и вести учёт
+· если ты ученик: записи об уроках, домашках, оплатах и расписание
+# Микрофон
+Проверка тонов включает микрофон, только пока ты нажимаешь 🎤. Звук обрабатывается на телефоне, никуда не отправляется и не сохраняется.
+# Кто видит данные
+Только администратор проекта. Данные не продаются и не передаются рекламным сервисам. Они лежат на сервере бота.
+# Твои права
+· копия данных: команда /mydata в боте
+· удаление: «Прогресс» → «Мои данные» или команда /deletemydata (ученикам и репетиторам нужно написать администратору проекта)
+· исправить данные, ограничить их обработку или отозвать согласие: напиши администратору проекта через бота
+· пожаловаться в орган по защите персональных данных своей страны
+Полный текст политики: команда /privacy в боте.
+Нажимая «Принимаю», ты соглашаешься на обработку данных, как описано выше. Без согласия приложение не работает.
+
+## uz
+# Ma'lumotlarni qayta ishlashga rozilik
+汉助 mini-ilovasi @hanzhu_chinesebot botining bir qismi. Uni loyiha administratori, o‘zini o‘zi band qilgan shaxs yuritadi.
+# Nimalar saqlanadi
+· Telegram ID, @username, ism, til va daraja
+· yutuqlaringiz: kartochkalardagi so‘zlar, mashqdagi javoblar, ochkolar, tangalar, unvonlar, qahramon va sayohatda o‘tilgan sahnalar
+· haftalik reytingga qo‘shilsangiz, nik va ochkolar (boshqalarga faqat shular ko‘rinadi)
+· Telegram yulduzlari bilan xaridlar: qaytarish va hisob uchun
+· agar o‘quvchi bo‘lsangiz: darslar, uy vazifalari, to‘lovlar va jadval yozuvlari
+# Mikrofon
+Ohang tekshiruvi mikrofonni faqat 🎤 tugmasini bosib turganingizda yoqadi. Ovoz telefonda qayta ishlanadi, hech qayerga yuborilmaydi va saqlanmaydi.
+# Ma'lumotlarni kim ko‘radi
+Faqat loyiha administratori. Ma'lumotlar sotilmaydi va reklama xizmatlariga berilmaydi. Ular bot serverida turadi.
+# Sizning huquqlaringiz
+· ma'lumotlar nusxasi: botda /mydata buyrug‘i
+· o‘chirish: «Natija» → «Mening ma'lumotlarim» yoki /deletemydata buyrug‘i (o‘quvchilar va repetitorlar loyiha administratoriga yozishi kerak)
+· ma'lumotlarni tuzatish, qayta ishlashni cheklash yoki rozilikni qaytarib olish: bot orqali loyiha administratoriga yozing
+· o‘z mamlakatingizdagi shaxsiy ma'lumotlarni himoya qilish organiga shikoyat qilish
+Siyosatning to‘liq matni: botda /privacy buyrug‘i.
+«Qabul qilaman» tugmasini bosib, yuqorida yozilgandek ma'lumotlarni qayta ishlashga rozilik berasiz. Rozilik bo‘lmasa, ilova ishlamaydi.
+
+## en
+# Consent to data processing
+The 汉助 mini app is part of the bot @hanzhu_chinesebot. It is run by the project administrator, a self-employed person.
+# What is stored
+· Telegram ID, @username, name, language and level
+· your progress: words in cards, answers in practice, points, coins, ranks, your hero and finished journey scenes
+· nickname and points if you join the weekly ranking (only these are visible to others)
+· purchases with Telegram Stars, to make refunds and keep records
+· if you are a student: records of lessons, homework, payments and schedule
+# Microphone
+Tone checking uses the microphone only while you hold 🎤. Audio is processed on your phone, is not sent anywhere and is not saved.
+# Who sees the data
+Only the project administrator. The data is not sold or passed to advertising services. It is kept on the bot's server.
+# Your rights
+· a copy of your data: the /mydata command in the bot
+· deletion: “Progress” → “My data” or the /deletemydata command (students and tutors need to write to the project administrator)
+· to correct data, restrict its processing or withdraw consent: write to the project administrator through the bot
+· to complain to the personal data protection authority of your country
+Full policy: the /privacy command in the bot.
+By pressing “Accept” you agree to the processing of data as described above. The app does not work without consent.
+
+## zh
+# 数据处理同意书
+汉助小程序是机器人 @hanzhu_chinesebot 的一部分，由项目管理员（个体经营者）运营。
+# 会保存什么
+· Telegram ID、@用户名、姓名、语言和水平
+· 你的学习进度：卡片中的单词、练习中的答题、积分、金币、称号、你的角色和已完成的旅程场景
+· 如果加入每周排行榜：昵称和积分（其他人只能看到这些）
+· 用 Telegram 星星支付的记录，用于退款和记账
+· 如果你是学生：课程、作业、付款和课表记录
+# 麦克风
+声调检测只在你按住 🎤 时使用麦克风。声音在手机上处理，不会发送，也不会保存。
+# 谁能看到数据
+只有项目管理员。数据不会出售，也不会提供给广告服务。数据保存在机器人的服务器上。
+# 你的权利
+· 获取数据副本：在机器人里发送 /mydata
+· 删除：“进度” → “我的数据”，或发送 /deletemydata（学生和老师需要联系项目管理员）
+· 更正数据、限制处理或撤回同意：通过机器人联系项目管理员
+· 向你所在国家的个人数据保护机构投诉
+完整政策：在机器人里发送 /privacy。
+点击“同意”即表示你同意按上述内容处理数据。不同意则无法使用本应用。

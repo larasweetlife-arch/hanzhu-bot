@@ -5,16 +5,16 @@
   const T = {
     ru: { path: "Мой путь", path_hint: "Этап пройден, когда все слова уровня в «Помню».", now: "Сейчас", done: "Пройден", of: "{a} из {b}", level: "HSK {n}", level7: "HSK 7–9",
       ach: "Достижения", ach_sub: "Получено {a} из {b}", set: "Настройки обучения", set_sub: "Уровень, цель дня, сообщения 茶茶", back: "Прогресс",
-      se_level: "Мой уровень", se_goal: "Цель дня", se_goal_sub: "Верных ответов в тренировке слов за день", se_chacha: "Сообщения от 茶茶", se_lang: "Язык", saved: "Сохранено", err: "Не удалось. Попробуй ещё раз.", load: "Загрузка…" },
+      dl_title: "Мои данные", dl_sub: "Удалить все мои данные", dl_h: "Удалить все данные?", dl_body: "Будет стёрто всё, что бот знает о тебе: прогресс и карточки слов, герой и путешествие, рейтинг и ник, оформления, настройки и отметка о согласии. Вернуть это нельзя. Останется только запись об оплате звёздами без привязки к тебе: она нужна для возвратов и учёта.", dl_yes: "Да, удалить", dl_no: "Отмена", dl_done_h: "Готово", dl_done: "Все данные удалены. Если захочешь вернуться, открой бота снова.", dl_tutor: "Ты репетитор: удаление затрагивает твоих учеников и записи, поэтому данные удаляет Лазиза. Напиши ей сообщение в чате с ботом.", dl_student: "Лазиза хранит записи об уроках и оплатах, поэтому данные ученика удаляет она. Напиши ей сообщение в чате с ботом, и она всё сделает.", dl_owner: "Владелицу бота удалить нельзя.", dl_ok: "Понятно", se_level: "Мой уровень", se_goal: "Цель дня", se_goal_sub: "Верных ответов в тренировке слов за день", se_chacha: "Сообщения от 茶茶", se_lang: "Язык", saved: "Сохранено", err: "Не удалось. Попробуй ещё раз.", load: "Загрузка…" },
     uz: { path: "Mening yo‘lim", path_hint: "Daraja so‘zlarining hammasi «Eslab qoldim»da bo‘lsa, bosqich o‘tilgan hisoblanadi.", now: "Hozir", done: "O‘tilgan", of: "{b} dan {a}", level: "HSK {n}", level7: "HSK 7–9",
       ach: "Yutuqlar", ach_sub: "{b} dan {a} olingan", set: "O‘rganish sozlamalari", set_sub: "Daraja, kun maqsadi, 茶茶 xabarlari", back: "Natija",
-      se_level: "Mening darajam", se_goal: "Kun maqsadi", se_goal_sub: "So‘z mashqida kuniga to‘g‘ri javoblar soni", se_chacha: "茶茶 xabarlari", se_lang: "Til", saved: "Saqlandi", err: "Bo‘lmadi. Qayta urinib ko‘ring.", load: "Yuklanmoqda…" },
+      dl_title: "Mening ma'lumotlarim", dl_sub: "Barcha ma'lumotlarimni o‘chirish", dl_h: "Barcha ma'lumotlar o‘chirilsinmi?", dl_body: "Bot siz haqingizda biladigan hamma narsa o‘chiriladi: yutuqlar va so‘z kartochkalari, qahramon va sayohat, reyting va nik, bezaklar, sozlamalar va rozilik belgisi. Buni qaytarib bo‘lmaydi. Faqat Telegram yulduzlari bilan to‘lov yozuvi sizga bog‘lanmagan holda qoladi: u qaytarish va hisob uchun kerak.", dl_yes: "Ha, o‘chirish", dl_no: "Bekor qilish", dl_done_h: "Tayyor", dl_done: "Barcha ma'lumotlar o‘chirildi. Qaytmoqchi bo‘lsangiz, botni qayta oching.", dl_tutor: "Siz repetitorsiz: o‘chirish o‘quvchilaringiz va yozuvlarga tegadi, shuning uchun ma'lumotlarni Laziza o‘chiradi. Botdagi chatda unga yozing.", dl_student: "Laziza darslar va to‘lovlar yozuvlarini saqlaydi, shuning uchun o‘quvchi ma'lumotlarini u o‘chiradi. Botdagi chatda unga yozing, u hammasini qiladi.", dl_owner: "Bot egasini o‘chirib bo‘lmaydi.", dl_ok: "Tushunarli", se_level: "Mening darajam", se_goal: "Kun maqsadi", se_goal_sub: "So‘z mashqida kuniga to‘g‘ri javoblar soni", se_chacha: "茶茶 xabarlari", se_lang: "Til", saved: "Saqlandi", err: "Bo‘lmadi. Qayta urinib ko‘ring.", load: "Yuklanmoqda…" },
     en: { path: "My path", path_hint: "A stage is complete when all words of the level are in “Known”.", now: "Now", done: "Complete", of: "{a} of {b}", level: "HSK {n}", level7: "HSK 7–9",
       ach: "Achievements", ach_sub: "Earned {a} of {b}", set: "Learning settings", set_sub: "Level, daily goal, 茶茶 messages", back: "Progress",
-      se_level: "My level", se_goal: "Daily goal", se_goal_sub: "Correct answers in word practice per day", se_chacha: "Messages from 茶茶", se_lang: "Language", saved: "Saved", err: "Failed. Please try again.", load: "Loading…" },
+      dl_title: "My data", dl_sub: "Delete all my data", dl_h: "Delete all data?", dl_body: "Everything the bot knows about you will be erased: progress and word cards, your hero and journey, ranking and nickname, themes, settings and the consent record. This cannot be undone. Only a Telegram Stars payment record will remain, without any link to you: it is needed for refunds and bookkeeping.", dl_yes: "Yes, delete", dl_no: "Cancel", dl_done_h: "Done", dl_done: "All data has been deleted. If you want to come back, open the bot again.", dl_tutor: "You are a tutor: deletion affects your students and records, so Laziza deletes the data. Write her a message in the bot chat.", dl_student: "Laziza keeps the records of lessons and payments, so she deletes a student's data. Write her a message in the bot chat and she will take care of it.", dl_owner: "The owner of the bot cannot be deleted.", dl_ok: "Got it", se_level: "My level", se_goal: "Daily goal", se_goal_sub: "Correct answers in word practice per day", se_chacha: "Messages from 茶茶", se_lang: "Language", saved: "Saved", err: "Failed. Please try again.", load: "Loading…" },
     zh: { path: "我的进阶", path_hint: "某一等级的所有词都是“记住了”时，该阶段完成。", now: "当前", done: "已完成", of: "{a} / {b}", level: "HSK {n}", level7: "HSK 7–9",
       ach: "成就", ach_sub: "已获得 {a} / {b}", set: "学习设置", set_sub: "水平、每日目标、茶茶消息", back: "进度",
-      se_level: "我的水平", se_goal: "每日目标", se_goal_sub: "每天单词练习中的答对数", se_chacha: "茶茶的消息", se_lang: "语言", saved: "已保存", err: "失败，请重试。", load: "加载中…" },
+      dl_title: "我的数据", dl_sub: "删除我的所有数据", dl_h: "删除所有数据？", dl_body: "机器人关于你的一切都会被删除：进度和单词卡片、你的角色和旅程、排行榜和昵称、主题、设置以及同意记录。此操作无法撤销。只会保留一条与你无关联的星星付款记录，用于退款和记账。", dl_yes: "是，删除", dl_no: "取消", dl_done_h: "完成", dl_done: "所有数据已删除。想回来的话，请重新打开机器人。", dl_tutor: "你是老师：删除会影响你的学生和记录，所以由 Laziza 来删除数据。请在机器人聊天里给她发消息。", dl_student: "Laziza 保存着课程和付款记录，所以由她来删除学生的数据。请在机器人聊天里给她发消息，她会处理。", dl_owner: "机器人所有者无法被删除。", dl_ok: "知道了", se_level: "我的水平", se_goal: "每日目标", se_goal_sub: "每天单词练习中的答对数", se_chacha: "茶茶的消息", se_lang: "语言", saved: "已保存", err: "失败，请重试。", load: "加载中…" },
   };
   const tx = (k, v) => {
     const d = T[Q().S.lang] || T.ru; let s = d[k] !== undefined ? d[k] : T.ru[k];
@@ -110,5 +110,30 @@
       h("div", { class: "card" }, h("b", {}, "💬 " + tx("se_chacha")), h("div", { class: "seg pg-wrap", style: "margin-top:8px" }, d.freqs.map((f) => chip(d.freq === f.n, f.label, () => save("freq", f.n))))),
       h("div", { class: "card" }, h("b", {}, tx("se_lang")), h("div", { class: "seg fill", style: "margin-top:8px" }, Q().LANGS.map(([c, , n]) => chip(c === S.lang, n, async () => { await Q().setLang(c); P.set = null; loadSet(); })))));
   }
-  window.PG = { path, entries, ach, set, achCount };
+  // ── «Мои данные»: удалить всё ──
+  function dataCard() {
+    return entry("🔒", tx("dl_title"), tx("dl_sub"), openDelete);
+  }
+  async function openDelete() {
+    const { h, api, sheet, toast } = Q();
+    let chk;
+    try { chk = await api("/api/delete/check", {}); } catch (e) { toast(tx("err")); return; }
+    const bg = sheet(null), box = bg.firstChild;
+    if (!chk.ok) {
+      box.replaceChildren(h("h3", {}, "🔒 " + tx("dl_title")), h("p", { class: "muted", style: "margin-top:8px" }, tx("dl_" + chk.why)),
+        h("button", { class: "btn jade", style: "width:100%;margin-top:12px", onclick: () => bg.remove() }, tx("dl_ok")));
+      return;
+    }
+    const yes = h("button", { class: "btn", style: "flex:1;background:var(--seal);color:#fff", onclick: async () => {
+      yes.disabled = true;
+      try { await api("/api/delete", {}); } catch (e) { yes.disabled = false; toast(tx("err")); return; }
+      try { localStorage.clear(); sessionStorage.clear(); } catch (e) { /* ок */ }
+      bg.remove();
+      document.getElementById("app").replaceChildren(h("div", { class: "notg" }, h("div", { class: "seal", style: "margin:0 auto 18px" }, "汉\n助"), h("h2", {}, tx("dl_done_h")), h("p", { class: "muted" }, tx("dl_done"))));
+      setTimeout(() => { try { window.Telegram.WebApp.close(); } catch (e) { /* ок */ } }, 2500);
+    } }, tx("dl_yes"));
+    box.replaceChildren(h("h3", {}, "🔒 " + tx("dl_h")), h("p", { class: "muted", style: "margin-top:8px;line-height:1.5" }, tx("dl_body")),
+      h("div", { style: "display:flex;gap:10px;margin-top:14px" }, h("button", { class: "btn line", style: "flex:1", onclick: () => bg.remove() }, tx("dl_no")), yes));
+  }
+  window.PG = { path, entries, ach, set, achCount, dataCard };
 })();

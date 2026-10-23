@@ -31,7 +31,7 @@
       q_lives: "Жизни", q_coins: "Монеты", q_howmuch: "За задание: {a} 🪙, за сцену: {b} 🪙",
       q_hero_edit: "Изменить героя", q_save: "Сохранить", q_lang_tr: "Перевод", q_hint_tr: "Подсказка",
       q_hair: "Цвет волос", q_hstyle: "Причёска", q_sk0: "Чайный", q_sk1: "Красный фонарик", q_sk2: "Небесный", q_sk3: "Золотой дракон", q_sk4: "Сакура", q_sk5: "Тушь",
-      q_donate_title: "Поддержать проект", q_donate_text: "Этого бота и игру делает один человек: Лазиза придумывает сцены и диалоги и проверяет каждое слово. Если тебе нравится, можно поддержать проект переводом или звёздами Telegram. Благодаря этому появятся глава 2 (Сиань), глава 3 (Чэнду), новые слова и наряды для героев. Это всегда по желанию: учёба от поддержки не зависит.", q_donate_open: "Открыть в боте",
+      q_donate_title: "Поддержать проект", q_donate_text: "Этого бота и игру делает один человек: автор придумывает сцены и диалоги и проверяет каждое слово. Если тебе нравится, можно поддержать проект переводом или звёздами Telegram. Благодаря этому появятся глава 2 (Сиань), глава 3 (Чэнду), новые слова и наряды для героев. Это всегда по желанию: учёба от поддержки не зависит.", q_donate_open: "Открыть в боте",
     },
     uz: {
       tab_quest: "Yo'l", tab_about: "Haqida", q_title: "茶茶 bilan Xitoy bo'ylab sayohat", q_zh: "和茶茶游中国", q_sub: "Xitoy tili sarguzasht orqali: kuniga bitta sahna",
@@ -63,7 +63,7 @@
       q_lives: "Jonlar", q_coins: "Tangalar", q_howmuch: "Topshiriq uchun: {a} 🪙, sahna uchun: {b} 🪙",
       q_hero_edit: "Qahramonni o'zgartirish", q_save: "Saqlash", q_lang_tr: "Tarjima", q_hint_tr: "Maslahat",
       q_hair: "Soch rangi", q_hstyle: "Soch turmagi", q_sk0: "Choy", q_sk1: "Qizil fonus", q_sk2: "Osmon", q_sk3: "Oltin ajdar", q_sk4: "Sakura", q_sk5: "Siyoh",
-      q_donate_title: "Loyihani qo'llab-quvvatlash", q_donate_text: "Bu bot va o'yinni bir kishi yaratadi: Laziza sahna va dialoglarni o'ylab topadi va har bir so'zni tekshiradi. Yoqsa, loyihani o'tkazma yoki Telegram yulduzlari bilan qo'llab-quvvatlashingiz mumkin. Shu tufayli 2-bob (Sian), 3-bob (Chengdu), yangi so'zlar va qahramonlar uchun yangi kiyimlar paydo bo'ladi. Bu doim ixtiyoriy: o'qishingiz yordamga bog'liq emas.", q_donate_open: "Botda ochish",
+      q_donate_title: "Loyihani qo'llab-quvvatlash", q_donate_text: "Bu bot va o'yinni bir kishi yaratadi: muallif sahna va dialoglarni o'ylab topadi va har bir so'zni tekshiradi. Yoqsa, loyihani o'tkazma yoki Telegram yulduzlari bilan qo'llab-quvvatlashingiz mumkin. Shu tufayli 2-bob (Sian), 3-bob (Chengdu), yangi so'zlar va qahramonlar uchun yangi kiyimlar paydo bo'ladi. Bu doim ixtiyoriy: o'qishingiz yordamga bog'liq emas.", q_donate_open: "Botda ochish",
     },
     en: {
       tab_quest: "Journey", q_title: "Journey Through China with 茶茶", q_zh: "和茶茶游中国", q_sub: "Chinese through adventure: one scene a day",
@@ -95,7 +95,7 @@
       q_lives: "Lives", q_coins: "Coins", q_howmuch: "Per task: {a} 🪙, per scene: {b} 🪙",
       q_hero_edit: "Edit hero", q_save: "Save", q_lang_tr: "Translation", q_hint_tr: "Hint",
       q_hair: "Hair colour", q_hstyle: "Hairstyle", q_sk0: "Tea green", q_sk1: "Red lantern", q_sk2: "Sky blue", q_sk3: "Golden dragon", q_sk4: "Sakura", q_sk5: "Ink",
-      q_donate_title: "Support the project", q_donate_text: "This bot and the game are made by one person: Laziza invents the scenes and dialogues and checks every word. If you like them, you can support the project with a transfer or Telegram Stars. That is how Chapter 2 (Xi'an), Chapter 3 (Chengdu), new words and new outfits for the heroes will appear. It is always optional, and your learning does not depend on it.", q_donate_open: "Open in the bot",
+      q_donate_title: "Support the project", q_donate_text: "This bot and the game are made by one person: the author invents the scenes and dialogues and checks every word. If you like them, you can support the project with a transfer or Telegram Stars. That is how Chapter 2 (Xi'an), Chapter 3 (Chengdu), new words and new outfits for the heroes will appear. It is always optional, and your learning does not depend on it.", q_donate_open: "Open in the bot",
     },
     zh: {
       tab_quest: "旅程", q_title: "和茶茶游中国", q_zh: "和茶茶游中国", q_sub: "在冒险中学中文：每天一幕",
@@ -127,7 +127,7 @@
       q_lives: "生命", q_coins: "金币", q_howmuch: "每个任务：{a} 🪙，每一幕：{b} 🪙",
       q_hero_edit: "修改主角", q_save: "保存", q_lang_tr: "翻译", q_hint_tr: "提示",
       q_hair: "发色", q_hstyle: "发型", q_sk0: "茶绿", q_sk1: "红灯笼", q_sk2: "天蓝", q_sk3: "金龙", q_sk4: "樱花", q_sk5: "水墨",
-      q_donate_title: "支持项目", q_donate_text: "这个机器人和游戏由一个人制作：Laziza 编写场景和对话，并核对每一个词。如果你喜欢，可以通过转账或 Telegram 星星支持项目。有了支持，才会有第 2 章（西安）、第 3 章（成都）、新词汇和主角的新装扮。这完全自愿，学习不受影响。", q_donate_open: "在机器人中打开",
+      q_donate_title: "支持项目", q_donate_text: "这个机器人和游戏由一个人制作：作者编写场景和对话，并核对每一个词。如果你喜欢，可以通过转账或 Telegram 星星支持项目。有了支持，才会有第 2 章（西安）、第 3 章（成都）、新词汇和主角的新装扮。这完全自愿，学习不受影响。", q_donate_open: "在机器人中打开",
     },
   };
   // v12: рейтинг, приз за первую сцену, новые цены

@@ -87,6 +87,7 @@ def init():
             PRIMARY KEY (user_id, zh)
         );
         CREATE TABLE IF NOT EXISTS prefs (user_id INTEGER PRIMARY KEY, goal INTEGER);
+        CREATE TABLE IF NOT EXISTS consents (user_id INTEGER PRIMARY KEY, ver INTEGER NOT NULL, ts TEXT NOT NULL, lang TEXT);
         CREATE TABLE IF NOT EXISTS game (
             user_id INTEGER PRIMARY KEY, coins INTEGER NOT NULL DEFAULT 0, served INTEGER NOT NULL DEFAULT 0,
             streak INTEGER NOT NULL DEFAULT 0, lives INTEGER NOT NULL DEFAULT 5, lives_date TEXT, bonus_lives INTEGER NOT NULL DEFAULT 0
@@ -610,7 +611,54 @@ def delete_user(uid):
                 c.execute(f"DELETE FROM {table} WHERE user_id=?", (uid,))
             except sqlite3.OperationalError:
                 pass
+        # таблицы, которые создают другие модули (игра, оформления, запись к репетиторам, форум): их может не быть
+        def opt(sql, *a):
+            try:
+                c.execute(sql, a)
+            except sqlite3.OperationalError:
+                pass
+        opt("DELETE FROM topic_posts WHERE topic_id IN (SELECT id FROM topics WHERE user_id=?)", uid)
+        for table in ("topic_posts", "topics", "quest_char", "quest_prog", "quest_run", "quest_day", "quest_score", "quest_prize",
+                      "theme_owned", "theme_equip", "weekly_win", "bookings", "tutor_students", "t_inbox", "rec_access", "bk_moves", "bk_reviews"):
+            opt(f"DELETE FROM {table} WHERE user_id=?", uid)
+        opt("UPDATE quest_pay SET user_id=0 WHERE user_id=?", uid)      # оплата звёздами остаётся без привязки к человеку (возвраты и учёт)
+        c.execute("DELETE FROM consents WHERE user_id=?", (uid,))
         c.execute("DELETE FROM users WHERE user_id=?", (uid,))
+
+
+def delete_blocker(uid, owner_id=0):
+    """Почему человек не может удалить данные сам: 'owner' | 'tutor' | 'student' | None.
+    Репетитора и ученика Лазизы удаляет она сама: у неё остаются записи об уроках и оплатах, а у репетитора есть чужие ученики."""
+    if owner_id and uid == owner_id:
+        return "owner"
+    with _conn() as c:
+        try:
+            if c.execute("SELECT 1 FROM teachers WHERE user_id=?", (uid,)).fetchone():
+                return "tutor"
+        except sqlite3.OperationalError:
+            pass
+        u = c.execute("SELECT is_student FROM users WHERE user_id=?", (uid,)).fetchone()
+        if u and u["is_student"]:
+            return "student"
+        for table in ("lessons", "payments"):
+            if c.execute(f"SELECT 1 FROM {table} WHERE user_id=? LIMIT 1", (uid,)).fetchone():
+                return "student"
+    return None
+
+
+# ─── СОГЛАСИЕ В МИНИ-АППЕ ─────────────────────────────────────────────────────
+
+def consent_get(uid):
+    """Версия согласия, которую подтвердил человек (0 — не подтверждал)."""
+    with _conn() as c:
+        r = c.execute("SELECT ver FROM consents WHERE user_id=?", (uid,)).fetchone()
+    return int(r["ver"]) if r else 0
+
+
+def consent_set(uid, ver, lang):
+    with _conn() as c:
+        c.execute("INSERT INTO consents (user_id, ver, ts, lang) VALUES (?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET ver=excluded.ver, ts=excluded.ts, lang=excluded.lang",
+                  (uid, int(ver), datetime.now(TZ).isoformat(timespec="seconds"), lang))
 
 
 # ─── КОПИЯ ДАННЫХ ЧЕЛОВЕКА ────────────────────────────────────────────────────
@@ -645,6 +693,24 @@ def export_user(uid):
             "kpi_notes": rows("SELECT date, note FROM kpi WHERE user_id=? ORDER BY id"),
             "flashcards": rows("SELECT zh, box, due FROM cards WHERE user_id=? ORDER BY zh"),
             "learning_settings": rows("SELECT goal FROM prefs WHERE user_id=?"),
+            "consent": rows("SELECT ver, ts, lang FROM consents WHERE user_id=?"),
+            "journey_hero": _opt_rows(c, "SELECT hero, gender, skin, owned, coins, lives, created, hide, hair, hstyle FROM quest_char WHERE user_id=?", uid),
+            "journey_progress": _opt_rows(c, "SELECT scene_id, done_day, mistakes FROM quest_prog WHERE user_id=? ORDER BY done_day", uid),
+            "journey_current_runs": _opt_rows(c, "SELECT scene_id, idx, errs, mistakes, earned, st, replay, started FROM quest_run WHERE user_id=?", uid),
+            "journey_days": _opt_rows(c, "SELECT day, free_used, extra, revives FROM quest_day WHERE user_id=? ORDER BY day", uid),
+            "journey_points": _opt_rows(c, "SELECT day, pts FROM quest_score WHERE user_id=? ORDER BY day", uid),
+            "journey_prizes": _opt_rows(c, "SELECT ts, won FROM quest_prize WHERE user_id=?", uid),
+            "star_purchases": _opt_rows(c, "SELECT item, stars, ts FROM quest_pay WHERE user_id=? ORDER BY ts", uid),
+            "themes_owned": _opt_rows(c, "SELECT theme_id, src, expires, granted FROM theme_owned WHERE user_id=?", uid),
+            "theme_equipped": _opt_rows(c, "SELECT theme_id FROM theme_equip WHERE user_id=?", uid),
+            "weekly_wins": _opt_rows(c, "SELECT week_start, kind, theme_id, pts FROM weekly_win WHERE user_id=? ORDER BY week_start", uid),
+            "tutor_bookings": _opt_rows(c, "SELECT teacher_id, start, duration, status, created FROM bookings WHERE user_id=? ORDER BY id", uid),
+            "tutor_links": _opt_rows(c, "SELECT teacher_id, created FROM tutor_students WHERE user_id=?", uid),
+            "booking_moves": _opt_rows(c, "SELECT booking_id, new_start, status, created FROM bk_moves WHERE user_id=? ORDER BY id", uid),
+            "tutor_reviews": _opt_rows(c, "SELECT teacher_id, rating, text, public, created FROM bk_reviews WHERE user_id=? ORDER BY id", uid),
+            "forum_topics": _opt_rows(c, "SELECT title, body, created, updated, status FROM topics WHERE user_id=? ORDER BY id", uid),
+            "forum_posts": _opt_rows(c, "SELECT topic_id, text, created, status FROM topic_posts WHERE user_id=? ORDER BY id", uid),
+            "recording_access": _opt_rows(c, "SELECT rec_id, created FROM rec_access WHERE user_id=?", uid),
             "game": rows("SELECT coins, served FROM game WHERE user_id=?"),
             "tea_score": rows("SELECT day, points, correct, wrong FROM tea_score WHERE user_id=? ORDER BY day"),
             "weekly_rating": rows("SELECT joined, nick FROM board WHERE user_id=?"),

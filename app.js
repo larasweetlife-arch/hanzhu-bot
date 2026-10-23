@@ -69,11 +69,15 @@
     const r = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json", "X-Init-Data": (tg && tg.initData) || "" }, body: JSON.stringify(body || {}) });
     if (r.status === 401) { const e = new Error("auth"); e.auth = true; throw e; }
     const j = await r.json().catch(() => ({}));
+    if (r.status === 403 && j.error === "consent") { const e = new Error("consent"); e.consent = true; throw e; }
     if (r.status === 409) { j.stale = true; return j; }
     if (!r.ok) throw new Error("http " + r.status);
     return j;
   }
-  async function safe(fn) { try { return await fn(); } catch (e) { if (e.auth) return showNoTg(); toast(tr("err")); } }
+  async function consentAgain() {          // версия согласия поменялась, пока приложение было открыто
+    try { const c = await api("/api/consent", {}); if (!c.ok && window.CONSENT) { await window.CONSENT.ask(c); location.reload(); } } catch (e) { toast(tr("err")); }
+  }
+  async function safe(fn) { try { return await fn(); } catch (e) { if (e.auth) return showNoTg(); if (e.consent) return consentAgain(); toast(tr("err")); } }
 
   // ── оформление ──
   function applyTheme(theme) {
@@ -239,7 +243,7 @@
     const words = h("div", { class: "card" }, h("h3", {}, "🗂 " + tr("pg_words")),
       c && c.total ? h("div", { class: "sgrid", style: "margin-top:8px" }, [[c.known, "pg_known"], [c.total, "pg_total"], [c.due, "pg_due"]].map(([v, k]) => h("div", {}, h("b", {}, v), h("span", {}, tr(k)))))
         : h("div", { class: "muted", style: "margin-top:6px" }, c ? tr("pg_words_empty") : "…"));
-    return h("div", {}, seg, window.PG ? window.PG.path() : null, words, window.PG ? window.PG.entries() : null, viewMe());
+    return h("div", {}, seg, window.PG ? window.PG.path() : null, words, window.PG ? window.PG.entries() : null, viewMe(), window.PG ? window.PG.dataCard() : null);
   }
 
   // ── вкладка «Играть» ──
@@ -529,10 +533,11 @@
   }
   function viewAbout() {
     const m = S.me;
-    const creator = h("div", { class: "card creator" }, h("div", { class: "photo" }, h("img", { src: "/static/lara.jpg", alt: tr("creator"), loading: "lazy" })),
+    const creator = h("div", { class: "card creator" }, h("div", { class: "mark" }, "茶"),
       h("h2", {}, tr("creator")), h("div", { class: "role" }, tr("role")), h("p", {}, tr("bio")),
       h("div", { class: "chips" },
         h("button", { class: "chip", onclick: () => openLink(m.links.instagram) }, h("div", { class: "ic ig" }, "IG"), h("div", {}, h("small", {}, tr("insta")), h("b", {}, "@lllaziza_r"))),
+        m.links.threads ? h("button", { class: "chip", onclick: () => openLink(m.links.threads) }, h("div", { class: "ic th" }, "@"), h("div", {}, h("small", {}, tr("threads")), h("b", {}, "@laziza.chinese"))) : null,
         h("button", { class: "chip", onclick: () => openTg(m.links.channel) }, h("div", { class: "ic tg" }, "TG"), h("div", {}, h("small", {}, tr("channel")), h("b", {}, tr("channel_name"))))));
     const why = h("div", { class: "card" }, h("h3", {}, "🍃 " + tr("why_title")), h("p", { style: "margin:8px 0 0" }, tr("why")), h("p", { class: "muted", style: "margin:10px 0 0" }, tr("why_priv")));
     const how = h("details", { open: true }, h("summary", {}, tr("qhow_title")), h("div", { class: "body" }, h("ol", {}, tr("qhow").map((s) => h("li", {}, s)))));
@@ -548,10 +553,16 @@
   }
   async function boot() {
     initTheme();
-    try { if (window.TH) await window.TH.load(); } catch (e) { /* без оформлений тоже работаем */ }
     try { if (tg) { tg.ready(); tg.expand(); if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } } catch (e) { /* ок */ }
     const code = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || "ru").slice(0, 2);
     S.lang = window.I18N[code] ? code : "ru";
+    if (tg && tg.initData && window.CONSENT) {            // согласие до любых данных
+      try {
+        const c = await api("/api/consent", {});
+        if (!c.ok) await window.CONSENT.ask(c);
+      } catch (e) { return e.auth ? showNoTg() : (document.getElementById("splashSub").textContent = tr("err")); }
+    }
+    try { if (window.TH) await window.TH.load(); } catch (e) { /* без оформлений тоже работаем */ }
     const want = new URLSearchParams(location.search).get("tab");
     if (want && LEGACY[want]) { [S.tab, S.sub] = LEGACY[want]; if (S.sub === "quest" && window.QUEST) window.QUEST.enter(); }
     else if (want && ["today", "practice", "locker", "progress"].includes(want)) S.tab = want;

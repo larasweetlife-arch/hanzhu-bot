@@ -182,7 +182,7 @@
     </svg>`;
   }
 
-  // ── 茶茶: настоящий талисман Лазизы (стикеры в /static/chacha/), три позы под настроение ──
+  // ── 茶茶: настоящий талисман проекта (стикеры в /static/chacha/), три позы под настроение ──
   const CC_POSE = { happy: "wave", smile: "wave", open: "read", sad: "think" };
   const CC_URL = (k) => `/static/chacha/chacha_${k}.webp`;
   try { ["wave", "read", "think"].forEach((k) => { const i = new Image(); i.src = CC_URL(k); }); } catch (e) { /* без предзагрузки тоже работает */ }
