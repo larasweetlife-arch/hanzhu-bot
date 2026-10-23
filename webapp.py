@@ -31,6 +31,7 @@ import db
 import practice
 import quest
 import themes
+import hanzi
 import tts
 from texts import T, t
 
@@ -145,7 +146,8 @@ def create_app(deps):
         return resp
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
-            "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp"]
+            "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -311,6 +313,23 @@ def create_app(deps):
         if new in LANGS:
             db.save_user(tg["id"], lang=new)
         return jsonify({"ok": new in LANGS})
+
+    # ── каллиграфия: карточка иероглифа ──
+    @app.route("/api/hanzi", methods=["POST"])
+    @need_auth
+    def api_hanzi(tg, lang, u):
+        b = _jb()
+        chars = [c for c in str(b.get("c") or "")[:6]]
+        cards = [x for x in (hanzi.info(c, lang) for c in chars) if x]
+        if not cards:
+            return jsonify({"error": "no"}), 404
+        db.log_event(tg["id"], "hanzi")
+        return jsonify({"cards": cards})
+
+    @app.route("/api/hanzi/list", methods=["POST"])
+    @need_auth
+    def api_hanzi_list(tg, lang, u):
+        return jsonify({"levels": hanzi.lists()})
 
     @app.route("/api/docs", methods=["POST"])
     @need_auth

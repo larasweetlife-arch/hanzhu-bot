@@ -64,6 +64,7 @@ import tutors
 import tutors2
 import ads
 import chacha
+import hanzi
 import themes
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
@@ -517,6 +518,24 @@ def has_own(lang):
     return None
 
 
+HZ_BTN = {"ru": "✍️ Написать", "uz": "✍️ Yozish", "en": "✍️ Write it", "zh": "✍️ 书写"}
+
+def hz_markup(lang, zh):
+    """Кнопка «Написать»: открывает мини-апп на карточке иероглифов слова (только если у знаков есть порядок черт)."""
+    try:
+        if not WEBAPP_URL.startswith("https://"):
+            return None
+        have = hanzi.stroke_chars()
+        chars = "".join(c for c in zh if c in have)[:6]
+        if not chars:
+            return None
+        k = types.InlineKeyboardMarkup()
+        k.row(types.InlineKeyboardButton(HZ_BTN.get(lang, HZ_BTN["ru"]), web_app=types.WebAppInfo(url=WEBAPP_URL + "/?hz=" + quote(chars))))
+        return k
+    except Exception:
+        logging.exception("кнопка каллиграфии")
+        return None
+
 def send_word(uid):
     db.log_event(uid, "word"); lang = lang_of(uid)
     n = user_hsk(uid)
@@ -537,7 +556,7 @@ def send_word(uid):
     extra = bkrs_line(lang, w["zh"]) if lang in ("ru", "uz") and shown_en else ""
     bot.send_message(uid, f"{t(lang,'word')}\n\n<b>{esc(w['zh'])}</b>\n🔊 <code>{esc(w['py'])}</code>\n"
                           f"📖 {esc(C.meaning(w, lang))}{pos}" + (f"\n{mark}" if mark else "") + ex + extra,
-                     disable_web_page_preview=True)
+                     disable_web_page_preview=True, reply_markup=hz_markup(lang, w["zh"]))
 
 def send_chengyu(uid):
     db.log_event(uid, "chengyu"); lang = lang_of(uid)
@@ -680,8 +699,8 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "24.2"
-VERSION_INFO = "официальный список HSK 3.0 (2025) вместо старых списков, уровни слов исправлены; новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
+VERSION = "25"
+VERSION_INFO = "каллиграфия в мини-аппе: порядок черт, обводка, разбор иероглифа и кнопка «Написать» под словом дня; до этого: официальный список HSK 3.0 (2025) вместо старых списков, уровни слов исправлены; новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
 
 
 @bot.message_handler(commands=["version"])
