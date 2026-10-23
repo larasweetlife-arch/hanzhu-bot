@@ -62,10 +62,6 @@ import quest
 import booking
 import tutors
 import tutors2
-import ads
-import chacha
-import hanzi
-import phonetics
 import themes
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
@@ -241,15 +237,18 @@ def notify_owner(text, **kw):
 def kb_main(uid):
     lang = lang_of(uid)
     k = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    btns = [t(lang, x) for x in ("b_word", "b_chengyu", "b_fact", "b_tr", "b_grammar", "b_phon", "b_texts", "b_progress", "b_adult",
-                                  "b_lang", "b_channel", "b_practice", "b_book")]
+    k.row(t(lang, "b_word"), t(lang, "b_chengyu"))
+    k.row(t(lang, "b_fact"), t(lang, "b_tr"))
+    k.row(t(lang, "b_grammar"), t(lang, "b_texts"))
+    k.row(t(lang, "b_progress"), t(lang, "b_adult"))
+    k.row(t(lang, "b_lang"), t(lang, "b_channel"))
+    k.row(t(lang, "b_practice"), t(lang, "b_book"))
     if not is_owner(uid):
-        btns.append(t(lang, "b_friend"))
-        if not (db.get_user(uid) or {}).get("is_student"):
-            btns.append(t(lang, "b_trial"))
-    btns += [t(lang, "b_sched"), t(lang, "b_help")]
-    for i in range(0, len(btns), 2):
-        k.row(*btns[i:i + 2])
+        if (db.get_user(uid) or {}).get("is_student"):
+            k.row(t(lang, "b_friend"))
+        else:
+            k.row(t(lang, "b_friend"), t(lang, "b_trial"))
+    k.row(t(lang, "b_sched"), t(lang, "b_help"))
     extra = ([t(lang, "b_topics")] if tutors.TOPICS_ON else []) + ([t(lang, "b_records")] if tutors.has_records(uid) else [])
     if extra:
         k.row(*extra)
@@ -516,24 +515,6 @@ def has_own(lang):
     return None
 
 
-HZ_BTN = {"ru": "✍️ Написать", "uz": "✍️ Yozish", "en": "✍️ Write it", "zh": "✍️ 书写"}
-
-def hz_markup(lang, zh):
-    """Кнопка «Написать»: открывает мини-апп на карточке иероглифов слова (только если у знаков есть порядок черт)."""
-    try:
-        if not WEBAPP_URL.startswith("https://"):
-            return None
-        have = hanzi.stroke_chars()
-        chars = "".join(c for c in zh if c in have)[:6]
-        if not chars:
-            return None
-        k = types.InlineKeyboardMarkup()
-        k.row(types.InlineKeyboardButton(HZ_BTN.get(lang, HZ_BTN["ru"]), web_app=types.WebAppInfo(url=WEBAPP_URL + "/?hz=" + quote(chars))))
-        return k
-    except Exception:
-        logging.exception("кнопка каллиграфии")
-        return None
-
 def send_word(uid):
     db.log_event(uid, "word"); lang = lang_of(uid)
     n = user_hsk(uid)
@@ -554,7 +535,7 @@ def send_word(uid):
     extra = bkrs_line(lang, w["zh"]) if lang in ("ru", "uz") and shown_en else ""
     bot.send_message(uid, f"{t(lang,'word')}\n\n<b>{esc(w['zh'])}</b>\n🔊 <code>{esc(w['py'])}</code>\n"
                           f"📖 {esc(C.meaning(w, lang))}{pos}" + (f"\n{mark}" if mark else "") + ex + extra,
-                     disable_web_page_preview=True, reply_markup=hz_markup(lang, w["zh"]))
+                     disable_web_page_preview=True)
 
 def send_chengyu(uid):
     db.log_event(uid, "chengyu"); lang = lang_of(uid)
@@ -697,23 +678,9 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "29"
-VERSION_INFO = "«Шкафчик» в мини-аппе: все слова по ящичкам HSK, поиск, статусы «Учу», «Помню», «Повторить», карточка слова и кнопка «Знаю это слово»; до этого: мини-апп 2.0: четыре вкладки «Сегодня», «Практика», «Шкафчик», «Прогресс», на «Сегодня» дорога дня и цель; до этого: раздел «Фонетика» в меню бота (тоны, согласные, гласные, изменения тонов, с озвучкой) и практика на слух в мини-аппе; до этого: проверка тонов голосом в карточке иероглифа (пока только у владельца: /tones_on включает всем); до этого: каллиграфия в мини-аппе: порядок черт, обводка, разбор иероглифа и кнопка «Написать» под словом дня; до этого: официальный список HSK 3.0 (2025) вместо старых списков, уровни слов исправлены; новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
+VERSION = "23"
+VERSION_INFO = "репетиторы: перенос записи, отзывы об уроках, пробный урок, кнопка связи с Лазизой и команда /tutor; до этого: подписки, соглашение, домашки, записи уроков, обсуждения"
 
-
-@bot.message_handler(commands=["tones_on"])
-def cmd_tones_on(m):
-    if m.from_user.id != OWNER_ID:
-        return
-    hanzi.tones_set("all")
-    bot.send_message(m.chat.id, "🎤 Проверка тонов включена для всех (кнопка в карточке иероглифа). Выключить: /tones_off")
-
-@bot.message_handler(commands=["tones_off"])
-def cmd_tones_off(m):
-    if m.from_user.id != OWNER_ID:
-        return
-    hanzi.tones_set("pilot")
-    bot.send_message(m.chat.id, "🎤 Проверка тонов теперь видна только тебе (проверочный режим). Включить всем: /tones_on")
 
 @bot.message_handler(commands=["version"])
 def cmd_version(m):
@@ -3351,7 +3318,7 @@ def cmd_stickers(m):
 
 
 def menu_labels(lang):
-    keys = ("b_word", "b_chengyu", "b_fact", "b_tr", "b_progress", "b_lang", "b_grammar", "b_phon", "b_texts",
+    keys = ("b_word", "b_chengyu", "b_fact", "b_tr", "b_progress", "b_lang", "b_grammar", "b_texts",
             "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_book", "b_channel", "b_help", "b_donate",
             "b_topics", "b_records")
     return {t(lang, k) for k in keys}
@@ -3363,9 +3330,6 @@ tutors.register(bot, OWNER_ID, lang_of, dict(
     hw_default_text=lambda media, due=None: hw_default_text(media, due), parse_due=lambda s, d: practice.parse_due(s, d),
     HW_MEDIA_MAX=HW_MEDIA_MAX, labels=menu_labels))
 tutors2.register(bot, OWNER_ID, lang_of, kb_main)
-ads.register(bot, OWNER_ID, lang_of, notify_owner, STARS_ON)
-send_phonetics = phonetics.register(bot, lang_of, lambda: WEBAPP_URL)
-chacha.register(bot, OWNER_ID, lang_of, lambda u: send_practice(u))
 
 
 @bot.message_handler(func=lambda m: True, content_types=["text"])
@@ -3373,8 +3337,6 @@ def on_text(m):
     uid = m.from_user.id
     txt = (m.text or "").strip()
 
-    if ads.on_text(m, txt):                     # объявления: ввод текста
-        return
     if tutors.on_text(m):                       # репетиторы: домашки, записи, ответы ученикам; обсуждения
         return
 
@@ -3575,7 +3537,7 @@ def on_text(m):
     actions = {t(lang, "b_word"): send_word, t(lang, "b_chengyu"): send_chengyu,
                t(lang, "b_fact"): send_fact, t(lang, "b_tr"): ask_translate,
                t(lang, "b_progress"): send_progress, t(lang, "b_lang"): ask_language,
-               t(lang, "b_grammar"): send_grammar, t(lang, "b_phon"): send_phonetics, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
+               t(lang, "b_grammar"): send_grammar, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
                t(lang, "b_sched"): send_schedule, t(lang, "b_practice"): send_practice,
                t(lang, "b_friend"): send_friend, t(lang, "b_trial"): ask_trial, t(lang, "b_rules"): send_rules,
                t(lang, "b_book"): booking.start, t(lang, "b_topics"): tutors.send_topics, t(lang, "b_records"): tutors.send_records}
@@ -3691,8 +3653,6 @@ def on_pre_checkout(q):
         if q.currency == "XTR" and STARS_ON:
             if pl.startswith("dn:"):
                 ok = pl[3:].isdigit() and int(pl[3:]) in quest.DONATE_STARS and q.total_amount == int(pl[3:])
-            elif pl.startswith("ax:"):
-                ok = ads.precheck(q)
             else:
                 parsed = quest.parse_payload(pl)
                 if parsed:
@@ -3726,8 +3686,6 @@ def on_successful_payment(m):
                 bot.send_message(uid, t(lang, "dn_thanks"))
                 notify_owner(f"💝 Поддержка проекта: <b>{stars} ⭐</b> от {_who(uid)}")
             return
-        if pl.startswith("ax:"):
-            return ads.on_paid(uid, stars, charge, pl)
         parsed = quest.parse_payload(pl)
         res = quest.grant_stars(uid, parsed[0], stars, charge, parsed[2]) if parsed else None
         if res is None:
@@ -3897,7 +3855,7 @@ if __name__ == "__main__":
             types.BotCommand("friend", "пригласить друга"), types.BotCommand("trial", "пробный урок"),
             types.BotCommand("parents", "родители: недельная сводка"),
             types.BotCommand("hw", "домашние задания"),
-            types.BotCommand("lang", "язык"), types.BotCommand("chacha", "как часто 茶茶 пишет"), types.BotCommand("about", "что я умею"),
+            types.BotCommand("lang", "язык"), types.BotCommand("about", "что я умею"),
             types.BotCommand("privacy", "конфиденциальность"), types.BotCommand("donate", "поддержать проект"),
             types.BotCommand("terms", "условия покупок за ⭐"), types.BotCommand("paysupport", "помощь с оплатой"),
             types.BotCommand("mydata", "копия моих данных")])
@@ -3912,15 +3870,11 @@ if __name__ == "__main__":
                 types.BotCommand("who", "кто за какими никами в рейтинге"), types.BotCommand("discounts", "скидки за друзей"),
                 types.BotCommand("parents", "родители, подключённые к сводке"), types.BotCommand("parentsum", "предпросмотр сводки родителю"),
                 types.BotCommand("missing", "что не нашли в переводчике"),
-                types.BotCommand("stars", "звёзды: сколько заработано"),
-                types.BotCommand("ad", "объявление всем"), types.BotCommand("ads", "объявления и цены"),
-                types.BotCommand("chacha", "как часто 茶茶 пишет"), types.BotCommand("chacha_on", "茶茶: включить для всех"),
-                types.BotCommand("chacha_off", "茶茶: писать только мне"), types.BotCommand("chacha_test", "茶茶: показать все тексты"),
-                types.BotCommand("tones_on", "тоны голосом: включить всем"), types.BotCommand("tones_off", "тоны голосом: только мне")],
+                types.BotCommand("stars", "звёзды: сколько заработано")],
                 scope=types.BotCommandScopeChat(OWNER_ID))
     except Exception as e:
         logging.warning("не удалось задать команды: %s", e)
-    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook, tutors2.hook, chacha.hook)), daemon=True).start()
+    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook, tutors2.hook)), daemon=True).start()
     start_webapp()
     announce_version()
     print("🐉 汉助 HanZhu запущен. Останови сочетанием Ctrl+C.")

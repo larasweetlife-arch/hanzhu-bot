@@ -505,21 +505,3 @@ from texts_v14 import P as _P14
 
 for _lang in T:
     T[_lang].update(_P14.get(_lang, {}))
-
-
-# ─── Версия 26: микрофон в проверке тонов ────────────────────────────────────
-_PRIV_MIC = {
-    "ru": ("\n\nТвои сообщения мне", "\n\nПроверка тона в мини-аппе использует микрофон только пока ты сам(а) нажимаешь 🎤. Звук обрабатывается на телефоне, никуда не отправляется и не сохраняется."),
-    "uz": ("\n\nMenga yozgan xabarlaringizni", "\n\nMini-ilovada ohangni tekshirish mikrofondan faqat siz 🎤 ni bosganingizda foydalanadi. Ovoz telefonning o'zida qayta ishlanadi, hech qayerga yuborilmaydi va saqlanmaydi."),
-    "en": ("\n\nYour messages to me", "\n\nThe tone check in the mini app uses the microphone only while you tap 🎤. The sound is processed on your phone, never sent anywhere and never stored."),
-    "zh": ("\n\n你发给我的消息", "\n\n小程序里的声调检查只在你点击 🎤 时使用麦克风。声音只在你的手机上处理，不会发送到任何地方，也不会保存。"),
-}
-for _l, (_anchor, _add) in _PRIV_MIC.items():
-    _p = T[_l].get("privacy", "")
-    if _p and _anchor in _p and _add not in _p:
-        T[_l]["privacy"] = _p.replace(_anchor, _add + _anchor, 1)
-
-
-# ─── Версия 27: кнопка «Фонетика» в меню ─────────────────────────────────────
-for _l, _v in (("ru", "🔊 Фонетика"), ("uz", "🔊 Fonetika"), ("en", "🔊 Phonetics"), ("zh", "🔊 语音")):
-    T[_l]["b_phon"] = _v
