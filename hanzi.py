@@ -273,3 +273,12 @@ def tones_set(v):
 
 def tones_for(uid, owner_id):
     return bool(uid) and (uid == owner_id or tones_mode() == "all")
+
+
+def day_char(day, lang):
+    """Иероглиф дня: один и тот же для всех в течение суток (из списка уровней 1–2, у которых есть порядок черт)."""
+    import zlib
+    chars = [c for lv in lists() for c in lv["chars"]]
+    if not chars:
+        return None
+    return info(chars[zlib.crc32(str(day).encode()) % len(chars)], lang)

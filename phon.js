@@ -97,5 +97,5 @@
       hear ? h("div", { class: "ph-score" }, tx("score", { n: st.score, m: n })) : null, h("div", { class: "muted", style: "margin-top:6px" }, msg),
       h("button", { class: "btn primary", style: "margin-top:14px", onclick: () => load(st.mode) }, tx("again"))));
   }
-  window.PH = { entryCard, view, open() { const { S, render } = Q(); S.tab = "play"; S.playSub = "phon"; st.mode = null; render(); } };
+  window.PH = { entryCard, view, open() { const { S, render } = Q(); S.tab = "practice"; S.sub = null; S.playSub = "phon"; st.mode = null; render(); } };
 })();

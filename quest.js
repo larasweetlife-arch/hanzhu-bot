@@ -43,7 +43,7 @@
       Q.nextLifeAt = Q.st.next_life_in ? Date.now() + Q.st.next_life_in * 1000 : 0;
     } catch (e) { if (e.auth) Y().safe(() => { throw e; }); else Y().toast(tr("err")); }
     Q.busy = false;
-    if (S().tab === "quest" && !Q.scene) Y().render();
+    if (S().tab === "practice" && (S().sub === "quest" || S().sub === "qrating") && !Q.scene) Y().render();
   }
   const reload = () => load(true);
 
@@ -208,7 +208,7 @@
     const b = Q.board[tab];
     if (b && !force && Date.now() - b.at < 30000) return b;
     try { const r = await Y().api("/api/quest/board", { tab }); r.at = Date.now(); Q.board[tab] = r; } catch (e) { return null; }
-    if ((S().tab === "quest" || S().tab === "top") && !Q.scene && !document.querySelector(".sheetbg")) Y().render();
+    if (S().tab === "practice" && (S().sub === "quest" || S().sub === "qrating") && !Q.scene && !document.querySelector(".sheetbg")) Y().render();
     return Q.board[tab];
   }
   const MEDAL = ["🥇", "🥈", "🥉"];

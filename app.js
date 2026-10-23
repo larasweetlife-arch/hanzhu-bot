@@ -4,7 +4,7 @@
   const tg = window.Telegram && window.Telegram.WebApp;
   const LANGS = [["ru", "RU", "Русский"], ["uz", "UZ", "O'zbekcha"], ["en", "EN", "English"], ["zh", "中", "中文"]];
   const LOCALES = { ru: "ru-RU", uz: "uz-UZ", en: "en-GB", zh: "zh-CN" };
-  const S = { me: null, lang: "ru", tab: "quest", game: null, board: { tab: "week", data: null }, docs: null, pop: false };
+  const S = { me: null, lang: "ru", tab: "today", sub: null, today: null, game: null, board: { tab: "week", data: null }, docs: null, pop: false };
   const app = document.getElementById("app");
 
   // ── утилиты ──
@@ -130,19 +130,25 @@
     return bar;
   }
   function tabbar() {
-    const tabs = [["quest", "tab_quest"], ["play", "tab_play"], ["top", "tab_top"], ["me", "tab_me"], ["about", "tab_about"]];
-    return h("div", { class: "tabbar" }, h("div", { class: "in" }, tabs.map(([id, key]) =>
-      h("button", { class: "tab" + (S.tab === id ? " on" : ""), onclick: () => go(id) }, svg(ICONS[id]), h("span", {}, tr(key))))));
+    const tabs = [["today", "今", "tab_today"], ["practice", "练", "tab_practice"], ["locker", "柜", "tab_locker"], ["progress", "进", "tab_progress"]];
+    return h("div", { class: "tabbar" }, h("div", { class: "in" }, tabs.map(([id, gl, key]) =>
+      h("button", { class: "tab" + (S.tab === id ? " on" : ""), onclick: () => go(id) }, h("span", { class: "gl zh", "aria-hidden": "true" }, gl), h("span", {}, tr(key))))));
   }
-  function go(tab) {
+  // старые названия вкладок (ссылки из бота и из игры) ведут на новые места
+  const LEGACY = { quest: ["practice", "quest"], play: ["practice", "words"], top: ["practice", "qrating"], me: ["progress", null], about: ["progress", "about"] };
+  function go(tab, sub) {
     haptic();
-    S.tab = tab; S.pop = false; S.playSub = null;
-    if (tab === "top" && window.QUEST) window.QUEST.enterRating();
-    if (tab === "quest" && window.QUEST) window.QUEST.enter();
+    if (LEGACY[tab]) [tab, sub] = LEGACY[tab];
+    S.tab = tab; S.sub = sub || null; S.pop = false; S.playSub = null;
+    enterSub();
     render(); window.scrollTo(0, 0);
   }
+  function enterSub() {
+    if (S.tab === "practice" && window.QUEST) { if (S.sub === "quest") window.QUEST.enter(); if (S.sub === "qrating") window.QUEST.enterRating(); }
+    if (S.tab === "today" || S.tab === "progress") loadToday();
+  }
   function view() {
-    return { quest: () => window.QUEST.view(), play: viewPlay, top: () => window.QUEST.ratingView(), me: viewMe, about: viewAbout }[S.tab]();
+    return { today: viewToday, practice: viewPractice, locker: viewLocker, progress: viewProgress }[S.tab]();
   }
   document.addEventListener("click", () => { if (S.pop) { S.pop = false; render(); } });
 
@@ -152,6 +158,86 @@
     await safe(async () => { await api("/api/lang", { lang: code }); await reloadMe(); S.docs = null; if (S.playSub === "board") loadBoard(S.board.tab); render(); });
   }
   async function reloadMe() { S.me = await api("/api/me"); S.lang = S.me.lang; }
+
+
+  // ── оболочка 2.0: «Сегодня», «Практика», «Шкафчик», «Прогресс» ──
+  async function loadToday() {
+    if (S.todayBusy) return;
+    S.todayBusy = true;
+    try { S.today = await api("/api/today"); } catch (e) { if (e.auth) { S.todayBusy = false; return showNoTg(); } }
+    S.todayBusy = false;
+    if (S.tab === "today" || S.tab === "progress") render();
+  }
+  function hubCard(emoji, title, sub, onclick) {
+    return h("button", { class: "card qrate", onclick: () => { haptic(); onclick(); } },
+      h("div", { class: "row" }, h("span", { class: "em" }, emoji), h("div", { style: "flex:1;text-align:left" }, h("b", {}, title), h("div", { class: "muted" }, sub))));
+  }
+  function withBack(node, label) {
+    return h("div", {}, h("button", { class: "linkbtn", style: "margin-bottom:10px", onclick: () => { S.sub = null; render(); window.scrollTo(0, 0); } }, "← " + label), node);
+  }
+  function viewToday() {
+    const m = S.me, r = m.rank, t = S.today;
+    if (!t && !S.todayBusy) loadToday();
+    const goal = t ? t.goal : { done: 0, target: 10 };
+    const hero = h("div", { class: "card hero today" },
+      h("img", { class: "chacha", src: "/static/chacha/chacha_wave.webp", alt: "茶茶", width: "96", height: "117" }),
+      h("div", { class: "tx" }, h("h2", {}, m.nick ? tr("hello", { n: m.nick }) : tr("hello_anon")), h("div", { class: "rank" }, r.emoji + " " + r.title)));
+    const tile = (v, l) => h("div", { class: "stat" }, h("b", {}, v), h("span", {}, l));
+    const tiles = h("div", { class: "stats" }, tile("🔥 " + m.streak, tr("streak")), tile(goal.done + " / " + goal.target, tr("td_goal")), tile(r.emoji + " " + (r.level + 1), tr("td_level")));
+    const out = [hero, tiles];
+    if (t && t.hanzi && t.hanzi.writable && window.HZ) {
+      const c = t.hanzi;
+      out.push(h("button", { class: "card dayhz", onclick: () => { haptic(); window.HZ.open(c.c); } },
+        h("span", { class: "zh big" }, c.c), h("div", { style: "flex:1;text-align:left" }, h("div", { class: "lbl" }, tr("td_hanzi")), h("div", {}, h("b", {}, c.py), " · " + (c.meaning || ""))), h("span", { class: "chev", "aria-hidden": "true" }, "›")));
+    }
+    // дорога дня
+    const q = t ? t.quest : { char: false };
+    const steps = [
+      { title: tr("td_s_words"), sub: tr("td_s_words_sub", { a: goal.done, b: goal.target }), done: goal.done >= goal.target, btn: tr("td_go"), run: () => { S.tab = "practice"; S.sub = "words"; S.playSub = null; startGame(); } },
+      q.char ? { title: tr("td_s_quest"), sub: tr("td_s_quest_sub", { n: q.n, t: q.title, a: q.done, b: q.count }), done: q.today > 0, btn: tr("td_cont"), run: () => go("quest") }
+        : { title: tr("td_s_quest"), sub: tr("td_s_quest_new"), done: false, btn: tr("td_go"), run: () => go("quest") },
+      { title: tr("td_s_hanzi"), sub: tr("td_s_hanzi_sub"), done: !!(t && t.hz_done), btn: tr("td_open"), run: () => { if (t && t.hanzi && window.HZ) window.HZ.open(t.hanzi.c); else go("practice"); } },
+    ];
+    const act = steps.findIndex((x) => !x.done);
+    out.push(h("div", { class: "road-h" }, tr("td_road")));
+    out.push(h("div", { class: "road" }, steps.map((x, i) => h("div", { class: "step" + (x.done ? " done" : i === act ? " act" : "") },
+      h("i", { class: "dot", "aria-hidden": "true" }, x.done ? "✓" : String(i + 1)),
+      h("div", { class: "tx" }, h("b", {}, x.title), h("div", { class: "sub" }, x.sub)),
+      h("button", { class: "btn sm " + (i === act ? "primary" : "line"), onclick: () => { haptic(); x.run(); } }, x.done ? tr("td_done") : x.btn)))));
+    out.push(giftCard(m));
+    return h("div", {}, out);
+  }
+  function viewPractice() {
+    if (S.game) return viewGame();
+    if (S.playSub === "board") return viewWordTop();
+    if (S.playSub === "hz" && window.HZ) return window.HZ.listView();
+    if (S.playSub === "phon" && window.PH) return window.PH.view();
+    if (S.sub === "quest") return withBack(window.QUEST.view(), tr("pr_back"));
+    if (S.sub === "qrating") return withBack(window.QUEST.ratingView(), tr("pr_back"));
+    if (S.sub === "words") return withBack(viewPlay(), tr("pr_back"));
+    const m = S.me;
+    const out = [h("h2", { class: "pg-title" }, tr("pr_title")),
+      hubCard("🗺", tr("pr_quest"), tr("pr_quest_sub"), () => go("quest")),
+      hubCard("🍵", tr("pr_words"), tr("pr_words_sub"), () => go("play"))];
+    if (window.HZ) out.push(window.HZ.entryCard());
+    if (window.PH) out.push(window.PH.entryCard());
+    out.push(hubCard("🏆", tr("pr_qrating"), tr("pr_qrating_sub"), () => go("top")), wordRatingCard(m));
+    return h("div", {}, out);
+  }
+  function viewLocker() {
+    return h("div", {}, h("h2", { class: "pg-title" }, tr("lk_title")),
+      h("div", { class: "card locker" }, h("div", { class: "zh gl", "aria-hidden": "true" }, "柜"), h("h3", {}, tr("lk_soon")), h("p", { class: "muted" }, tr("lk_text"))));
+  }
+  function viewProgress() {
+    const seg = h("div", { class: "seg fill", style: "margin-bottom:4px" }, [[null, "pg_mine"], ["about", "pg_about"]].map(([id, key]) =>
+      h("button", { class: (S.sub || null) === id ? "on" : "", onclick: () => { S.sub = id; render(); window.scrollTo(0, 0); } }, tr(key))));
+    if (S.sub === "about") return h("div", {}, seg, viewAbout());
+    const c = S.today && S.today.cards;
+    const words = h("div", { class: "card" }, h("h3", {}, "🗂 " + tr("pg_words")),
+      c && c.total ? h("div", { class: "sgrid", style: "margin-top:8px" }, [[c.known, "pg_known"], [c.total, "pg_total"], [c.due, "pg_due"]].map(([v, k]) => h("div", {}, h("b", {}, v), h("span", {}, tr(k)))))
+        : h("div", { class: "muted", style: "margin-top:6px" }, c ? tr("pg_words_empty") : "…"));
+    return h("div", {}, seg, words, viewMe());
+  }
 
   // ── вкладка «Играть» ──
   function cupsRow(m) {
@@ -166,9 +252,6 @@
   }
   function viewPlay() {
     if (S.game) return viewGame();
-    if (S.playSub === "board") return viewWordTop();
-    if (S.playSub === "hz" && window.HZ) return window.HZ.listView();
-    if (S.playSub === "phon" && window.PH) return window.PH.view();
     const m = S.me, r = m.rank;
     const nm = m.nick || null;
     const pct = r.to ? Math.min(100, Math.round(((m.served - r.from) / (r.to - r.from)) * 100)) : 100;
@@ -179,9 +262,7 @@
       h("div", { class: "bar" }, h("i", { style: `width:${pct}%` })),
       h("div", { class: "small" }, r.to ? tr("to_next", { t: nextTitle, n: r.to - m.served }) : tr("max_rank")),
       h("button", { class: "btn primary", onclick: startGame }, "🍵 " + (m.lives > 0 ? tr("start") : tr("start"))));
-    const out = [hero, statTiles(m), giftCard(m), wordRatingCard(m)];
-    if (window.HZ) out.splice(3, 0, window.HZ.entryCard());
-    if (window.PH) out.splice(4, 0, window.PH.entryCard());
+    const out = [hero, statTiles(m), wordRatingCard(m)];
     if (m.pro_until) out.splice(2, 0, h("div", { class: "card" }, h("b", {}, "✨ " + tr("ext_active", { d: fmtDate(m.pro_until) }))));
     out.push(h("details", {}, h("summary", {}, tr("how_title")), h("div", { class: "body" }, h("ol", {}, tr("how").map((s) => h("li", {}, s))))));
     return h("div", {}, out);
@@ -472,7 +553,8 @@
     const code = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || "ru").slice(0, 2);
     S.lang = window.I18N[code] ? code : "ru";
     const want = new URLSearchParams(location.search).get("tab");
-    if (want && ["quest", "play", "top", "me", "about"].includes(want)) S.tab = want;
+    if (want && LEGACY[want]) { [S.tab, S.sub] = LEGACY[want]; if (S.sub === "quest" && window.QUEST) window.QUEST.enter(); }
+    else if (want && ["today", "practice", "locker", "progress"].includes(want)) S.tab = want;
     document.getElementById("splashName").textContent = tr("splash_name");
     document.getElementById("splashSub").textContent = tr("splash_sub");
     if (!tg || !tg.initData) { return showNoTg(); }
@@ -480,6 +562,7 @@
     try {
       await reloadMe();
     } catch (e) { return e.auth ? showNoTg() : (document.getElementById("splashSub").textContent = tr("err")); }
+    try { S.today = await api("/api/today"); } catch (e) { /* «Сегодня» покажется без данных и дозагрузит их */ }
     const wait = Math.max(0, 1000 - (Date.now() - started));
     setTimeout(() => {
       render(); document.getElementById("splash").classList.add("off");
