@@ -62,6 +62,8 @@ import quest
 import booking
 import tutors
 import tutors2
+import ads
+import chacha
 import themes
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
@@ -678,8 +680,8 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "23"
-VERSION_INFO = "репетиторы: перенос записи, отзывы об уроках, пробный урок, кнопка связи с Лазизой и команда /tutor; до этого: подписки, соглашение, домашки, записи уроков, обсуждения"
+VERSION = "24.1"
+VERSION_INFO = "новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
 
 
 @bot.message_handler(commands=["version"])
@@ -3330,6 +3332,8 @@ tutors.register(bot, OWNER_ID, lang_of, dict(
     hw_default_text=lambda media, due=None: hw_default_text(media, due), parse_due=lambda s, d: practice.parse_due(s, d),
     HW_MEDIA_MAX=HW_MEDIA_MAX, labels=menu_labels))
 tutors2.register(bot, OWNER_ID, lang_of, kb_main)
+ads.register(bot, OWNER_ID, lang_of, notify_owner, STARS_ON)
+chacha.register(bot, OWNER_ID, lang_of, lambda u: send_practice(u))
 
 
 @bot.message_handler(func=lambda m: True, content_types=["text"])
@@ -3337,6 +3341,8 @@ def on_text(m):
     uid = m.from_user.id
     txt = (m.text or "").strip()
 
+    if ads.on_text(m, txt):                     # объявления: ввод текста
+        return
     if tutors.on_text(m):                       # репетиторы: домашки, записи, ответы ученикам; обсуждения
         return
 
@@ -3653,6 +3659,8 @@ def on_pre_checkout(q):
         if q.currency == "XTR" and STARS_ON:
             if pl.startswith("dn:"):
                 ok = pl[3:].isdigit() and int(pl[3:]) in quest.DONATE_STARS and q.total_amount == int(pl[3:])
+            elif pl.startswith("ax:"):
+                ok = ads.precheck(q)
             else:
                 parsed = quest.parse_payload(pl)
                 if parsed:
@@ -3686,6 +3694,8 @@ def on_successful_payment(m):
                 bot.send_message(uid, t(lang, "dn_thanks"))
                 notify_owner(f"💝 Поддержка проекта: <b>{stars} ⭐</b> от {_who(uid)}")
             return
+        if pl.startswith("ax:"):
+            return ads.on_paid(uid, stars, charge, pl)
         parsed = quest.parse_payload(pl)
         res = quest.grant_stars(uid, parsed[0], stars, charge, parsed[2]) if parsed else None
         if res is None:
@@ -3855,7 +3865,7 @@ if __name__ == "__main__":
             types.BotCommand("friend", "пригласить друга"), types.BotCommand("trial", "пробный урок"),
             types.BotCommand("parents", "родители: недельная сводка"),
             types.BotCommand("hw", "домашние задания"),
-            types.BotCommand("lang", "язык"), types.BotCommand("about", "что я умею"),
+            types.BotCommand("lang", "язык"), types.BotCommand("chacha", "как часто 茶茶 пишет"), types.BotCommand("about", "что я умею"),
             types.BotCommand("privacy", "конфиденциальность"), types.BotCommand("donate", "поддержать проект"),
             types.BotCommand("terms", "условия покупок за ⭐"), types.BotCommand("paysupport", "помощь с оплатой"),
             types.BotCommand("mydata", "копия моих данных")])
@@ -3870,11 +3880,14 @@ if __name__ == "__main__":
                 types.BotCommand("who", "кто за какими никами в рейтинге"), types.BotCommand("discounts", "скидки за друзей"),
                 types.BotCommand("parents", "родители, подключённые к сводке"), types.BotCommand("parentsum", "предпросмотр сводки родителю"),
                 types.BotCommand("missing", "что не нашли в переводчике"),
-                types.BotCommand("stars", "звёзды: сколько заработано")],
+                types.BotCommand("stars", "звёзды: сколько заработано"),
+                types.BotCommand("ad", "объявление всем"), types.BotCommand("ads", "объявления и цены"),
+                types.BotCommand("chacha", "как часто 茶茶 пишет"), types.BotCommand("chacha_on", "茶茶: включить для всех"),
+                types.BotCommand("chacha_off", "茶茶: писать только мне"), types.BotCommand("chacha_test", "茶茶: показать все тексты")],
                 scope=types.BotCommandScopeChat(OWNER_ID))
     except Exception as e:
         logging.warning("не удалось задать команды: %s", e)
-    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook, tutors2.hook)), daemon=True).start()
+    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook, tutors2.hook, chacha.hook)), daemon=True).start()
     start_webapp()
     announce_version()
     print("🐉 汉助 HanZhu запущен. Останови сочетанием Ctrl+C.")

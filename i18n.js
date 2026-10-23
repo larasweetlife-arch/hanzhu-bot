@@ -1,7 +1,7 @@
 /* Тексты Mini App на четырёх языках. Правишь здесь: bio (о тебе), why (зачем игра), how (как играть). */
 window.I18N = {
   ru: {
-    app: "Путешествие по Китаю с 茶茶", brand: "清越", ago_min: "мин", ago_hr: "ч", ago_day: "дн.",
+    splash_name: "Китайский с 茶茶", splash_sub: "понемногу каждый день", app: "Путешествие по Китаю с 茶茶", brand: "汉助", ago_min: "мин", ago_hr: "ч", ago_day: "дн.",
     tab_play: "Слова", tab_top: "Рейтинг", tab_me: "Профиль", tab_about: "О проекте",
     hello: "Привет, {n}!", hello_anon: "Добро пожаловать!",
     start: "Начать тренировку", continue: "Продолжить", lives: "Жизни", coins: "Монеты", streak: "Серия",
@@ -43,7 +43,7 @@ window.I18N = {
     rules: "Правила и условия", privacy: "Конфиденциальность", howto: "Как играть коротко", loading: "Завтра будет чай…",
     open_tg: "Открой игру из Telegram: она работает только внутри бота.", err: "Что-то пошло не так. Попробуй ещё раз.", retry: "Повторить",
     title0: "Новичок за стойкой", title1: "Помощник чайного мастера", title2: "Хозяин лавки", title3: "Мастер чая", title4: "Чайный наставник",
-    version: "Mini App · 清越",
+    version: "Mini App · 汉助",
     b_j_first: ["Первый шаг", "Пройди первую сцену"], b_j_half: ["В пути", "Пройди 4 сцены"], b_j_chapter: ["У Великой стены", "Пройди главу про Пекин"], b_j_xian: ["Терракотовый воин", "Пройди главу про Сиань"], b_j_chengdu: ["Друг панд", "Пройди главу про Чэнду"],
     b_j_perfect: ["Без ошибок", "Пройди сцену без единой ошибки"], b_j_streak3: ["Три дня в пути", "Играй три дня подряд"], b_j_streak7: ["Неделя в дороге", "Играй семь дней подряд"],
     b_j_coins: ["Копилка", "Заработай 300 монет в игре"], b_j_wardrobe: ["Новый наряд", "Получи наряд для героя"], b_j_theme: ["Новый образ", "Получи оформление профиля"],
@@ -54,7 +54,7 @@ window.I18N = {
     b_ranked: ["В рейтинге", "Вступи в рейтинг недели"], b_winner: ["Победитель", "Выиграй рейтинг недели"], b_sharp: ["Меткий глаз", "90% верных при 50+ ответах"]
   },
   uz: {
-    app: "茶茶 bilan Xitoy bo'ylab sayohat", brand: "清越", ago_min: "daq", ago_hr: "soat", ago_day: "kun",
+    splash_name: "茶茶 bilan xitoy tili", splash_sub: "har kuni ozdan-ozdan", app: "茶茶 bilan Xitoy bo'ylab sayohat", brand: "汉助", ago_min: "daq", ago_hr: "soat", ago_day: "kun",
     tab_play: "So'zlar", tab_top: "Reyting", tab_me: "Profil", tab_about: "Loyiha haqida",
     hello: "Salom, {n}!", hello_anon: "Xush kelibsiz!",
     start: "Mashqni boshlash", continue: "Davom etish", lives: "Jonlar", coins: "Tangalar", streak: "Seriya",
@@ -96,7 +96,7 @@ window.I18N = {
     rules: "Qoidalar va shartlar", privacy: "Maxfiylik", howto: "Qisqacha qanday o'ynaladi", loading: "Ertaga choy bo'ladi…",
     open_tg: "O'yinni Telegramdan oching: u faqat bot ichida ishlaydi.", err: "Nimadir xato ketdi. Yana urinib ko'ring.", retry: "Qayta urinish",
     title0: "Peshtaxta ortidagi yangi xodim", title1: "Choy ustasining yordamchisi", title2: "Do'kon egasi", title3: "Choy ustasi", title4: "Choy murabbiyi",
-    version: "Mini App · 清越",
+    version: "Mini App · 汉助",
     b_j_first: ["Birinchi qadam", "Birinchi sahnani o'ting"], b_j_half: ["Yo'lda", "4 ta sahnani o'ting"], b_j_chapter: ["Buyuk Xitoy devori oldida", "Pekin haqidagi bobni o'ting"], b_j_xian: ["Terrakota jangchi", "Sian haqidagi bobni o'ting"], b_j_chengdu: ["Pandalar do'sti", "Chengdu haqidagi bobni o'ting"],
     b_j_perfect: ["Xatosiz", "Sahnani bitta ham xatosiz o'ting"], b_j_streak3: ["Yo'lda uch kun", "Ketma-ket uch kun o'ynang"], b_j_streak7: ["Yo'lda bir hafta", "Ketma-ket yetti kun o'ynang"],
     b_j_coins: ["Xazina", "O'yinda 300 tanga ishlang"], b_j_wardrobe: ["Yangi kiyim", "Qahramon uchun kiyim oling"], b_j_theme: ["Yangi qiyofa", "Profil bezagini oling"],
@@ -107,7 +107,7 @@ window.I18N = {
     b_ranked: ["Reytingda", "Hafta reytingiga qo'shiling"], b_winner: ["G'olib", "Hafta reytingida g'olib bo'ling"], b_sharp: ["O'tkir ko'z", "50+ javobda 90% to'g'ri"]
   },
   en: {
-    app: "Journey Through China with 茶茶", brand: "清越", ago_min: "min", ago_hr: "h", ago_day: "d",
+    splash_name: "Chinese with 茶茶", splash_sub: "a little every day", app: "Journey Through China with 茶茶", brand: "汉助", ago_min: "min", ago_hr: "h", ago_day: "d",
     tab_play: "Words", tab_top: "Ranking", tab_me: "Profile", tab_about: "About",
     hello: "Hello, {n}!", hello_anon: "Welcome!",
     start: "Start practice", continue: "Continue", lives: "Lives", coins: "Coins", streak: "Streak",
@@ -149,7 +149,7 @@ window.I18N = {
     rules: "Rules and terms", privacy: "Privacy", howto: "How to play, in short", loading: "Tea is coming…",
     open_tg: "Open the game from Telegram: it only works inside the bot.", err: "Something went wrong. Please try again.", retry: "Retry",
     title0: "Newcomer behind the counter", title1: "Tea master's helper", title2: "Shop owner", title3: "Tea master", title4: "Tea mentor",
-    version: "Mini App · 清越",
+    version: "Mini App · 汉助",
     b_j_first: ["First step", "Finish your first scene"], b_j_half: ["On the road", "Finish 4 scenes"], b_j_chapter: ["At the Great Wall", "Finish the Beijing chapter"], b_j_xian: ["Terracotta warrior", "Finish the Xi'an chapter"], b_j_chengdu: ["Friend of pandas", "Finish the Chengdu chapter"],
     b_j_perfect: ["No mistakes", "Finish a scene without a single mistake"], b_j_streak3: ["Three days on the road", "Play three days in a row"], b_j_streak7: ["A week on the road", "Play seven days in a row"],
     b_j_coins: ["Piggy bank", "Earn 300 coins in the game"], b_j_wardrobe: ["New outfit", "Get an outfit for your hero"], b_j_theme: ["New look", "Get a profile theme"],
@@ -160,7 +160,7 @@ window.I18N = {
     b_ranked: ["In the ranking", "Join the weekly ranking"], b_winner: ["Winner", "Win the weekly ranking"], b_sharp: ["Sharp eye", "90% correct over 50+ answers"]
   },
   zh: {
-    app: "和茶茶游中国", brand: "清越", ago_min: "分钟", ago_hr: "小时", ago_day: "天",
+    splash_name: "和茶茶学中文", splash_sub: "每天一点点", app: "和茶茶游中国", brand: "汉助", ago_min: "分钟", ago_hr: "小时", ago_day: "天",
     tab_play: "单词", tab_top: "排行榜", tab_me: "我的", tab_about: "关于",
     hello: "你好，{n}！", hello_anon: "欢迎！",
     start: "开始练习", continue: "继续", lives: "生命", coins: "金币", streak: "连胜",
@@ -202,7 +202,7 @@ window.I18N = {
     rules: "规则与条款", privacy: "隐私", howto: "玩法简介", loading: "茶马上就来…",
     open_tg: "请从 Telegram 打开游戏：它只能在机器人内使用。", err: "出了点问题，请再试一次。", retry: "重试",
     title0: "柜台新手", title1: "茶师助手", title2: "茶铺老板", title3: "茶艺大师", title4: "茶道导师",
-    version: "Mini App · 清越",
+    version: "Mini App · 汉助",
     b_j_first: ["第一步", "完成第一个场景"], b_j_half: ["在路上", "完成 4 个场景"], b_j_chapter: ["长城脚下", "完成北京章节"], b_j_xian: ["兵马俑战士", "完成西安章节"], b_j_chengdu: ["熊猫的朋友", "完成成都章节"],
     b_j_perfect: ["零失误", "无一错误地完成一个场景"], b_j_streak3: ["三天旅程", "连续玩三天"], b_j_streak7: ["一周旅程", "连续玩七天"],
     b_j_coins: ["小金库", "在游戏中赚到 300 枚金币"], b_j_wardrobe: ["新装扮", "为主角获得一套服装"], b_j_theme: ["新造型", "获得个人主页装扮"],
