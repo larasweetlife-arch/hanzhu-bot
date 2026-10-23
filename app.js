@@ -167,6 +167,7 @@
   function viewPlay() {
     if (S.game) return viewGame();
     if (S.playSub === "board") return viewWordTop();
+    if (S.playSub === "hz" && window.HZ) return window.HZ.listView();
     const m = S.me, r = m.rank;
     const nm = m.nick || null;
     const pct = r.to ? Math.min(100, Math.round(((m.served - r.from) / (r.to - r.from)) * 100)) : 100;
@@ -178,6 +179,7 @@
       h("div", { class: "small" }, r.to ? tr("to_next", { t: nextTitle, n: r.to - m.served }) : tr("max_rank")),
       h("button", { class: "btn primary", onclick: startGame }, "🍵 " + (m.lives > 0 ? tr("start") : tr("start"))));
     const out = [hero, statTiles(m), giftCard(m), wordRatingCard(m)];
+    if (window.HZ) out.splice(3, 0, window.HZ.entryCard());
     if (m.pro_until) out.splice(2, 0, h("div", { class: "card" }, h("b", {}, "✨ " + tr("ext_active", { d: fmtDate(m.pro_until) }))));
     out.push(h("details", {}, h("summary", {}, tr("how_title")), h("div", { class: "body" }, h("ol", {}, tr("how").map((s) => h("li", {}, s))))));
     return h("div", {}, out);
@@ -451,7 +453,7 @@
         h("button", { class: "chip", onclick: () => openTg(m.links.channel) }, h("div", { class: "ic tg" }, "TG"), h("div", {}, h("small", {}, tr("channel")), h("b", {}, tr("channel_name"))))));
     const why = h("div", { class: "card" }, h("h3", {}, "🍃 " + tr("why_title")), h("p", { style: "margin:8px 0 0" }, tr("why")), h("p", { class: "muted", style: "margin:10px 0 0" }, tr("why_priv")));
     const how = h("details", { open: true }, h("summary", {}, tr("qhow_title")), h("div", { class: "body" }, h("ol", {}, tr("qhow").map((s) => h("li", {}, s)))));
-    return h("div", {}, creator, how, why, supportCard(), lazyDoc("rules", tr("rules")), lazyDoc("privacy", tr("privacy")), h("div", { class: "foot" }, tr("version")));
+    return h("div", {}, creator, how, why, supportCard(), lazyDoc("rules", tr("rules")), lazyDoc("privacy", tr("privacy")), h("div", { class: "foot" }, tr("version")), window.HZ ? window.HZ.credit() : null);
   }
 
   window.QY = { go, fmtDate, speak, stopSpeak, inviteCard, h, tr, api, safe, toast, sheet, haptic, confetti, openTg, openLink, render, S };
@@ -477,7 +479,11 @@
       await reloadMe();
     } catch (e) { return e.auth ? showNoTg() : (document.getElementById("splashSub").textContent = tr("err")); }
     const wait = Math.max(0, 1000 - (Date.now() - started));
-    setTimeout(() => { render(); document.getElementById("splash").classList.add("off"); }, wait);
+    setTimeout(() => {
+      render(); document.getElementById("splash").classList.add("off");
+      const hz = new URLSearchParams(location.search).get("hz");     // ссылка из бота: открыть карточку слова
+      if (hz && window.HZ) window.HZ.open(hz);
+    }, wait);
   }
   boot();
 })();

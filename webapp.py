@@ -32,8 +32,6 @@ import practice
 import quest
 import themes
 import hanzi
-import phonquiz
-import locker
 import tts
 from texts import T, t
 
@@ -149,7 +147,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -326,78 +324,7 @@ def create_app(deps):
         if not cards:
             return jsonify({"error": "no"}), 404
         db.log_event(tg["id"], "hanzi")
-        return jsonify({"cards": cards, "tones": hanzi.tones_for(tg["id"], OWNER)})
-
-    # ── экран «Сегодня» (v28) ──
-    DAILY_GOAL = int(os.environ.get("DAILY_GOAL", "10") or 10)
-
-    @app.route("/api/today", methods=["POST"])
-    @need_auth
-    def api_today(tg, lang, u):
-        uid, day = tg["id"], db.today()
-        with db._conn() as c:
-            r = c.execute("SELECT correct FROM tea_score WHERE user_id=? AND day=?", (uid, day)).fetchone()
-            correct = int(r[0]) if r else 0
-            hz = c.execute("SELECT COUNT(*) FROM events WHERE user_id=? AND kind='hanzi' AND date=?", (uid, day)).fetchone()[0]
-            try:
-                qd = c.execute("SELECT COUNT(*) FROM quest_prog WHERE user_id=? AND done_day=?", (uid, day)).fetchone()[0]
-            except Exception:
-                qd = 0
-        total, due, known = db.card_stats(uid)
-        qs = {"char": False}
-        try:
-            st = quest.state(uid)
-            if st.get("char"):
-                scenes, chaps = st["scenes"], st["chapters"]
-                cur = next((x for x in scenes if x["status"] == "current"), None)
-                ci = cur["ch"] if cur else max(0, len(chaps) - 1)
-                chap = chaps[ci] if chaps else {}
-                tt = chap.get("title") or {}
-                in_ch = [x for x in scenes if x["ch"] == ci]
-                qs = {"char": True, "n": ci + 1, "title": chap.get("title_zh") if lang == "zh" else (tt.get(lang) or tt.get("en") or ""),
-                      "done": sum(1 for x in in_ch if x["status"] == "done"), "count": len(in_ch), "finished": cur is None, "today": qd}
-        except Exception:
-            logging.exception("today: путешествие")
-        return jsonify({"goal": {"done": correct, "target": DAILY_GOAL}, "quest": qs, "cards": {"total": total, "due": due, "known": known},
-                        "hanzi": hanzi.day_char(day, lang), "hz_done": hz > 0})
-
-    # ── шкафчик (v29) ──
-    @app.route("/api/locker", methods=["POST"])
-    @need_auth
-    def api_locker(tg, lang, u):
-        return jsonify(locker.drawers(tg["id"]))
-
-    @app.route("/api/locker/list", methods=["POST"])
-    @need_auth
-    def api_locker_list(tg, lang, u):
-        b = _jb()
-        flt = b.get("flt") if b.get("flt") in ("learn", "known", "due") else "all"
-        try:
-            off = int(b.get("offset") or 0)
-        except (TypeError, ValueError):
-            off = 0
-        return jsonify(locker.listing(tg["id"], lang, str(b.get("drawer") or ""), flt, str(b.get("q") or ""), off))
-
-    @app.route("/api/locker/word", methods=["POST"])
-    @need_auth
-    def api_locker_word(tg, lang, u):
-        w = locker.word(tg["id"], lang, str(_jb().get("zh") or ""))
-        return (jsonify(w), 200) if w else (jsonify({"error": "none"}), 404)
-
-    @app.route("/api/locker/know", methods=["POST"])
-    @need_auth
-    def api_locker_know(tg, lang, u):
-        ok = locker.know(tg["id"], str(_jb().get("zh") or ""))
-        return (jsonify({"ok": True}), 200) if ok else (jsonify({"error": "none"}), 404)
-
-    @app.route("/api/phon/quiz", methods=["POST"])
-    @need_auth
-    def api_phon_quiz(tg, lang, u):
-        b = _jb()
-        mode = "say" if b.get("mode") == "say" else "hear"
-        items = phonquiz.make(8 if mode == "say" else 10)
-        db.log_event(tg["id"], "phon_" + mode)
-        return jsonify({"items": items, "tones": hanzi.tones_for(tg["id"], OWNER)})
+        return jsonify({"cards": cards})
 
     @app.route("/api/hanzi/list", methods=["POST"])
     @need_auth
