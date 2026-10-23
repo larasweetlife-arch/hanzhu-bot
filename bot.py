@@ -699,9 +699,23 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "25"
-VERSION_INFO = "каллиграфия в мини-аппе: порядок черт, обводка, разбор иероглифа и кнопка «Написать» под словом дня; до этого: официальный список HSK 3.0 (2025) вместо старых списков, уровни слов исправлены; новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
+VERSION = "26"
+VERSION_INFO = "проверка тонов голосом в карточке иероглифа (пока только у владельца: /tones_on включает всем); до этого: каллиграфия в мини-аппе: порядок черт, обводка, разбор иероглифа и кнопка «Написать» под словом дня; до этого: официальный список HSK 3.0 (2025) вместо старых списков, уровни слов исправлены; новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
 
+
+@bot.message_handler(commands=["tones_on"])
+def cmd_tones_on(m):
+    if m.from_user.id != OWNER_ID:
+        return
+    hanzi.tones_set("all")
+    bot.send_message(m.chat.id, "🎤 Проверка тонов включена для всех (кнопка в карточке иероглифа). Выключить: /tones_off")
+
+@bot.message_handler(commands=["tones_off"])
+def cmd_tones_off(m):
+    if m.from_user.id != OWNER_ID:
+        return
+    hanzi.tones_set("pilot")
+    bot.send_message(m.chat.id, "🎤 Проверка тонов теперь видна только тебе (проверочный режим). Включить всем: /tones_on")
 
 @bot.message_handler(commands=["version"])
 def cmd_version(m):
@@ -3902,7 +3916,8 @@ if __name__ == "__main__":
                 types.BotCommand("stars", "звёзды: сколько заработано"),
                 types.BotCommand("ad", "объявление всем"), types.BotCommand("ads", "объявления и цены"),
                 types.BotCommand("chacha", "как часто 茶茶 пишет"), types.BotCommand("chacha_on", "茶茶: включить для всех"),
-                types.BotCommand("chacha_off", "茶茶: писать только мне"), types.BotCommand("chacha_test", "茶茶: показать все тексты")],
+                types.BotCommand("chacha_off", "茶茶: писать только мне"), types.BotCommand("chacha_test", "茶茶: показать все тексты"),
+                types.BotCommand("tones_on", "тоны голосом: включить всем"), types.BotCommand("tones_off", "тоны голосом: только мне")],
                 scope=types.BotCommandScopeChat(OWNER_ID))
     except Exception as e:
         logging.warning("не удалось задать команды: %s", e)

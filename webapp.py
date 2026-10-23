@@ -147,7 +147,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -324,7 +324,7 @@ def create_app(deps):
         if not cards:
             return jsonify({"error": "no"}), 404
         db.log_event(tg["id"], "hanzi")
-        return jsonify({"cards": cards})
+        return jsonify({"cards": cards, "tones": hanzi.tones_for(tg["id"], OWNER)})
 
     @app.route("/api/hanzi/list", methods=["POST"])
     @need_auth

@@ -1,5 +1,5 @@
 """
-Каллиграфия (версия 25): данные для карточки иероглифа в Mini App.
+Каллиграфия (версия 25) и проверка тонов (версия 26): данные для карточки иероглифа в Mini App.
 
   · Порядок черт лежит в webapp_static/hz/s0..s15.json (Hanzi Writer читает их в браузере).
   · Разбор по ключам и составным частям: hanzi_parts.json (Make Me a Hanzi, LGPL-3.0+).
@@ -14,6 +14,7 @@ import re
 from pathlib import Path
 
 import content as C
+import db
 
 BASE = Path(__file__).parent
 STATIC = BASE / "webapp_static"
@@ -244,3 +245,31 @@ def info(ch, lang="ru"):
                 break
     out["words"] = ws
     return out
+
+
+# ── проверка тонов голосом (версия 26): кто видит кнопку 🎤 ──
+def _cfg_init():
+    with db._conn() as c:
+        c.execute("CREATE TABLE IF NOT EXISTS hanzi_cfg (k TEXT PRIMARY KEY, v TEXT)")
+
+
+def tones_mode():
+    """'pilot' (по умолчанию): кнопка видна только владельцу; 'all': всем."""
+    try:
+        _cfg_init()
+        with db._conn() as c:
+            r = c.execute("SELECT v FROM hanzi_cfg WHERE k='tones'").fetchone()
+        return r[0] if r else "pilot"
+    except Exception:
+        logging.exception("tones_mode")
+        return "pilot"
+
+
+def tones_set(v):
+    _cfg_init()
+    with db._conn() as c:
+        c.execute("INSERT OR REPLACE INTO hanzi_cfg (k, v) VALUES ('tones', ?)", (v,))
+
+
+def tones_for(uid, owner_id):
+    return bool(uid) and (uid == owner_id or tones_mode() == "all")
