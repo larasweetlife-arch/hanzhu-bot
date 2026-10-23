@@ -61,6 +61,7 @@ import practice
 import quest
 import booking
 import tutors
+import tutors2
 import themes
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
@@ -677,8 +678,8 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "22"
-VERSION_INFO = "репетиторы: три уровня подписки, соглашение, домашки для их учеников, записи уроков без сохранения и пересылки; для всех: раздел «Обсуждения» о Китае"
+VERSION = "23"
+VERSION_INFO = "репетиторы: перенос записи, отзывы об уроках, пробный урок, кнопка связи с Лазизой и команда /tutor; до этого: подписки, соглашение, домашки, записи уроков, обсуждения"
 
 
 @bot.message_handler(commands=["version"])
@@ -3328,6 +3329,7 @@ tutors.register(bot, OWNER_ID, lang_of, dict(
     deliver_hw=lambda *a, **kw: deliver_hw(*a, **kw), hw_media_of=lambda m: hw_media_of(m),
     hw_default_text=lambda media, due=None: hw_default_text(media, due), parse_due=lambda s, d: practice.parse_due(s, d),
     HW_MEDIA_MAX=HW_MEDIA_MAX, labels=menu_labels))
+tutors2.register(bot, OWNER_ID, lang_of, kb_main)
 
 
 @bot.message_handler(func=lambda m: True, content_types=["text"])
@@ -3872,7 +3874,7 @@ if __name__ == "__main__":
                 scope=types.BotCommandScopeChat(OWNER_ID))
     except Exception as e:
         logging.warning("не удалось задать команды: %s", e)
-    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook)), daemon=True).start()
+    threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook, tutors2.hook)), daemon=True).start()
     start_webapp()
     announce_version()
     print("🐉 汉助 HanZhu запущен. Останови сочетанием Ctrl+C.")

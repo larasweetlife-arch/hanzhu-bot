@@ -116,6 +116,15 @@ def say(uid, text, kb=None):
     return ctx["bot"].send_message(uid, text, reply_markup=kb, disable_web_page_preview=True)
 
 
+def contact_name():
+    return (os.getenv("OWNER_CONTACT", "nutlrz") or "nutlrz").lstrip("@")
+
+
+def say_why(uid, why):
+    """Сообщение «функция недоступна» с кнопкой связи с Лазизой."""
+    return say(uid, why, ikb([[("💬 Написать Лазизе", "url:https://t.me/" + contact_name())]]))
+
+
 def send_long(uid, text, limit=3600):
     """Длинный текст несколькими сообщениями, разрезая по пустым строкам."""
     part = ""
@@ -166,7 +175,7 @@ def check(tc, feat):
         return True, ""
     if have == 0:
         return False, ("Подписка не активна, поэтому эта функция сейчас недоступна. "
-                       "Напиши Лазизе, она включит или продлит подписку. Посмотреть уровни: кнопка «Подписка» в /myteacher.")
+                       f"Напиши Лазизе (@{contact_name()}), она включит или продлит подписку. Посмотреть уровни: кнопка «Подписка» в /myteacher.")
     return False, f"Эта функция доступна на уровне «{TIERS[need]}» и выше, а сейчас у тебя «{TIERS[have]}». Лазиза может перевести тебя на другой уровень."
 
 
@@ -223,7 +232,9 @@ def editor_rows(uid, tc):
     if uid == tc["user_id"]:
         rows.append([("📚 Домашка", f"tt:hw:{tid}"), ("🎞 Записи уроков", f"tt:rec:{tid}")])
         rows.append([("👥 Мои ученики", f"tt:st:{tid}"), ("💳 Подписка", f"tt:my:{tid}")])
-        rows.append([("📜 Соглашение", f"tt:ag:{tid}")])
+        rows.append([("📜 Соглашение", f"tt:ag:{tid}"), ("⭐ Отзывы", f"tq:rl:{tid}")])
+        rows.append([("ℹ️ Как это работает", "tq:info")])
+        rows.append([("💬 Написать Лазизе", "url:https://t.me/" + contact_name())])
     if is_owner(uid):
         rows.append([("💳 Выдать/продлить подписку", f"tt:sub:{tid}")])
     return rows
@@ -325,7 +336,7 @@ def hw_start(uid, tid):
         return
     ok, why = check(tc, "hw_text")
     if not ok:
-        return say(uid, why)
+        return say_why(uid, why)
     start_picker(uid, tid, "hw", "📚 <b>Кому задать домашку?</b>\nОтметь учеников и нажми «Готово».")
 
 
@@ -677,6 +688,10 @@ def _on_text(m):
                 bot.send_message(uid, "Не получилось отправить: человек мог закрыть бота.")
             return True
 
+    ext = booking.hooks.get("x_text")                            # часть 2: перенос, отзывы, пробный урок
+    if ext and ext(m, txt):
+        return True
+
     if uid in TD:
         if _is_menu(txt, uid):
             TD.pop(uid, None)
@@ -757,7 +772,7 @@ def _on_media(m):
         tc = booking.teacher(d["tid"])
         ok, why = check(tc, "hw_media")
         if not ok:
-            say(uid, why)
+            say_why(uid, why)
             return True
         md = ctx["hw_media_of"](m)
         if not md:
@@ -926,7 +941,8 @@ def cb_tt(c):
         if tc["user_id"] != uid and not is_owner(uid):
             return
         txt = f"💳 <b>Подписка</b>\n\nСейчас: {tier_text(tc)}\n\n{tiers_screen()}\n\nПродлить или сменить уровень можно через Лазизу."
-        return booking.put(uid, mid, txt, ikb([[("⬅️ К профилю", f"bt:e:{tid}")]]))
+        return booking.put(uid, mid, txt, ikb([[("💬 Написать Лазизе", "url:https://t.me/" + contact_name())],
+                                               [("ℹ️ Как это работает", "tq:info")], [("⬅️ К профилю", f"bt:e:{tid}")]]))
     if act == "ag":
         if tc["user_id"] != uid:
             return
@@ -968,7 +984,7 @@ def cb_tt(c):
     if act == "rn":
         ok, why = check(tc, "records")
         if not ok:
-            return say(uid, why)
+            return say_why(uid, why)
         TS[uid] = {"step": "rec_file", "tid": tid}
         booking.S.pop(uid, None)
         return say(uid, "Пришли запись урока: видео, кружок, аудио или файл. Можно переслать из другого чата.",

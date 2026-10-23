@@ -32,7 +32,7 @@ hooks = {}                          # подключает tutors.py: on_book, e
 S = {}                              # диалоги редактирования: {user_id: {"tid": .., "field": ..}}
 
 FIELDS = {
-    "name":     ("Имя", 50, "Как тебя будут видеть ученики. Например: Лазиза Ропиджонова."),
+    "name":     ("Имя", 50, "Как тебя будут видеть ученики. Например: Лазиза Ропижонова."),
     "tagline":  ("Кратко", 70, "Одна короткая строка под именем. Например: «Китайский для детей и взрослых». Чтобы убрать, пришли «-»."),
     "bio":      ("Описание", 550, "Расскажи о себе и занятиях: образование и опыт, кого и чему учишь, как проходят уроки. До 550 символов."),
     "prices":   ("Цены", 250, "Цены и условия. Например: «Урок 60 минут: 150 000 сум. Пробный: 50 000 сум. Абонемент на 8 уроков: −10%». До 250 символов."),
@@ -219,7 +219,8 @@ def cancel(bid):
 def ikb(rows):
     k = types.InlineKeyboardMarkup()
     for row in rows:
-        k.row(*[types.InlineKeyboardButton(a, callback_data=b) for a, b in row])
+        k.row(*[types.InlineKeyboardButton(a, url=b[4:]) if b.startswith("url:") else types.InlineKeyboardButton(a, callback_data=b)
+                for a, b in row])
     return k
 
 
@@ -302,8 +303,18 @@ def post(uid, tid, c=None, single=False):
     if tc.get("prices"):
         parts += ["", f"💰 <b>{t(lang, 'bk_prices_h')}</b>", esc(tc["prices"])]
     parts += ["", f"⏱ {tc['duration'] or 60} {t(lang, 'bk_min')}"]
+    if hooks.get("post_line"):
+        try:
+            line = hooks["post_line"](lang, tc)
+            if line:
+                parts.append(line)
+        except Exception:
+            logging.exception("строка с рейтингом не собралась")
     k = types.InlineKeyboardMarkup()
     k.row(types.InlineKeyboardButton(t(lang, "bk_b_hours"), callback_data=f"bk:d:{tid}"))
+    if hooks.get("post_rows"):
+        for label, cb in hooks["post_rows"](lang, tc):
+            k.row(types.InlineKeyboardButton(label, callback_data=cb))
     un = contact_username(tc)
     if un:
         k.row(types.InlineKeyboardButton(t(lang, "bk_b_contact"), url=f"https://t.me/{un}"))
@@ -436,7 +447,8 @@ def my_bookings(uid, c=None):
             tc = teacher(b["teacher_id"]) or {"name": "?"}
             dt = _parse(b["start"])
             lines.append(f"📅 {day_label(dt, lang)}, {dt:%H:%M} · {esc(tc['name'])}")
-            k.row(types.InlineKeyboardButton(f"❌ {day_label(dt, lang)} {dt:%H:%M}", callback_data=f"bk:x:{b['id']}"))
+            k.row(types.InlineKeyboardButton(f"❌ {day_label(dt, lang)} {dt:%H:%M}", callback_data=f"bk:x:{b['id']}"),
+                  types.InlineKeyboardButton(t(lang, "mv2_btn"), callback_data=f"tq:mv:{b['id']}"))
         text = "\n".join(lines)
     k.row(types.InlineKeyboardButton(t(lang, "bk_b_back"), callback_data="bk:l"))
     show(c, text, k) if c else ctx["bot"].send_message(uid, text, reply_markup=k)
@@ -820,6 +832,8 @@ def register(bot, owner_id, lang_of, notify_owner, ask_trial, labels):
         uid = m.from_user.id
         tc = teacher_of_user(uid)
         if not tc:
+            if hooks.get("no_profile"):
+                return hooks["no_profile"](uid)
             return bot.send_message(uid, "Профиль преподавателя пока не создан. Попроси Лазизу добавить тебя.")
         if hooks.get("gate") and hooks["gate"](uid, tc):      # соглашение репетитора ещё не принято: сначала оно
             return

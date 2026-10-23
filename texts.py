@@ -499,3 +499,9 @@ from texts_v13 import P as _P13
 
 for _lang in T:
     T[_lang].update(_P13.get(_lang, {}))
+
+# ─── Версия 23: перенос записи, отзывы, пробный урок у репетиторов ──────────────
+from texts_v14 import P as _P14
+
+for _lang in T:
+    T[_lang].update(_P14.get(_lang, {}))

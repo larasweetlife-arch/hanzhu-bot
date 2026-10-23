@@ -3,6 +3,7 @@ d = tempfile.mkdtemp()
 os.environ.update(BOT_TOKEN="123456:TESTTOKEN", OWNER_ID="1", DATA_DIR=d)
 os.environ.pop("WEBAPP_URL", None)
 sys.path.insert(0, "hanzhu4")
+from agreement import AGREEMENT_VERSION
 from datetime import datetime, timedelta
 import bot, db, booking
 from texts import t, T
@@ -205,7 +206,7 @@ for f, v in (("bio", "Преподаватель HSK, 5 лет опыта"), ("h
 click(6001, f"bt:pub:{t2['id']}")
 check("v22: без соглашения и подписки опубликовать нельзя", booking.teacher(t2["id"])["active"] == 0)
 booking.update(t2["id"], tier=1, tier_until=(datetime.now(db.TZ) + timedelta(days=30)).strftime("%Y-%m-%d"),
-               agreed_ver=1, agreed_at="test")
+               agreed_ver=AGREEMENT_VERSION, agreed_at="test")
 click(6001, f"bt:pub:{t2['id']}")
 check("second teacher published (no link warning)", booking.teacher(t2["id"])["active"] == 1)
 click(6001, f"bt:e:{tid}")

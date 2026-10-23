@@ -5,6 +5,7 @@ d = tempfile.mkdtemp()
 os.environ.update(BOT_TOKEN="123456:TESTTOKEN", OWNER_ID="1", DATA_DIR=d)
 os.environ.pop("WEBAPP_URL", None)
 sys.path.insert(0, "hanzhu4")
+from agreement import AGREEMENT_VERSION
 import bot, db, booking, tutors
 from texts import t, T
 
@@ -111,7 +112,7 @@ check("публикация до соглашения закрыта", booking.t
 log.clear()
 click(6001, f"tt:agy:{t1['id']}")
 t1 = booking.teacher(t1["id"])
-check("соглашение принято: версия и дата сохранены", t1["agreed_ver"] == 1 and t1["agreed_at"])
+check("соглашение принято: версия и дата сохранены", t1["agreed_ver"] == AGREEMENT_VERSION and t1["agreed_at"])
 check("Лазиза узнала о принятии", got(1, "принял(а) соглашение"))
 check("после принятия открылся профиль", got(6001, "Профиль преподавателя"))
 click(6001, f"bt:pub:{t1['id']}")
@@ -138,7 +139,7 @@ click(6001, f"bt:pub:{t1['id']}")
 check("с подпиской и соглашением профиль опубликован", booking.teacher(t1["id"])["active"] == 1)
 
 # 5. порядок в списке и звёздочка
-booking.update(t2["id"], tier=3, tier_until=today(30), agreed_ver=1, agreed_at="x", active=1)
+booking.update(t2["id"], tier=3, tier_until=today(30), agreed_ver=AGREEMENT_VERSION, agreed_at="x", active=1)
 names = [x["user_id"] for x in booking.teachers()]
 check("Про выше Старта в списке", names.index(6002) < names.index(6001))
 log.clear()
@@ -364,7 +365,7 @@ check("кнопка меню посреди диалога закрывает е
 keys = [k for k in T["ru"] if k.startswith(("tp_", "rec_")) or k in ("b_topics", "b_records", "hw_sent_t", "hw_accepted_t", "hw_redo_t")]
 for l in ("uz", "en", "zh"):
     check(f"{l}: все новые тексты есть", all(k in T[l] for k in keys))
-check("версия 22", bot.VERSION == "22")
+check("версия 23", bot.VERSION == "23")
 
 print("\nFAILS:", fails)
 sys.exit(1 if fails else 0)
