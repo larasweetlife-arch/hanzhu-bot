@@ -148,7 +148,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -326,6 +326,39 @@ def create_app(deps):
             return jsonify({"error": "no"}), 404
         db.log_event(tg["id"], "hanzi")
         return jsonify({"cards": cards, "tones": hanzi.tones_for(tg["id"], OWNER)})
+
+    # ── экран «Сегодня» (v28) ──
+    DAILY_GOAL = int(os.environ.get("DAILY_GOAL", "10") or 10)
+
+    @app.route("/api/today", methods=["POST"])
+    @need_auth
+    def api_today(tg, lang, u):
+        uid, day = tg["id"], db.today()
+        with db._conn() as c:
+            r = c.execute("SELECT correct FROM tea_score WHERE user_id=? AND day=?", (uid, day)).fetchone()
+            correct = int(r[0]) if r else 0
+            hz = c.execute("SELECT COUNT(*) FROM events WHERE user_id=? AND kind='hanzi' AND date=?", (uid, day)).fetchone()[0]
+            try:
+                qd = c.execute("SELECT COUNT(*) FROM quest_prog WHERE user_id=? AND done_day=?", (uid, day)).fetchone()[0]
+            except Exception:
+                qd = 0
+        total, due, known = db.card_stats(uid)
+        qs = {"char": False}
+        try:
+            st = quest.state(uid)
+            if st.get("char"):
+                scenes, chaps = st["scenes"], st["chapters"]
+                cur = next((x for x in scenes if x["status"] == "current"), None)
+                ci = cur["ch"] if cur else max(0, len(chaps) - 1)
+                chap = chaps[ci] if chaps else {}
+                tt = chap.get("title") or {}
+                in_ch = [x for x in scenes if x["ch"] == ci]
+                qs = {"char": True, "n": ci + 1, "title": chap.get("title_zh") if lang == "zh" else (tt.get(lang) or tt.get("en") or ""),
+                      "done": sum(1 for x in in_ch if x["status"] == "done"), "count": len(in_ch), "finished": cur is None, "today": qd}
+        except Exception:
+            logging.exception("today: путешествие")
+        return jsonify({"goal": {"done": correct, "target": DAILY_GOAL}, "quest": qs, "cards": {"total": total, "due": due, "known": known},
+                        "hanzi": hanzi.day_char(day, lang), "hz_done": hz > 0})
 
     @app.route("/api/phon/quiz", methods=["POST"])
     @need_auth
