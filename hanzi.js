@@ -259,5 +259,5 @@
   const CR = { ru: "Порядок черт: Make Me a Hanzi и hanzi-writer-data (Arphic Public License, LGPL), библиотека Hanzi Writer (MIT).", uz: "Chiziqlar tartibi: Make Me a Hanzi va hanzi-writer-data (Arphic Public License, LGPL), Hanzi Writer kutubxonasi (MIT).",
     en: "Stroke data: Make Me a Hanzi and hanzi-writer-data (Arphic Public License, LGPL); Hanzi Writer library (MIT).", zh: "笔顺数据：Make Me a Hanzi 与 hanzi-writer-data（Arphic Public License、LGPL）；Hanzi Writer 库（MIT）。" };
   const credit = () => Q().h("div", { class: "foot" }, CR[Q().S.lang] || CR.ru);
-  window.HZ = { open, close, listView, entryCard, credit };
+  window.HZ = { open, close, listView, entryCard, credit, tonePanel };
 })();

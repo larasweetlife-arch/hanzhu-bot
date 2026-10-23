@@ -32,6 +32,7 @@ import practice
 import quest
 import themes
 import hanzi
+import phonquiz
 import tts
 from texts import T, t
 
@@ -147,7 +148,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -325,6 +326,15 @@ def create_app(deps):
             return jsonify({"error": "no"}), 404
         db.log_event(tg["id"], "hanzi")
         return jsonify({"cards": cards, "tones": hanzi.tones_for(tg["id"], OWNER)})
+
+    @app.route("/api/phon/quiz", methods=["POST"])
+    @need_auth
+    def api_phon_quiz(tg, lang, u):
+        b = _jb()
+        mode = "say" if b.get("mode") == "say" else "hear"
+        items = phonquiz.make(8 if mode == "say" else 10)
+        db.log_event(tg["id"], "phon_" + mode)
+        return jsonify({"items": items, "tones": hanzi.tones_for(tg["id"], OWNER)})
 
     @app.route("/api/hanzi/list", methods=["POST"])
     @need_auth

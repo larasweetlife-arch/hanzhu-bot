@@ -67,3 +67,22 @@ body.hz-lock { overflow: hidden; }
 .hz-tverdict.bad { color: var(--seal); }
 .hz-cons h3 { margin: 0 0 8px; }
 .hz-cons p { margin: 0 0 16px; line-height: 1.5; color: var(--mute); }
+
+/* практика фонетики (v27) */
+.ph-prog { height: 8px; border-radius: 99px; background: var(--mist); overflow: hidden; }
+.ph-prog i { display: block; height: 100%; background: var(--jade); transition: width .25s; }
+.ph-stage { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 18px 0 14px; }
+.ph-play { width: 96px; height: 96px; border-radius: 50%; background: var(--jade); color: #fffcf4; font-size: 40px; border: 0; box-shadow: var(--shadow); }
+:root[data-theme="dark"] .ph-play { color: #0f1915; }
+.ph-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ph-opt { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0 10px; text-align: left; min-height: 64px; padding: 8px 14px; border-radius: 16px; background: var(--card); border: 1.5px solid var(--line); color: var(--ink); }
+.ph-opt b { font-size: 20px; grid-row: span 2; }
+.ph-opt span { font-size: 18px; color: var(--jade); }
+.ph-opt small { color: var(--mute); font-size: 12.5px; }
+.ph-opt.right { border-color: var(--jade); background: var(--mist); }
+.ph-opt.wrong { border-color: var(--seal); }
+.ph-opt:disabled { opacity: 1; }
+.ph-reveal { margin-top: 14px; text-align: center; padding: 12px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); }
+.ph-big { font-size: 56px; line-height: 1.1; }
+.ph-huge { font-size: 96px; line-height: 1.1; }
+.ph-score { font-size: 22px; font-weight: 700; color: var(--jade); margin-top: 6px; }

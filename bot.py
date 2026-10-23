@@ -65,6 +65,7 @@ import tutors2
 import ads
 import chacha
 import hanzi
+import phonetics
 import themes
 import content as C
 from texts import t, T, LANG_PROMPT, WEEKDAYS, PROFILE
@@ -240,18 +241,15 @@ def notify_owner(text, **kw):
 def kb_main(uid):
     lang = lang_of(uid)
     k = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    k.row(t(lang, "b_word"), t(lang, "b_chengyu"))
-    k.row(t(lang, "b_fact"), t(lang, "b_tr"))
-    k.row(t(lang, "b_grammar"), t(lang, "b_texts"))
-    k.row(t(lang, "b_progress"), t(lang, "b_adult"))
-    k.row(t(lang, "b_lang"), t(lang, "b_channel"))
-    k.row(t(lang, "b_practice"), t(lang, "b_book"))
+    btns = [t(lang, x) for x in ("b_word", "b_chengyu", "b_fact", "b_tr", "b_grammar", "b_phon", "b_texts", "b_progress", "b_adult",
+                                  "b_lang", "b_channel", "b_practice", "b_book")]
     if not is_owner(uid):
-        if (db.get_user(uid) or {}).get("is_student"):
-            k.row(t(lang, "b_friend"))
-        else:
-            k.row(t(lang, "b_friend"), t(lang, "b_trial"))
-    k.row(t(lang, "b_sched"), t(lang, "b_help"))
+        btns.append(t(lang, "b_friend"))
+        if not (db.get_user(uid) or {}).get("is_student"):
+            btns.append(t(lang, "b_trial"))
+    btns += [t(lang, "b_sched"), t(lang, "b_help")]
+    for i in range(0, len(btns), 2):
+        k.row(*btns[i:i + 2])
     extra = ([t(lang, "b_topics")] if tutors.TOPICS_ON else []) + ([t(lang, "b_records")] if tutors.has_records(uid) else [])
     if extra:
         k.row(*extra)
@@ -699,8 +697,8 @@ def cmd_adult(m): send_adult(m.from_user.id)
 @bot.message_handler(commands=["lang"])
 def cmd_lang(m): ask_language(m.from_user.id)
 
-VERSION = "26"
-VERSION_INFO = "проверка тонов голосом в карточке иероглифа (пока только у владельца: /tones_on включает всем); до этого: каллиграфия в мини-аппе: порядок черт, обводка, разбор иероглифа и кнопка «Написать» под словом дня; до этого: официальный список HSK 3.0 (2025) вместо старых списков, уровни слов исправлены; новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
+VERSION = "27"
+VERSION_INFO = "раздел «Фонетика» в меню бота (тоны, согласные, гласные, изменения тонов, с озвучкой) и практика на слух в мини-аппе; до этого: проверка тонов голосом в карточке иероглифа (пока только у владельца: /tones_on включает всем); до этого: каллиграфия в мини-аппе: порядок черт, обводка, разбор иероглифа и кнопка «Написать» под словом дня; до этого: официальный список HSK 3.0 (2025) вместо старых списков, уровни слов исправлены; новая заставка мини-аппа и 汉助 вместо 清越 везде; до этого: объявления (бесплатные от Лазизы, платные за звёзды с проверкой и скидкой репетиторам на «Про») и ненавязчивые сообщения от 茶茶 с выбором частоты; до этого: перенос записи, отзывы, пробный урок, подписки, соглашение, домашки"
 
 
 @bot.message_handler(commands=["tones_on"])
@@ -3353,7 +3351,7 @@ def cmd_stickers(m):
 
 
 def menu_labels(lang):
-    keys = ("b_word", "b_chengyu", "b_fact", "b_tr", "b_progress", "b_lang", "b_grammar", "b_texts",
+    keys = ("b_word", "b_chengyu", "b_fact", "b_tr", "b_progress", "b_lang", "b_grammar", "b_phon", "b_texts",
             "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_book", "b_channel", "b_help", "b_donate",
             "b_topics", "b_records")
     return {t(lang, k) for k in keys}
@@ -3366,6 +3364,7 @@ tutors.register(bot, OWNER_ID, lang_of, dict(
     HW_MEDIA_MAX=HW_MEDIA_MAX, labels=menu_labels))
 tutors2.register(bot, OWNER_ID, lang_of, kb_main)
 ads.register(bot, OWNER_ID, lang_of, notify_owner, STARS_ON)
+send_phonetics = phonetics.register(bot, lang_of, lambda: WEBAPP_URL)
 chacha.register(bot, OWNER_ID, lang_of, lambda u: send_practice(u))
 
 
@@ -3576,7 +3575,7 @@ def on_text(m):
     actions = {t(lang, "b_word"): send_word, t(lang, "b_chengyu"): send_chengyu,
                t(lang, "b_fact"): send_fact, t(lang, "b_tr"): ask_translate,
                t(lang, "b_progress"): send_progress, t(lang, "b_lang"): ask_language,
-               t(lang, "b_grammar"): send_grammar, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
+               t(lang, "b_grammar"): send_grammar, t(lang, "b_phon"): send_phonetics, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
                t(lang, "b_sched"): send_schedule, t(lang, "b_practice"): send_practice,
                t(lang, "b_friend"): send_friend, t(lang, "b_trial"): ask_trial, t(lang, "b_rules"): send_rules,
                t(lang, "b_book"): booking.start, t(lang, "b_topics"): tutors.send_topics, t(lang, "b_records"): tutors.send_records}

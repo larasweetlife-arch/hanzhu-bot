@@ -518,3 +518,8 @@ for _l, (_anchor, _add) in _PRIV_MIC.items():
     _p = T[_l].get("privacy", "")
     if _p and _anchor in _p and _add not in _p:
         T[_l]["privacy"] = _p.replace(_anchor, _add + _anchor, 1)
+
+
+# ─── Версия 27: кнопка «Фонетика» в меню ─────────────────────────────────────
+for _l, _v in (("ru", "🔊 Фонетика"), ("uz", "🔊 Fonetika"), ("en", "🔊 Phonetics"), ("zh", "🔊 语音")):
+    T[_l]["b_phon"] = _v
