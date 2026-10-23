@@ -604,10 +604,23 @@ def delete_user(uid):
         c.execute("DELETE FROM par_codes WHERE child_id=?", (uid,))
         c.execute("DELETE FROM inbox WHERE user_id=?", (uid,))
         c.execute("DELETE FROM referrals WHERE friend_id=? OR referrer_id=?", (uid, uid))
+        for table in ("chacha", "ad_log", "ads"):             # настройки 茶茶 и объявления (таблицы создают модули chacha и ads)
+            try:
+                c.execute(f"DELETE FROM {table} WHERE user_id=?", (uid,))
+            except sqlite3.OperationalError:
+                pass
         c.execute("DELETE FROM users WHERE user_id=?", (uid,))
 
 
 # ─── КОПИЯ ДАННЫХ ЧЕЛОВЕКА ────────────────────────────────────────────────────
+
+def _opt_rows(c, sql, uid):
+    """Таблица может отсутствовать (её создаёт отдельный модуль): тогда просто пусто."""
+    try:
+        return [dict(r) for r in c.execute(sql, (uid,))]
+    except sqlite3.OperationalError:
+        return []
+
 
 def export_user(uid):
     """Всё, что бот хранит об одном человеке. Данные других людей сюда не попадают."""
@@ -640,6 +653,8 @@ def export_user(uid):
             "marathon": rows("SELECT level, done, correct, started, finished FROM marathon WHERE user_id=? ORDER BY level"),
             "homework_submissions": rows("SELECT hw_id, files, date, status FROM hw_subs WHERE user_id=? ORDER BY id"),
             "button_usage": usage,
+            "chacha_settings": _opt_rows(c, "SELECT freq, asked FROM chacha WHERE user_id=?", uid),
+            "my_ads": _opt_rows(c, "SELECT text, aud, price, status, created FROM ads WHERE user_id=? ORDER BY id", uid),
             "already_shown": {k: [r["key"] for r in c.execute(
                 "SELECT key FROM seen WHERE user_id=? AND kind=?", (uid, k))]
                 for k in ("word", "chengyu", "fact")},
