@@ -225,6 +225,7 @@
     return h("div", {}, out);
   }
   function viewLocker() {
+    if (window.LK) return window.LK.view();
     return h("div", {}, h("h2", { class: "pg-title" }, tr("lk_title")),
       h("div", { class: "card locker" }, h("div", { class: "zh gl", "aria-hidden": "true" }, "柜"), h("h3", {}, tr("lk_soon")), h("p", { class: "muted" }, tr("lk_text"))));
   }

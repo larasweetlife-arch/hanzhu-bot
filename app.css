@@ -270,3 +270,42 @@ details ol li:last-child { margin-bottom: 0; }
 .step.done { opacity: .75; }
 .locker { text-align: center; padding: 28px 18px; }
 .locker .gl { font-size: 72px; font-weight: 900; color: var(--seal); line-height: 1.1; }
+
+/* ── Шкафчик (v29) ── */
+.lk-sw { margin-top: 10px; }
+.lk-search { width: 100%; box-sizing: border-box; height: 46px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 0 14px; font: inherit; font-size: 16px; outline: none; }
+.lk-search:focus { border-color: var(--jade); }
+.lk-chips { margin-top: 8px; flex-wrap: wrap; overflow: visible; }
+.lk-chips button { padding: 8px 12px; font-size: 13.5px; }
+.lk-shelf { margin-top: 10px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 12px; border-radius: 20px; background: linear-gradient(#6a4b33, #4f3826); box-shadow: 0 14px 26px rgba(60, 40, 20, .3); }
+.lk-drawer { border: 0; border-radius: 10px; background: #8a6a47; padding: 10px 4px 12px; color: #fffcf4; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 108px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .18), inset 0 -3px 0 rgba(0, 0, 0, .2); }
+.lk-drawer:active { transform: translateY(1px); }
+.lk-knob { width: 22px; height: 8px; border-radius: 4px; background: #e3bd6b; }
+.lk-gl { font-size: 26px; line-height: 1.1; color: #fffcf4; }
+.lk-dn { font-size: 12px; text-align: center; line-height: 1.2; }
+.lk-dp { font-size: 11px; opacity: .78; margin-top: -3px; }
+.lk-dc { font-size: 11px; opacity: .78; }
+.lk-head { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 12px; }
+.lk-list { padding: 4px 14px; }
+.lk-row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 10px 0; border-bottom: 1px solid var(--line); color: inherit; }
+.lk-row:last-child { border-bottom: 0; }
+.lk-zh { font-size: 26px; min-width: 64px; text-align: left; line-height: 1.2; flex: none; max-width: 40%; overflow-wrap: anywhere; }
+.lk-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.lk-tr { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+.lk-py { font-size: 12.5px; color: var(--mute); }
+.lk-tag { display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 6px; background: var(--bg2); color: var(--mute); font-style: normal; font-size: 10.5px; font-weight: 700; vertical-align: 1px; }
+.lk-st { flex: none; font-size: 11px; font-weight: 700; border-radius: 99px; padding: 5px 10px; background: var(--bg2); color: var(--mute); }
+.lk-st.s-known { background: var(--ok-bg); color: var(--ok); }
+.lk-st.s-learn { background: var(--mist); color: var(--jade); }
+.lk-st.s-due { background: color-mix(in srgb, var(--gold) 28%, transparent); color: var(--ink); }
+.lk-foot { text-align: center; margin-top: 8px; }
+.lk-wc { text-align: center; }
+.lk-big { font-size: 56px; line-height: 1.15; }
+.lk-wpy { font-size: 18px; color: var(--mute); margin: 2px 0 8px; }
+.lk-wtr { font-size: 18px; font-weight: 600; margin-top: 10px; }
+.lk-note { margin-top: 4px; font-size: 13px; }
+.lk-ex { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); font-size: 14.5px; }
+.lk-ex div { margin-top: 4px; }
+.lk-btns { display: flex; gap: 10px; margin-top: 14px; }
+.lk-btns .btn { flex: 1; }
