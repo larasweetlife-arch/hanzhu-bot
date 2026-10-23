@@ -1,9 +1,10 @@
-"""Шкафчик (v29): каталог всех слов по ящичкам HSK, поиск, статусы, карточка слова, «Знаю это слово»."""
+"""Шкафчик (v29): каталог всех слов по ящичкам HSK и (v32) по темам, поиск, статусы, карточка слова, «Знаю это слово»."""
 import unicodedata
 import content as C
 import db
 import practice
 import hanzi
+import topics as TP
 
 PAGE = 50          # слов за один запрос
 PART = 1000        # размер части ящичка HSK 7–9
@@ -43,7 +44,15 @@ def _build():
     blobs = [((w["zh"]), _plain(w.get("py", "")), (w.get("ru") or "").lower(), (w.get("uz") or "").lower(), (w.get("en") or "").lower()) for w in words]
     pos = {w["zh"]: i for i, w in enumerate(words)}
     drawers = [d for d in drawers if d["idx"]]
-    _IDX = {"words": words, "drawers": drawers, "by_id": by_id, "blobs": blobs, "pos": pos, "parts": parts}
+    topics, topic_of = [], {}
+    for code, zhs in TP.load():
+        idx = [pos[z] for z in zhs if z in pos]
+        if idx:
+            by_id["t:" + code] = {"id": "t:" + code, "idx": idx}
+            topics.append("t:" + code)
+            for i in idx:
+                topic_of[words[i]["zh"]] = code
+    _IDX = {"topics": topics, "topic_of": topic_of, "words": words, "drawers": drawers, "by_id": by_id, "blobs": blobs, "pos": pos, "parts": parts}
     return _IDX
 
 
@@ -87,7 +96,11 @@ def drawers(uid):
                     cnt["due"] += 1
         out.append({"id": d["id"], "level": d["level"], "part": d["part"], "parts": I["parts"] if d["level"] == 7 else 0, "total": len(d["idx"]), "known": known})
     # «Учу» = всё в карточках, что ещё не выучено; «Повторить» = часть из них, у кого пришёл срок
-    return {"drawers": out, "counts": {"learn": cnt["learn"], "known": cnt["known"], "due": cnt["due"]}, "total": len(I["words"])}
+    tp = []
+    for tid in I["topics"]:
+        idx = I["by_id"][tid]["idx"]
+        tp.append({"id": tid[2:], "total": len(idx), "known": sum(1 for i in idx if status(I["words"][i]["zh"], cards, today) == "known")})
+    return {"drawers": out, "topics": tp, "counts": {"learn": cnt["learn"], "known": cnt["known"], "due": cnt["due"]}, "total": len(I["words"])}
 
 
 def _match(i, q, I):
@@ -151,7 +164,7 @@ def word(uid, lang, zh):
     cards = db.cards_all(uid)
     r = _row(w, lang, cards, db.today())
     lv = w.get("hsk") or 0
-    r.update({"hsk": lv, "pos": w.get("pos") or "", "examples": (w.get("examples") or [])[:4],
+    r.update({"hsk": lv, "topic": I["topic_of"].get(w["zh"], ""), "pos": w.get("pos") or "", "examples": (w.get("examples") or [])[:4],
               "chars": [c for c in dict.fromkeys(w["zh"]) if hanzi.HAN.match(c) and c in hanzi.stroke_chars()][:4]})
     return r
 

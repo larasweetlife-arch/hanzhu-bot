@@ -311,7 +311,7 @@
 包 | bāo | 1 | сумка; пакет; заворачивать | глагол; существительное | to wrap; bag; package
 本子 | běnzi | 1 | тетрадь | существительное | notebook; book
 比 | bǐ | 1 | чем; сравнивать | предлог; глагол | to compare; than
-笔 | bǐ | 1 | pen | существительное | pen; writing brush
+笔 | bǐ | 1 | ручка; кисть | существительное | pen; writing brush
 别 | bié | 1 | не надо; не | наречие | don't
 不错 | búcuò | 1 | неплохо; правильно | прилагательное | not bad; pretty good
 不好意思 | bù hǎoyìsi | 1 | извините; простите | междометие | embarrassed; sorry to trouble you
@@ -841,7 +841,7 @@
 水平 | shuǐpíng | 2 | уровень; стандарт | существительное | level; standard
 司机 | sījī | 2 | водитель; шофёр | существительное | driver; chauffeur
 四季 | sìjì | 2 | четыре времени года | существительное | the four seasons
-太阳 | tàiyáng | 2 | sun | существительное | sun
+太阳 | tàiyáng | 2 | солнце | существительное | sun
 糖 | táng | 2 | сахар; конфета | существительное | sugar; candy
 特别 | tèbié | 2 | особенный; особенно | прилагательное; наречие | special; especially
 提高 | tígāo | 2 | повышать; улучшать | глагол | to raise; to improve
@@ -2058,7 +2058,7 @@
 不良 | bùliáng | 3 |  | прилагательное | bad; harmful; unhealthy
 不然 | bùrán | 3 | неправильно; не так; нет | союз; прилагательное | otherwise; if not
 步行 | bùxíng | 3 |  | глагол | to walk; to go on foot
-不足 | bùzú | 3 | 我这匹马不如你那匹马快 моя лошадь не так быстра, как твоя недостаточно; не хватает; нехватка | глагол; существительное | insufficient; deficiency
+不足 | bùzú | 3 | недостаточно; не хватает; нехватка | глагол; существительное | insufficient; deficiency
 裁判 | cáipàn | 3 | судья; судить (в спорте); судебное решение | глагол; существительное | referee; to judge
 采访 | cǎifǎng | 3 | брать интервью; интервью; репортаж | глагол | to interview
 采取 | cǎiqǔ | 3 | принимать, предпринимать; применять; прибегать | глагол | to adopt (measures); to take
@@ -3506,7 +3506,7 @@
 主任 | zhǔrèn | 5 |  | существительное | director; head
 主食 | zhǔshí | 5 |  | существительное | staple food
 主题 | zhǔtí | 5 | тема | существительное | theme; subject
-主席 | zhǔxí | 5 | 打狗看主人 - прежде чем бить собаку, посмотри — кто ее хозяин председатель | существительное | chairperson; chairman
+主席 | zhǔxí | 5 | председатель | существительное | chairperson; chairman
 注册 | zhùcè | 5 | регистрировать; регистрация | глагол | to register; to enroll
 住房 | zhùfáng | 5 |  | существительное | housing
 住宿 | zhùsù | 5 |  | глагол | to stay overnight; to lodge; accommodation
@@ -3532,7 +3532,7 @@
 资源 | zīyuán | 5 | ресурсы | существительное | resource
 紫 | zǐ | 5 | фиолетовый | прилагательное | purple
 子女 | zǐnǚ | 5 |  | существительное | children; sons and daughters
-自从 | zìcóng | 5 | 中文字幕 китайские субтитры с тех пор, как; начиная с | предлог | since; ever since
+自从 | zìcóng | 5 | с тех пор, как; начиная с | предлог | since; ever since
 自动 | zìdòng | 5 | самодвижущийся; автоматический | наречие; прилагательное | automatic; automatically
 自觉 | zìjué | 5 | чувствовать себя; самочувствие; самосознание; сознательность | глагол; прилагательное | to be aware of; conscientious; of one's own accord
 字母 | zìmǔ | 5 |  | существительное | letter (of the alphabet)
@@ -4115,7 +4115,7 @@
 户 | hù | 5 |  | счётное слово | household
 互助 | hùzhù | 5 |  | глагол | to help each other
 花朵 | huāduǒ | 5 |  | существительное | flower
-花生 | huāshēng | 5 | 花了半天的时间 зря потратить много времени арахис | существительное | peanut
+花生 | huāshēng | 5 | арахис | существительное | peanut
 滑冰 | huábīng | 5 | кататься на коньках | глагол | to ice-skate; skating
 滑行 | huáxíng | 5 |  | глагол | to glide; to coast
 滑雪 | huáxuě | 5 |  | глагол | to ski; skiing
@@ -4757,7 +4757,7 @@
 手法 | shǒufǎ | 6 | приём; манера; способ исполнения | существительное | technique; trick
 手势 | shǒushì | 6 |  | существительное | gesture
 首要 | shǒuyào | 6 |  | прилагательное | primary; most important
-寿命 | shòumìng | 6 | 无售货员商店 магазин без продавца, магазин самообслуживания продолжительность жизни; жизнь | существительное | lifespan
+寿命 | shòumìng | 6 | продолжительность жизни; жизнь | существительное | lifespan
 受灾 | shòuzāi | 6 |  | глагол | to be hit by disaster
 输出 | shūchū | 6 |  | глагол | to output; to export
 书画 | shūhuà | 6 |  | существительное | painting and calligraphy
@@ -7653,7 +7653,7 @@
 抗衡 | kànghéng | 7 |  | глагол | to rival; to contend with as an equal
 抗拒 | kàngjù | 7 |  | глагол | to resist; to defy
 抗生素 | kàngshēngsù | 7 |  | существительное | antibiotic
-抗议 | kàngyì | 7 | 以我看來 по моему мнению протест; протестовать | глагол | to protest; protest
+抗议 | kàngyì | 7 | протест; протестовать | глагол | to protest; protest
 抗争 | kàngzhēng | 7 |  | глагол | to resist; to struggle against
 考查 | kǎochá | 7 |  | глагол | to check; to assess; to examine
 考量 | kǎoliáng | 7 |  | глагол | to consider; consideration
