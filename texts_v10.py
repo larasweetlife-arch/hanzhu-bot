@@ -50,7 +50,7 @@ P["ru"] = {
     "pa_new": "👨‍👩‍👧 <b>Ссылка для родителей</b>\n\nПерешли её маме или папе. Раз в неделю, в воскресенье вечером, они будут получать "
               "короткую сводку: занятия, тесты, домашки, активность в практике, расписание на неделю и напоминание об оплате. "
               "Родитель не видит твои слова, ответы и переписку.\n\n{link}\n\nОтключить родителя можно в любой момент: /parents",
-    "pa_consent": "Здравствуйте! Вы подключаетесь к недельной сводке по ученику «{child}» (занятия Лазизы Ропижоновой, 清越).\n\n"
+    "pa_consent": "Здравствуйте! Вы подключаетесь к недельной сводке по ученику «{child}» (занятия Лазизы Ропижоновой, 汉助).\n\n"
                   "Каждое воскресенье вечером я пришлю: сколько было занятий, результаты тестов, домашние задания, активность "
                   "в практике, расписание на следующую неделю и напоминание об оплате. Больше ничего: личные сообщения, "
                   "слова и ответы ребёнка вам не показываются. Данные хранятся по правилам /privacy.\n\n"
@@ -83,7 +83,7 @@ P["ru"] = {
     "pw_pay_low": "⚠️ Оплаченных занятий осталось: <b>{left}</b>. Скоро понадобится оплатить следующий пакет.",
     "pw_pay_zero": "⚠️ Оплаченные занятия закончились. Пожалуйста, оплатите следующий пакет, чтобы занятия продолжились.",
     "pw_pay_debt": "💬 По оплате есть задолженность за занятия: {n}. Пожалуйста, свяжитесь с Лазизой.",
-    "pw_outro": "С уважением, Лазиза · 清越",
+    "pw_outro": "С уважением, Лазиза · 汉助",
 }
 
 P["uz"] = {
@@ -126,7 +126,7 @@ P["uz"] = {
     "pa_new": "👨‍👩‍👧 <b>Ota-ona uchun havola</b>\n\nUni dadangiz yoki onangizga yuboring. Haftada bir marta, yakshanba kechqurun ular qisqa "
               "xulosa oladi: darslar, testlar, uy vazifalari, mashqdagi faollik, haftalik jadval va to'lov eslatmasi. "
               "Ota-ona sizning so'zlaringiz, javoblaringiz va yozishmangizni ko'rmaydi.\n\n{link}\n\nOta-onani istalgan vaqtda o'chirish mumkin: /parents",
-    "pa_consent": "Assalomu alaykum! Siz «{child}» o'quvchisi bo'yicha haftalik xulosaga ulanyapsiz (Laziza Ropijonova, 清越 darslari).\n\n"
+    "pa_consent": "Assalomu alaykum! Siz «{child}» o'quvchisi bo'yicha haftalik xulosaga ulanyapsiz (Laziza Ropijonova, 汉助 darslari).\n\n"
                   "Har yakshanba kechqurun yuboraman: nechta dars bo'lgani, test natijalari, uy vazifalari, mashqdagi faollik, "
                   "keyingi hafta jadvali va to'lov eslatmasi. Boshqa hech narsa: bolaning shaxsiy xabarlari, so'zlari va javoblari "
                   "sizga ko'rsatilmaydi. Ma'lumotlar /privacy qoidalariga ko'ra saqlanadi.\n\n"
@@ -159,7 +159,7 @@ P["uz"] = {
     "pw_pay_low": "⚠️ To'langan darslar qoldi: <b>{left}</b>. Tez orada keyingi paketni to'lash kerak bo'ladi.",
     "pw_pay_zero": "⚠️ To'langan darslar tugadi. Darslar davom etishi uchun keyingi paketni to'lang.",
     "pw_pay_debt": "💬 Darslar uchun qarzdorlik bor: {n}. Iltimos, Laziza bilan bog'laning.",
-    "pw_outro": "Hurmat bilan, Laziza · 清越",
+    "pw_outro": "Hurmat bilan, Laziza · 汉助",
 }
 
 P["en"] = {
@@ -202,7 +202,7 @@ P["en"] = {
     "pa_new": "👨‍👩‍👧 <b>Link for parents</b>\n\nForward it to your mum or dad. Once a week, on Sunday evening, they will get a short "
               "summary: lessons, tests, homework, practice activity, next week's schedule and a payment reminder. "
               "Parents do not see your words, answers or chats.\n\n{link}\n\nYou can disconnect a parent at any time: /parents",
-    "pa_consent": "Hello! You are connecting to the weekly summary for the student “{child}” (lessons with Laziza Ropijonova, 清越).\n\n"
+    "pa_consent": "Hello! You are connecting to the weekly summary for the student “{child}” (lessons with Laziza Ropijonova, 汉助).\n\n"
                   "Every Sunday evening I will send: how many lessons took place, test results, homework, practice activity, "
                   "next week's schedule and a payment reminder. Nothing else: the child's private messages, words and answers "
                   "are not shown to you. Data is kept under the /privacy rules.\n\n"
@@ -235,7 +235,7 @@ P["en"] = {
     "pw_pay_low": "⚠️ Paid lessons left: <b>{left}</b>. The next package will need paying soon.",
     "pw_pay_zero": "⚠️ The paid lessons have run out. Please pay for the next package so the lessons can continue.",
     "pw_pay_debt": "💬 There is an outstanding balance for lessons: {n}. Please contact Laziza.",
-    "pw_outro": "Best regards, Laziza · 清越",
+    "pw_outro": "Best regards, Laziza · 汉助",
 }
 
 P["zh"] = {
@@ -273,7 +273,7 @@ P["zh"] = {
     "pa_btn": "👨‍👩‍👧 家长入口",
     "pa_new": "👨‍👩‍👧 <b>家长链接</b>\n\n请转发给爸爸或妈妈。每周日晚上，他们会收到一份简短总结：上课情况、测验、作业、练习活跃度、下周课表和付款提醒。"
               "家长看不到你的单词、答案和聊天内容。\n\n{link}\n\n你可以随时取消家长的连接：/parents",
-    "pa_consent": "您好！您正在连接学生“{child}”的每周总结（Laziza Ropijonova 的课程，清越）。\n\n"
+    "pa_consent": "您好！您正在连接学生“{child}”的每周总结（Laziza Ropijonova 的课程，汉助）。\n\n"
                   "每周日晚上我会发送：上了几节课、测验成绩、作业、练习活跃度、下周课表和付款提醒。仅此而已：孩子的私人消息、单词和答案不会展示给您。"
                   "数据按 /privacy 规则保存。\n\n您可以随时用 /stop 取消。确认连接吗？",
     "pa_yes": "✅ 连接", "pa_no": "取消",
@@ -303,7 +303,7 @@ P["zh"] = {
     "pw_pay_low": "⚠️ 已付费课时还剩 <b>{left}</b> 节，很快需要支付下一期。",
     "pw_pay_zero": "⚠️ 已付费课时已用完。请支付下一期以便继续上课。",
     "pw_pay_debt": "💬 课程有欠费：{n} 节。请联系 Laziza。",
-    "pw_outro": "此致，Laziza · 清越",
+    "pw_outro": "此致，Laziza · 汉助",
 }
 
 # Правки уже существующих текстов: имя → ник. (старое → новое), применяются в texts.py

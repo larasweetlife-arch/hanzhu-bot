@@ -11,7 +11,7 @@ P["ru"] = {
     "ref_r3": "💸 друг начал заниматься: скидка 30% на один месяц занятий",
     "rules": (
         "📜 <b>Правила и условия игр «Путешествие по Китаю с 茶茶» и «Тренировка слов»</b>\n"
-        "<i>Организатор: Лазиза Ропижонова (清越)</i>\n\n"
+        "<i>Организатор: Лазиза Ропижонова (汉助)</i>\n\n"
         "🗺 <b>1. О чём игра</b>\n"
         "В «Путешествии по Китаю с 茶茶» ты создаёшь героя и идёшь по Китаю вместе с чайным духом 茶茶. Каждая сцена состоит из диалога и заданий на китайском: перевести, выбрать иероглиф, собрать фразу. Первая глава ведёт от Пекина до Великой стены. Есть и дополнительный режим «Тренировка слов»: быстрая викторина, где покупатели заказывают чай и посуду по-китайски. Играть бесплатно, а цель одна: запоминать китайский с удовольствием.\n\n"
         "🎯 <b>2. Как играть</b>\n"
@@ -67,7 +67,7 @@ P["uz"] = {
     "ref_r3": "💸 do'st o'qishni boshladi: bir oylik darslarga 30% chegirma",
     "rules": (
         "📜 <b>«茶茶 bilan Xitoy bo'ylab sayohat» va «So'z mashqi» o'yinlarining qoidalari va shartlari</b>\n"
-        "<i>Tashkilotchi: Laziza Ropijonova (清越)</i>\n\n"
+        "<i>Tashkilotchi: Laziza Ropijonova (汉助)</i>\n\n"
         "🗺 <b>1. O'yin nima haqida</b>\n"
         "«茶茶 bilan Xitoy bo'ylab sayohat»da qahramon yaratasiz va choy ruhi 茶茶 bilan Xitoy bo'ylab yo'lga chiqasiz. Har bir sahna dialog va xitoycha topshiriqlardan iborat: tarjima qilish, ieroglif tanlash, ibora tuzish. Birinchi bob Pekindan Buyuk devorgacha. Qo'shimcha «So'z mashqi» ham bor: xaridorlar xitoycha choy va idish buyurtma qiladigan tezkor viktorina. O'ynash bepul, maqsad bitta: xitoy tilini zavq bilan yodlash.\n\n"
         "🎯 <b>2. Qanday o'ynaladi</b>\n"
@@ -122,7 +122,7 @@ P["en"] = {
     "ref_r3": "💸 friend starts lessons: 30% off one month of lessons",
     "rules": (
         "📜 <b>Rules and terms of the games “Journey Through China with 茶茶” and “Word practice”</b>\n"
-        "<i>Organizer: Laziza Ropijonova (清越)</i>\n\n"
+        "<i>Organizer: Laziza Ropijonova (汉助)</i>\n\n"
         "🗺 <b>1. What the game is</b>\n"
         "In “Journey Through China with 茶茶” you create a hero and travel through China with the tea spirit 茶茶. Each scene is a dialogue plus tasks in Chinese: translate, pick a character, build a phrase. Chapter 1 leads from Beijing to the Great Wall. There is also an extra mode, “Word practice”: a quick quiz where customers order tea and teaware in Chinese. Playing is free, and the goal is one: to remember Chinese with pleasure.\n\n"
         "🎯 <b>2. How to play</b>\n"
@@ -178,7 +178,7 @@ P["zh"] = {
     "ref_r3": "💸 朋友开始上课：一个月课程 7 折（优惠 30%）",
     "rules": (
         "📜 <b>《和茶茶游中国》与“单词练习”游戏规则与条款</b>\n"
-        "<i>组织者：Laziza Ropijonova（清越）</i>\n\n"
+        "<i>组织者：Laziza Ropijonova（汉助）</i>\n\n"
         "🗺 <b>1. 游戏简介</b>\n"
         "在《和茶茶游中国》中，你创建一个主角，和茶灵茶茶一起游览中国。每一幕包括一段对话和中文练习：翻译、选汉字、组句子。第一章从北京一路到长城。另有一个附加模式“单词练习”：顾客用中文点茶和茶具的快速小测验。游戏免费，目的只有一个：轻松愉快地记住中文。\n\n"
         "🎯 <b>2. 玩法</b>\n"
