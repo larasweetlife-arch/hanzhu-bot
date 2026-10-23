@@ -51,3 +51,19 @@ body.hz-lock { overflow: hidden; }
 .hz-cell { height: 52px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line); font-size: 26px; color: var(--ink); }
 .hz-cell:active { background: var(--mist); }
 :root[data-theme="dark"] .hz-btns .btn.jade { color: #0f1915; }
+
+/* проверка тона голосом (v26) */
+.hz-tone .hz-btns .btn { flex: 1; }
+.hz-tbar { height: 8px; border-radius: 99px; background: var(--mist); margin-top: 12px; overflow: hidden; }
+.hz-tbar[hidden] { display: none; }
+.hz-tbar i { display: block; height: 100%; width: 0; background: var(--jade); transition: width .06s linear; }
+.hz-tstate { min-height: 20px; margin-top: 10px; text-align: center; font-size: 13.5px; color: var(--mute); }
+.hz-tchart svg { display: block; width: 100%; max-width: 320px; margin: 10px auto 0; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; }
+.hz-tleg { display: flex; justify-content: center; gap: 18px; font-size: 12.5px; color: var(--mute); margin-top: 6px; }
+.hz-tleg i { display: inline-block; width: 18px; height: 0; border-top: 4px solid var(--jade); vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+.hz-tleg i.g { border-top: 4px dotted var(--gold); }
+.hz-tverdict { text-align: center; font-weight: 700; margin-top: 10px; line-height: 1.4; }
+.hz-tverdict.ok { color: var(--jade); }
+.hz-tverdict.bad { color: var(--seal); }
+.hz-cons h3 { margin: 0 0 8px; }
+.hz-cons p { margin: 0 0 16px; line-height: 1.5; color: var(--mute); }
