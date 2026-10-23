@@ -51,15 +51,19 @@ def _load_hsk():
 
 
 def _load_hsk30():
-    """Твои списки HSK 3.0, уровни 1–4: с русским переводом и частью речи."""
+    """Официальный список HSK 3.0 (2025), уровни 1–6 и 7 (= 7–9). Русский там, где есть, иначе английское значение."""
     items = []
     for n, line in _lines("content_hsk30.txt"):
         p = [x.strip() for x in line.split("|")]
-        if len(p) != 5 or not p[0] or not p[1] or not p[3] or not re.fullmatch(r"\d", p[2]):
+        if len(p) not in (5, 6) or not p[0] or not p[1] or not re.fullmatch(r"\d", p[2]):
             logging.warning("content_hsk30.txt, строка %d пропущена: %s", n, line[:60])
             continue
-        items.append({"zh": p[0], "py": p[1], "hsk": int(p[2]), "ru": p[3], "uz": "", "en": "", "pos": p[4],
-                      "tag": "", "own": True, "scheme": "3.0", "examples": []})
+        en = p[5] if len(p) == 6 else ""
+        if not p[3] and not en:
+            logging.warning("content_hsk30.txt, строка %d пропущена (нет значения): %s", n, line[:60])
+            continue
+        items.append({"zh": p[0], "py": p[1], "hsk": int(p[2]), "ru": p[3], "uz": "", "en": en, "pos": p[4],
+                      "tag": "", "own": bool(p[3]), "scheme": "3.0", "examples": []})
     return items
 
 
@@ -147,12 +151,25 @@ def _merge_words():
             if t_["py"]:
                 w["py"] = t_["py"]
     en_by_zh = {w["zh"]: w["en"] for w in dataset}
+    hsk30, hsk5 = _load_hsk30(), _load_hsk5()
+    level30 = {w["zh"]: w["hsk"] for w in hsk30}                    # уровень по официальному списку главнее старых отметок
+    ex5 = {w["zh"]: w["examples"] for w in hsk5 if w["examples"]}
     out, seen = [], set()
-    for group in (_load_words(), _load_hsk30(), _load_hsk5(), dataset):
+    for group in (_load_words(), hsk30, hsk5, dataset):
         for w in group:
             if w["zh"] in seen:
                 continue
             seen.add(w["zh"])
+            if w.get("scheme") != "3.0" and w["zh"] in level30:     # свои слова: уровень берём из официального списка
+                w["hsk"], w["scheme"] = level30[w["zh"]], "3.0"
+            if w.get("scheme") == "3.0":
+                t_ = tr.get(w["zh"])
+                if t_ and not w["ru"]:
+                    w["ru"], w["own"] = t_["ru"], True
+                if t_ and not w["uz"]:
+                    w["uz"] = t_["uz"]
+                if not w.get("examples") and w["zh"] in ex5:
+                    w["examples"] = ex5[w["zh"]]
             if not w.get("en"):
                 w["en"] = en_by_zh.get(w["zh"], "")
             w.setdefault("pos", ""); w.setdefault("scheme", ""); w.setdefault("examples", [])
