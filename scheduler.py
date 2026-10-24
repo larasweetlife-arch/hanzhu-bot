@@ -16,6 +16,18 @@ _FULL = ["понедельник", "вторник", "среда", "четвер
 def parse_schedule(text):
     """'пн 18:00, ср 18:00' -> [(0,'18:00'), (2,'18:00')]. Ошибка формата -> ValueError."""
     slots = []
+    # Короткая запись: «ПН - 09:00, 10:00; 17:00» (день и сразу несколько времён). Строка «GMT+5» — пояснение.
+    lines = []
+    for line in text.split("\n"):
+        low = line.strip().lower()
+        m = re.fullmatch(r"([а-я]{2,})\.?\s*[-–—:]?\s*((?:\d{1,2}[:.]\d{2}[\s,;]*)+)", low)
+        if m:
+            lines.extend(f"{m.group(1)} {t}" for t in re.findall(r"\d{1,2}[:.]\d{2}", m.group(2)))
+        elif re.fullmatch(r"(?:gmt|utc)\s*\+\s*0?5(?::00)?", low):
+            continue
+        else:
+            lines.append(line)
+    text = "\n".join(lines)
     for part in re.split(r"[,\n;]+", text):
         part = part.strip().lower()
         if not part:
