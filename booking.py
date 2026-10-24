@@ -34,7 +34,7 @@ S = {}                              # диалоги редактировани�
 FIELDS = {
     "name":     ("Имя", 50, "Как тебя будут видеть ученики. Например: Анна Ли."),
     "tagline":  ("Кратко", 70, "Одна короткая строка под именем. Например: «Китайский для детей и взрослых». Чтобы убрать, пришли «-»."),
-    "bio":      ("Описание", 550, "Расскажи о себе и занятиях: образование и опыт, кого и чему учишь, как проходят уроки. До 550 символов."),
+    "bio":      ("Описание", 1000, "Расскажи о себе и занятиях: образование и опыт, кого и чему учишь, как проходят уроки. До 1000 символов."),
     "prices":   ("Цены", 1000, "Цены и условия. Например: «Урок 60 минут: 150 000 сум. Пробный: 50 000 сум. Абонемент на 8 уроков: −10%». До 1000 символов."),
     "photo":    ("Фото", 0, "Пришли фото (как обычное фото, не файлом). Оно будет в посте."),
     "contact":  ("Связь", 40, "Твой username в Telegram, например @teacher. Ученики увидят кнопку «Написать в Telegram». Чтобы скрыть связь, пришли «-»."),
@@ -274,20 +274,16 @@ def start(uid, c=None):
     if not ts:
         text, kb = t(lang, "bk_none"), ikb([[(t(lang, "bk_trial_btn"), "bk:trial")]])
         return show(c, text, kb) if c else ctx["bot"].send_message(uid, text, reply_markup=kb)
-    if len(ts) == 1 and not active_bookings(uid=uid):
-        return post(uid, ts[0]["id"], c, single=True)
-    rows = []
-    for x in ts:
-        label = ("⭐ " if (x.get("tier") or 0) >= 3 and x.get("user_id") != ctx.get("owner_id") else "") \
-            + x["name"] + (f" · {x['tagline']}" if x.get("tagline") else "")
-        rows.append([(label[:60], f"bk:t:{x['id']}")])
+    if c:                                           # возврат с другого экрана: убираем его и показываем всех заново
+        try:
+            ctx["bot"].delete_message(uid, c.message.message_id)
+        except Exception:
+            pass
+    for x in ts:                                    # у каждого преподавателя свой пост: фото, о себе, цены, часы, связь
+        post(uid, x["id"], None, single=True)
     my = active_bookings(uid=uid)
     if my:
-        rows.append([(t(lang, "bk_my_btn", n=len(my)), "bk:my")])
-    text = t(lang, "bk_list")
-    if c:
-        return show(c, text, ikb(rows))
-    ctx["bot"].send_message(uid, text, reply_markup=ikb(rows))
+        ctx["bot"].send_message(uid, t(lang, "bk_my_btn", n=len(my)), reply_markup=ikb([[(t(lang, "bk_my_btn", n=len(my)), "bk:my")]]))
 
 
 def post(uid, tid, c=None, single=False):
@@ -295,13 +291,17 @@ def post(uid, tid, c=None, single=False):
     tc = teacher(tid)
     if not tc or not tc["active"]:
         return start(uid, c)
-    parts = [f"<b>{esc(tc['name'])}</b>"]
+    star = "⭐ " if (tc.get("tier") or 0) >= 3 and tc.get("user_id") != ctx.get("owner_id") else ""
+    parts = [f"<b>{star}{esc(tc['name'])}</b>"]
     if tc.get("tagline"):
         parts.append(f"<i>{esc(tc['tagline'])}</i>")
     if tc.get("bio"):
         parts += ["", esc(tc["bio"])]
     if tc.get("prices"):
         parts += ["", f"💰 <b>{t(lang, 'bk_prices_h')}</b>", esc(tc["prices"])]
+    hl = fmt_hours(tc.get("hours"))
+    if hl:
+        parts += ["", f"🗓 <b>{HOURS_H.get(lang, HOURS_H['ru'])}</b>"] + [f"<code>{esc(x)}</code>" for x in hl]
     parts += ["", f"⏱ {tc['duration'] or 60} {t(lang, 'bk_min')}"]
     if hooks.get("post_line"):
         try:
@@ -521,8 +521,40 @@ def can_edit(uid, tc):
     return bool(tc) and (uid == ctx.get("owner_id") or tc.get("user_id") == uid)
 
 
+HOURS_H = {"ru": "Свободные часы (начало урока, время Ташкента)",
+           "uz": "Bo'sh vaqtlar (dars boshlanishi, Toshkent vaqti)",
+           "en": "Free hours (lesson start, Tashkent time)",
+           "zh": "空闲时间（课程开始时间，塔什干时间）"}
+
+
 def _ok(v):
     return "✅" if v else "▫️"
+
+
+def fmt_hours(raw):
+    """Недельное расписание по дням: «Пн  09:00–12:00, 17:00–23:00». Подряд идущие часы склеиваются в промежуток."""
+    try:
+        slots = scheduler.parse_schedule(raw or "")
+    except ValueError:
+        return None
+    days = {}
+    for wd, tm in slots:
+        days.setdefault(wd, []).append(int(tm[:2]) * 60 + int(tm[3:]))
+    out = []
+    f = lambda m: f"{m // 60:02d}:{m % 60:02d}"
+    for wd in sorted(days):
+        mins = sorted(days[wd])
+        groups, cur = [], [mins[0]]
+        for m in mins[1:]:
+            if m - cur[-1] == 60:
+                cur.append(m)
+            else:
+                groups.append(cur)
+                cur = [m]
+        groups.append(cur)
+        parts = [f(g[0]) if len(g) == 1 else f"{f(g[0])}–{f(g[-1])}" for g in groups]
+        out.append(f"{WEEKDAYS['ru'][wd].capitalize()}  " + ", ".join(parts))
+    return out
 
 
 def editor(uid, tid, mid=None):
@@ -539,9 +571,14 @@ def editor(uid, tid, mid=None):
              f"{_ok(tc['photo'])} Фото: {'есть' if tc['photo'] else 'нет'}",
              f"{_ok(contact_username(tc))} Связь: {('@' + contact_username(tc) + ' (кнопка «Написать в Telegram» видна ученикам)') if contact_username(tc) else 'скрыта: ученики не видят твой Telegram'}",
              f"{_ok(tc['link'])} Ссылка на занятие: {'есть' if tc['link'] else 'нет'}",
-             f"{_ok(tc['hours'])} Свободные часы: {esc(tc['hours'] or 'не заданы')}",
              f"⏱ Урок: {tc['duration'] or 60} мин", "",
-             f"📋 Записей впереди: {nb}"]
+             f"{_ok(tc['hours'])} <b>Свободные часы</b> (время начала урока):"]
+    hl = fmt_hours(tc["hours"])
+    if hl:
+        lines += [f"<code>{esc(x)}</code>" for x in hl]
+    else:
+        lines.append(esc(tc["hours"] or "не заданы"))
+    lines += ["", f"📋 Записей впереди: {nb}"]
     if hooks.get("editor_lines"):
         lines += hooks["editor_lines"](uid, tc)
     rows = [[("Имя", f"bt:f:{tid}:name"), ("Кратко", f"bt:f:{tid}:tagline")],
@@ -785,7 +822,7 @@ def cb_bk(c):
         if a == "l":
             bot_answer(c); return start(uid, c)
         if a == "t":
-            bot_answer(c); return post(uid, int(p[2]), c)
+            bot_answer(c); return post(uid, int(p[2]), c, single=True)
         if a == "d":
             bot_answer(c); return pick_day(c, int(p[2]))
         if a == "s":

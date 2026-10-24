@@ -242,11 +242,9 @@ def kb_main(uid):
     lang = lang_of(uid)
     k = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btns = [t(lang, x) for x in ("b_word", "b_chengyu", "b_fact", "b_tr", "b_grammar", "b_phon", "b_texts", "b_progress", "b_adult",
-                                  "b_lang", "b_channel", "b_practice", "b_book")]
+                                  "b_lang", "b_channel", "b_practice", "b_book", "b_china")]
     if not is_owner(uid):
         btns.append(t(lang, "b_friend"))
-        if not (db.get_user(uid) or {}).get("is_student"):
-            btns.append(t(lang, "b_trial"))
     btns += [t(lang, "b_sched"), t(lang, "b_help")]
     for i in range(0, len(btns), 2):
         k.row(*btns[i:i + 2])
@@ -3355,9 +3353,13 @@ def cmd_stickers(m):
                      "\n\nЧтобы задать или заменить, просто пришли мне стикер.")
 
 
+def send_china(uid):
+    bot.send_message(uid, t(lang_of(uid), "china_soon"))
+
+
 def menu_labels(lang):
     keys = ("b_word", "b_chengyu", "b_fact", "b_tr", "b_progress", "b_lang", "b_grammar", "b_phon", "b_texts",
-            "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_book", "b_channel", "b_help", "b_donate",
+            "b_adult", "b_sched", "b_practice", "b_friend", "b_trial", "b_rules", "b_book", "b_china", "b_channel", "b_help", "b_donate",
             "b_topics", "b_records")
     return {t(lang, k) for k in keys}
 
@@ -3583,7 +3585,7 @@ def on_text(m):
                t(lang, "b_grammar"): send_grammar, t(lang, "b_phon"): send_phonetics, t(lang, "b_texts"): send_texts, t(lang, "b_adult"): send_adult,
                t(lang, "b_sched"): send_schedule, t(lang, "b_practice"): send_practice,
                t(lang, "b_friend"): send_friend, t(lang, "b_trial"): ask_trial, t(lang, "b_rules"): send_rules,
-               t(lang, "b_book"): booking.start, t(lang, "b_topics"): tutors.send_topics, t(lang, "b_records"): tutors.send_records}
+               t(lang, "b_book"): booking.start, t(lang, "b_china"): send_china, t(lang, "b_topics"): tutors.send_topics, t(lang, "b_records"): tutors.send_records}
     if txt in actions:
         return actions[txt](uid)
     if txt == t(lang, "b_channel"):
@@ -3910,6 +3912,7 @@ if __name__ == "__main__":
             bot.set_my_commands([
                 types.BotCommand("admin", "панель преподавателя"), types.BotCommand("schedule", "мои уроки"),
                 types.BotCommand("teachers", "преподаватели и запись на занятия"), types.BotCommand("myteacher", "мой профиль преподавателя"),
+                types.BotCommand("book", "записаться на занятия (как у ученика)"),
                 types.BotCommand("menu", "меню"), types.BotCommand("backup", "копия базы"),
                 types.BotCommand("csv", "уроки и оплаты за месяц"), types.BotCommand("hw", "открытые домашки"),
                 types.BotCommand("practice", "практика"), types.BotCommand("groups", "группы учеников"),

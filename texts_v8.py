@@ -177,7 +177,7 @@ P["zh"] = {
     "ref_r1": "🎟 朋友启动机器人：今天单词练习里 +3 条命",
     "ref_r2": "🖌 朋友预约试听课：Laziza 送你一个中文名和一张书法卡片",
     "ref_r3": "🎁 朋友开始上课：赠送一节 30 分钟的口语课",
-    "ref_welcome": "{name} 邀请了你 🌿 Laziza 的第一节试听课免费：点菜单里的“📝 试听课”。",
+    "ref_welcome": "{name} 邀请了你 🌿 Laziza 的第一节试听课免费：打开菜单里的“📅 预约上课”。",
     "ref_got1": "🎉 你的朋友 {friend} 启动了机器人！\n{reward}",
     "ref_got2": "🎉 你的朋友 {friend} 预约了试听课！\n{reward}\nLaziza 很快会联系你。",
     "ref_got3": "🎉 你的朋友 {friend} 开始上课了！\n{reward}\nLaziza 很快会联系你。",
