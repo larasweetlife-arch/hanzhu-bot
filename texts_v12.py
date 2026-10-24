@@ -8,6 +8,7 @@ P = {}
 P["ru"] = {
     "b_book": "📅 Записаться на занятия",
     "b_china": "🎓 Поступление в Китай",
+    "menu_updated": "🔄 Меню обновилось: загляни, там новое 🍵",
     "china_soon": "🎓 <b>Консультация по поступлению в Китай</b>\n\nЭтот раздел в разработке и скоро появится 🍵",
     "bk_none": "📅 <b>Запись на занятия</b>\n\nПреподаватели появятся здесь совсем скоро 🍵\nА пока можно оставить заявку на пробный урок: Лазиза свяжется с тобой.",
     "bk_trial_btn": "📝 Заявка на пробный урок",
@@ -43,6 +44,7 @@ P["ru"] = {
 P["uz"] = {
     "b_book": "📅 Darsga yozilish",
     "b_china": "🎓 Xitoyga o'qishga kirish",
+    "menu_updated": "🔄 Menyu yangilandi: ichida yangilik bor 🍵",
     "china_soon": "🎓 <b>Xitoyga o'qishga kirish bo'yicha maslahat</b>\n\nBu bo'lim ishlab chiqilmoqda va tez orada paydo bo'ladi 🍵",
     "bk_none": "📅 <b>Darsga yozilish</b>\n\nO'qituvchilar tez orada shu yerda paydo bo'ladi 🍵\nHozircha sinov darsiga ariza qoldirishingiz mumkin: Laziza siz bilan bog'lanadi.",
     "bk_trial_btn": "📝 Sinov darsiga ariza",
@@ -78,6 +80,7 @@ P["uz"] = {
 P["en"] = {
     "b_book": "📅 Book a lesson",
     "b_china": "🎓 Study in China",
+    "menu_updated": "🔄 The menu has been updated: take a look, there is something new 🍵",
     "china_soon": "🎓 <b>Admission consultation for China</b>\n\nThis section is under development and will be available soon 🍵",
     "bk_none": "📅 <b>Book a lesson</b>\n\nTeachers will appear here very soon 🍵\nIn the meantime you can request a trial lesson and Laziza will get in touch.",
     "bk_trial_btn": "📝 Request a trial lesson",
@@ -113,6 +116,7 @@ P["en"] = {
 P["zh"] = {
     "b_book": "📅 预约上课",
     "b_china": "🎓 留学中国咨询",
+    "menu_updated": "🔄 菜单已更新，快来看看有什么新功能 🍵",
     "china_soon": "🎓 <b>中国留学申请咨询</b>\n\n此功能正在开发中，很快上线 🍵",
     "bk_none": "📅 <b>预约上课</b>\n\n老师很快就会出现在这里 🍵\n现在你可以先申请试听课，Laziza 会联系你。",
     "bk_trial_btn": "📝 申请试听课",

@@ -728,10 +728,42 @@ def announce_version():
     try:
         if f.is_file() and f.read_text().strip() == VERSION:
             return
-        bot.send_message(OWNER_ID, f"🐉 Бот запущен: версия {VERSION}.\nВ ней: {VERSION_INFO}.\nНажми /start, чтобы обновилось меню.")
+        bot.send_message(OWNER_ID, f"🐉 Бот запущен: версия {VERSION}.\nВ ней: {VERSION_INFO}.\nМеню у всех обновится само.")
         f.write_text(VERSION)
     except Exception as e:
         logging.warning("не удалось сообщить о версии: %s", e)
+
+
+MENU_VERSION = "2"          # поднимай, только когда меняется меню (кнопки): тогда всем один раз обновится клавиатура
+
+
+def refresh_menus():
+    """После выкладки с новым меню один раз тихо отправляем всем клавиатуру заново:
+    Telegram хранит старую у пользователя, пока бот не пришлёт новую."""
+    f = db.DATA_DIR / "menu_version.txt"
+    try:
+        if f.is_file() and f.read_text().strip() == MENU_VERSION:
+            return
+        f.write_text(MENU_VERSION)               # отмечаем сразу: при перезапуске не пишем второй раз
+    except Exception as e:
+        logging.warning("не удалось проверить версию меню: %s", e)
+        return
+
+    def run():
+        sent = 0
+        for u in db.all_users():
+            if not u.get("level"):               # знакомство не закончено: меню им ещё не показывали
+                continue
+            uid = u["user_id"]
+            if safe_send(uid, t(lang_of(uid), "menu_updated"), reply_markup=kb_main(uid), disable_notification=True):
+                sent += 1
+            time.sleep(0.06)                     # укладываемся в лимиты Telegram
+        logging.info("меню обновлено у %s пользователей", sent)
+        try:
+            bot.send_message(OWNER_ID, f"🔄 Меню обновилось у {sent} пользователей.")
+        except Exception:
+            pass
+    threading.Thread(target=run, daemon=True).start()
 
 
 @bot.message_handler(commands=["about"])
@@ -3931,5 +3963,6 @@ if __name__ == "__main__":
     threading.Thread(target=scheduler.loop, args=(send_reminder, send_weekly, send_digest, (hw_hook, kpi_hook, board_hook, parent_hook, booking.hook, tutors.hook, tutors2.hook, chacha.hook)), daemon=True).start()
     start_webapp()
     announce_version()
+    refresh_menus()
     print("🐉 汉助 HanZhu запущен. Останови сочетанием Ctrl+C.")
     bot.infinity_polling(skip_pending=True, timeout=30)
