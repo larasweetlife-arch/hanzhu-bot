@@ -32,6 +32,7 @@ import threading
 import time
 from datetime import datetime, timedelta
 
+import requests
 import telebot
 from telebot import types
 
@@ -60,6 +61,7 @@ import dictionary
 import practice
 import quest
 import booking
+import cabinet
 import tutors
 import tutors2
 import ads
@@ -73,10 +75,8 @@ from texts_v8 import WISHES
 
 TOKEN = os.environ.get("BOT_TOKEN", "").strip()
 OWNER_ID = int(os.environ.get("OWNER_ID", "0") or 0)
-# Оплата продления практики не через Telegram Stars. Эти три строки задаёшь ты в переменных хостинга:
-PAY_INFO = os.environ.get("PAY_INFO", "").strip()      # как оплатить: название получателя/магазина, номер карты или реквизиты без личных данных
-PAY_PRICE = os.environ.get("PAY_PRICE", "").strip()    # например «39 000 сум»
-PAY_URL = os.environ.get("PAY_URL", "").strip()        # ссылка на оплату (Payme, Click, Uzum или эквайринг с Visa/UnionPay), по желанию
+# Расширенная практика покупается за Telegram Stars (цена в звёздах; меняется переменной PRO_STARS, по умолчанию 250).
+PRO_STARS = int(os.environ.get("PRO_STARS", "250") or 250)
 PRO_DAYS = int(os.environ.get("PRO_DAYS", "30") or 30)
 WEBAPP_URL = os.environ.get("WEBAPP_URL", "").strip().strip("\"'").rstrip("/")   # адрес Mini App (https://...)
 if WEBAPP_URL and not WEBAPP_URL.lower().startswith(("http://", "https://")):
@@ -97,6 +97,10 @@ if not TOKEN or TOKEN.startswith("ВСТАВЬ"):
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(levelname)s  %(message)s")
 _unpack_assets()
 bot = telebot.TeleBot(TOKEN, parse_mode="HTML")
+# Обрыв связи с серверами Telegram (Connection reset, Read timed out) бывает у любого хостинга: пробуем ещё раз, а не теряем нажатие.
+telebot.apihelper.RETRY_ON_ERROR = True
+telebot.apihelper.MAX_RETRIES = 3
+telebot.apihelper.RETRY_TIMEOUT = 2
 
 
 # Telegram не принимает сообщения длиннее 4096 символов: бот молча «ничего не делает».
@@ -169,14 +173,33 @@ bot.answer_callback_query = _answer_cb_safe
 
 
 # Ошибки в обработчиках больше не теряются в журнале: владелица получает короткое сообщение (не чаще раза в 30 минут на один вид ошибки).
+# Обрывы связи с Telegram (после автоповтора) сюда не попадают: они пишутся только в журнал. Если их много подряд,
+# владелица получает одно общее предупреждение не чаще раза в час.
+_NET_ERRORS = (ConnectionError, TimeoutError, requests.exceptions.ConnectionError, requests.exceptions.Timeout,
+               requests.exceptions.ChunkedEncodingError)
+
+
 class _ErrorReporter(telebot.ExceptionHandler):
     seen = {}
+    net = []                      # когда были обрывы связи (для общего предупреждения)
+    net_warned = 0
 
     def handle(self, exception):
+        now = time.time()
+        if isinstance(exception, _NET_ERRORS):
+            logging.warning("обрыв связи с Telegram: %r", exception)
+            self.net = [x for x in self.net if now - x < 600] + [now]
+            try:
+                if OWNER_ID and len(self.net) >= 20 and now - self.net_warned > 3600:
+                    self.net_warned = now
+                    _orig_send_message(OWNER_ID, "⚠️ Связь бота с Telegram сейчас нестабильна: за 10 минут больше 20 обрывов. "
+                                       "Обычно это проходит само. Если не проходит, посмотри журнал и состояние сервиса на Railway.")
+            except Exception:
+                pass
+            return True
         logging.error("ошибка в обработчике: %r", exception, exc_info=exception)
         try:
             key = f"{type(exception).__name__}:{str(exception)[:80]}"
-            now = time.time()
             if OWNER_ID and now - self.seen.get(key, 0) > 1800 and "Forbidden" not in str(exception):
                 self.seen[key] = now
                 _orig_send_message(OWNER_ID, "⚠️ <b>Ошибка в боте</b> (пользователь мог увидеть, что кнопка ничего не сделала)\n\n"
@@ -1071,9 +1094,49 @@ def cb_attendance(c):
         bot.send_message(uid, t(lang, "att_yes"))
         notify_owner(f"✅ {name} подтвердил(а) занятие {when}")
     else:
-        STATE[uid] = {"step": "absent_reason",
-                      "data": {"iso": iso, "late": (lesson - now) < timedelta(hours=3)}}
-        bot.send_message(uid, t(lang, "att_ask"))
+        if db.lesson_cancelled(uid, iso):
+            return bot.send_message(uid, t(lang, "cr_dup"))
+        k = types.InlineKeyboardMarkup(row_width=2)
+        k.add(*[types.InlineKeyboardButton(t(lang, "cr_" + code), callback_data=f"cr:{code}:{iso}") for code in cabinet.REASONS])
+        bot.send_message(uid, t(lang, "att_ask"), reply_markup=k)
+
+
+def _cancel_done(uid, iso, res):
+    """Ответ ученику после отмены занятия (через кнопки напоминания)."""
+    lang = lang_of(uid)
+    if res.get("err"):
+        return bot.send_message(uid, t(lang, "att_past" if res["err"] in ("past", "nolesson") else "cr_dup"), reply_markup=kb_main(uid))
+    when = cabinet.when_label(cabinet.parse(iso), lang)
+    if res.get("force_pending"):
+        txt = t(lang, "cr_force_wait", support=t(lang, "cr_support"))
+    elif res.get("code") == "force":
+        txt = t(lang, "cr_force_free", support=t(lang, "cr_support"), when=when)
+    elif res.get("late"):
+        txt = t(lang, "att_late", when=when)
+    else:
+        txt = t(lang, "cr_free", when=when)
+    bot.send_message(uid, txt, reply_markup=kb_main(uid))
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("cr:"))
+def cb_cancel_reason(c):
+    uid, lang = c.from_user.id, lang_of(c.from_user.id)
+    bot.answer_callback_query(c.id)
+    try:
+        _, code, iso = c.data.split(":", 2)
+        cabinet.parse(iso)
+    except ValueError:
+        return
+    if code not in cabinet.REASONS:
+        return
+    try:
+        bot.edit_message_reply_markup(uid, c.message.message_id, reply_markup=None)
+    except Exception:
+        pass
+    if code in ("force", "other"):                     # здесь нужен короткий рассказ своими словами
+        STATE[uid] = {"step": "cancel_text", "data": {"iso": iso, "code": code}}
+        return bot.send_message(uid, t(lang, "cr_text"))
+    _cancel_done(uid, iso, cabinet.student_cancel(uid, iso, code))
 
 
 def send_backup(chat_id, caption="🗄 Копия базы. Сохрани файл в надёжное место."):
@@ -1196,6 +1259,25 @@ def owner_only(handler):
             return bot.answer_callback_query(c.id)
         return handler(c)
     return wrapper
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("cf:"))
+@owner_only
+def cb_force(c):
+    """Лазиза решает: форс-мажор или нет."""
+    _, act, lid = c.data.split(":")
+    res = cabinet.force_decide(int(lid), act == "ok")
+    if res.get("err"):
+        return bot.answer_callback_query(c.id, "Уже обработано")
+    bot.answer_callback_query(c.id, "Готово")
+    r = db.log_get(int(lid))
+    when = cabinet.parse(r["lesson"]).strftime("%d.%m %H:%M")
+    verdict = (f"🆘 Форс-мажор: урок {when} у {_name_of(r['user_id'])} не списан." if act == "ok"
+               else f"✖️ Не форс-мажор: урок {when} у {_name_of(r['user_id'])} списан.")
+    try:
+        bot.edit_message_text(verdict, c.message.chat.id, c.message.message_id)
+    except Exception:
+        pass
 
 
 @bot.callback_query_handler(func=lambda c: c.data == "a:stats")
@@ -1381,11 +1463,12 @@ def cb_nudge(c):
 def lesson_balance_alert(sid):
     _, _, left = db.balance(sid)
     if left < 0:
-        notify_owner(f"⚠️ У ученика долг: {abs(left)} ур.")
+        notify_owner(f"⚠️ У {_name_of(sid)} долг: {abs(left)} ур.")
     elif left == 0:
-        notify_owner("🟡 Оплаченные уроки закончились. Пора напомнить об оплате.")
+        notify_owner(f"🟡 У {_name_of(sid)} оплаченные уроки закончились. Пора напомнить об оплате.")
     elif left == 1:
-        notify_owner("ℹ️ Остался 1 оплаченный урок.")
+        notify_owner(f"ℹ️ У {_name_of(sid)} остался 1 оплаченный урок.")
+        safe_send(sid, t(lang_of(sid), "left1"))
 
 
 @bot.callback_query_handler(func=lambda c: c.data.startswith("adx:"))
@@ -2045,35 +2128,22 @@ def cb_extend(c):
     if is_owner(uid):
         return
     if act == "info":
-        if not (PAY_INFO or PAY_URL):                         # способ оплаты ещё не задан: просим написать преподавателю
+        if not STARS_ON:                                      # звёзды выключены переменной STARS_ON: просим написать преподавателю
             u = db.get_user(uid) or {}
-            sent = notify_owner(f"💳 <b>{esc(u.get('name') or '?')}</b> (@{esc(u.get('username') or '—')}) хочет продлить практику. "
-                                f"Задай PAY_INFO/PAY_URL, чтобы бот сам присылал реквизиты.\n\n<i>Ответь на это сообщение, и я перешлю ответ.</i>")
+            sent = notify_owner(f"💳 <b>{esc(u.get('name') or '?')}</b> (@{esc(u.get('username') or '—')}) хочет продлить практику, "
+                                f"но оплата звёздами выключена (STARS_ON).\n\n<i>Ответь на это сообщение, и я перешлю ответ.</i>")
             if sent:
                 db.save_inbox(sent.message_id, uid)
             return bot.send_message(uid, t(lang, "lx_off"))
-        rows = []
-        if PAY_URL.lower().startswith("http"):
-            k = types.InlineKeyboardMarkup()
-            k.row(types.InlineKeyboardButton(t(lang, "lx_url"), url=PAY_URL))
-            k.row(types.InlineKeyboardButton(t(lang, "lx_paid"), callback_data="lx:paid"))
-        else:
-            k = ikb([[(t(lang, "lx_paid"), "lx:paid")]])
-        return bot.send_message(uid, t(lang, "lx_info", base=base, pro=base * db.PRO_MULT, days=PRO_DAYS,
-                                       price=esc(PAY_PRICE or "—"), pay=esc(PAY_INFO or "—")), reply_markup=k,
-                                disable_web_page_preview=True)
-    if act == "paid":
-        rid, new = db.lx_open(uid)
-        if not new:
-            return bot.send_message(uid, t(lang, "lx_dup"))
-        u = db.get_user(uid) or {}
-        sent = notify_owner(f"💳 <b>{esc(u.get('name') or '?')}</b> (@{esc(u.get('username') or '—')}) нажал(а) «Я оплатил(а)»: "
-                            f"расширенная практика на {PRO_DAYS} дней" + (f", {esc(PAY_PRICE)}" if PAY_PRICE else "") + ".\n"
-                            f"Проверь поступление и подтверди.",
-                            reply_markup=ikb([[("✅ Оплата пришла", f"lx:ok:{rid}"), ("❌ Не нашёл", f"lx:no:{rid}")]]))
-        if sent:
-            db.save_inbox(sent.message_id, uid)
-        return bot.send_message(uid, t(lang, "lx_sent"))
+        nonce = "".join(random.choice("abcdefghjkmnpqrstuvwxyz23456789") for _ in range(10))
+        title = t(lang, "lx_title")
+        try:
+            return bot.send_invoice(uid, title=title, description=t(lang, "lx_desc", pro=base * db.PRO_MULT, days=PRO_DAYS),
+                                    invoice_payload=f"px:{uid}:{nonce}", provider_token="", currency="XTR",
+                                    prices=[types.LabeledPrice(label=title, amount=PRO_STARS)])
+        except Exception as e:
+            logging.warning("счёт на продление практики не отправился: %s", e)
+            return bot.send_message(uid, t(lang, "lx_off"))
 
 
 # ─── ПРОБНЫЙ УРОК И «ПРИВЕДИ ДРУГА» ──────────────────────────────────────────
@@ -2255,38 +2325,42 @@ def finish_move(uid, txt):
         return bot.send_message(uid, t(lang, "mv_bad"))
     STATE.pop(uid, None)
     orig = st["data"]["orig"]
-    new_iso = new.strftime("%Y-%m-%dT%H:%M")
-    if new_iso == orig:
+    res = cabinet.request_move(uid, orig, new.strftime("%Y-%m-%dT%H:%M"))
+    if res.get("err") in ("same", "past", "bad", "far"):
         return bot.send_message(uid, t(lang, "mv_bad"))
-    mid = db.move_add(uid, orig, new_iso)
-    clash = [x for dt, x in scheduler.occurrences(now, db.all_schedules(), db.moves_ok(), days=31)
-             if dt == new and x["user_id"] != uid]
-    o = datetime.strptime(orig, "%Y-%m-%dT%H:%M")
-    text = (f"🔄 <b>{_name_of(uid)}</b> просит перенести урок\n{o.strftime('%d.%m %H:%M')} → "
-            f"<b>{new.strftime('%d.%m %H:%M')}</b> ({WEEKDAYS['ru'][new.weekday()]})")
-    if clash:
-        text += f"\n⚠️ В это время уже урок с {esc(clash[0].get('name') or '—')}"
-    notify_owner(text, reply_markup=ikb([[("✅ Подтвердить", f"mvy:{mid}"), ("✖️ Отказать", f"mvn:{mid}")]]))
+    if res.get("err"):
+        return bot.send_message(uid, t(lang, "mv_dup"), reply_markup=kb_main(uid))
     bot.send_message(uid, t(lang, "mv_sent"), reply_markup=kb_main(uid))
 
 
 def _move_answer(c, ok):
     mid = int(c.data.split(":")[1])
-    m = db.move_get(mid)
-    if not m or m["status"] != "pending":
+    m = cabinet.move_decide(mid, ok)
+    if not m:
         bot.answer_callback_query(c.id, "Уже обработано")
         return None
-    db.move_set(mid, "ok" if ok else "no")
     bot.answer_callback_query(c.id, "Готово")
     uid = m["user_id"]
-    lang = lang_of(uid)
     new = datetime.strptime(m["new"], "%Y-%m-%dT%H:%M")
     verdict = f"{'✅ Перенос подтверждён' if ok else '✖️ Отказала'}: {_name_of(uid)}, {new.strftime('%d.%m %H:%M')}"
     try:
         bot.edit_message_text(verdict, c.message.chat.id, c.message.message_id)
     except Exception:
         pass
-    safe_send(uid, t(lang, "mv_ok", when=when_label(new, lang)) if ok else t(lang, "mv_no"))
+
+
+@bot.callback_query_handler(func=lambda c: c.data.startswith("mvo:"))
+@owner_only
+def cb_move_other(c):
+    """Лазиза предлагает другое время вместо запрошенного: пишет день и время, перенос действует сразу."""
+    mid = int(c.data.split(":")[1])
+    m = db.move_get(mid)
+    if not m or m["status"] != "pending":
+        return bot.answer_callback_query(c.id, "Уже обработано")
+    bot.answer_callback_query(c.id)
+    STATE[c.from_user.id] = {"step": "move_other", "data": {"mid": mid}}
+    bot.send_message(c.from_user.id, f"Напиши новое время для {_name_of(m['user_id'])}, например: пт 18:00 или 12.11 17:30. "
+                                     "Перенос сразу вступит в силу, ученик получит уведомление.")
 
 
 @bot.callback_query_handler(func=lambda c: c.data.startswith("mvy:"))
@@ -3403,6 +3477,8 @@ tutors.register(bot, OWNER_ID, lang_of, dict(
     HW_MEDIA_MAX=HW_MEDIA_MAX, labels=menu_labels))
 tutors2.register(bot, OWNER_ID, lang_of, kb_main)
 ads.register(bot, OWNER_ID, lang_of, notify_owner, STARS_ON)
+cabinet.ctx.update(notify_owner=notify_owner, send=safe_send, ikb=ikb, lang_of=lang_of,
+                   balance_alert=lesson_balance_alert, after_held=maybe_ask_review)
 send_phonetics = phonetics.register(bot, lang_of, lambda: WEBAPP_URL)
 chacha.register(bot, OWNER_ID, lang_of, lambda u: send_practice(u))
 
@@ -3501,17 +3577,21 @@ def on_text(m):
             return bot.send_message(uid, t(lang, "rv_public"),
                                     reply_markup=ikb([[(t(lang, "rv_yes"), "rv:p:1"), (t(lang, "rv_no"), "rv:p:0")]]))
 
-        if step == "absent_reason":
+        if step == "cancel_text":
             STATE.pop(uid, None)
-            reason = txt[:300]
-            db.save_attendance(uid, d["iso"], "no", reason)
-            bot.send_message(uid, t(lang, "att_late" if d["late"] else "att_ok"))
-            u = db.get_user(uid) or {}
-            when = datetime.strptime(d["iso"], "%Y-%m-%dT%H:%M").strftime("%d.%m %H:%M")
-            msg = f"❌ {esc(u.get('name') or '?')} не сможет прийти {when}\nПричина: {esc(reason)}"
-            if d["late"]:
-                msg += "\n⚠️ Меньше чем за 3 часа до урока: по условиям урок оплачивается."
-            return notify_owner(msg)
+            return _cancel_done(uid, d["iso"], cabinet.student_cancel(uid, d["iso"], d["code"], txt))
+
+        if step == "move_other" and is_owner(uid):
+            STATE.pop(uid, None)
+            mv = db.move_get(d["mid"])
+            new = practice.parse_when(txt, datetime.now(db.TZ))
+            if not mv or mv["status"] != "pending" or not new:
+                return bot.send_message(uid, "Не поняла время или запрос уже обработан. Нажми «🕐 Другое время» ещё раз и напиши, например: пт 18:00")
+            res = cabinet.teacher_move(mv["user_id"], mv["orig"], new.strftime("%Y-%m-%dT%H:%M"), "student", d["mid"], allow_clash=True)
+            if res.get("err"):
+                return bot.send_message(uid, f"Не получилось перенести ({res['err']}).")
+            extra = f"\n⚠️ В это время уже урок с {esc(res['clash'])}" if res.get("clash") else ""
+            return bot.send_message(uid, f"✅ Перенесла урок {_name_of(mv['user_id'])} на {new.strftime('%d.%m %H:%M')}. Ученик получил уведомление.{extra}")
 
         if is_owner(uid):
             sid = d.get("uid")
@@ -3732,6 +3812,9 @@ def on_pre_checkout(q):
                 ok = pl[3:].isdigit() and int(pl[3:]) in quest.DONATE_STARS and q.total_amount == int(pl[3:])
             elif pl.startswith("ax:"):
                 ok = ads.precheck(q)
+            elif pl.startswith("px:"):
+                parts = pl.split(":")
+                ok = len(parts) == 3 and parts[1] == str(q.from_user.id) and q.total_amount == PRO_STARS
             else:
                 parsed = quest.parse_payload(pl)
                 if parsed:
@@ -3767,6 +3850,17 @@ def on_successful_payment(m):
             return
         if pl.startswith("ax:"):
             return ads.on_paid(uid, stars, charge, pl)
+        if pl.startswith("px:"):
+            parts = pl.split(":")
+            if len(parts) != 3 or parts[1] != str(uid):
+                notify_owner(f"⚠️ Оплата продления практики {stars} ⭐ от {_who(uid)}, но платёж не опознан (payload: {esc(pl)}).\n"
+                             f"Номер операции для возврата: <code>{esc(charge)}</code>. Команда: /refund {esc(charge)}")
+                return
+            if quest.log_pro(uid, stars, charge, parts[2]):
+                until = db.game_set_pro(uid, PRO_DAYS, practice.LIVES_PER_DAY)
+                bot.send_message(uid, t(lang, "lx_ok", until=_fmt_full(until), pro=practice.LIVES_PER_DAY * db.PRO_MULT))
+                notify_owner(f"⭐ Расширенная практика: <b>{stars} ⭐</b> от {_who(uid)}, до {_fmt_full(until)}")
+            return
         parsed = quest.parse_payload(pl)
         res = quest.grant_stars(uid, parsed[0], stars, charge, parsed[2]) if parsed else None
         if res is None:
@@ -3789,7 +3883,7 @@ def cmd_stars(m):
         return
     r = quest.stars_report(30)
     tot, mon = r["total"], r["month"]
-    names = {"life": "жизнь", "refill": "все жизни", "extra": "ещё одна сцена", "donate": "поддержка проекта"}
+    names = {"life": "жизнь", "refill": "все жизни", "extra": "ещё одна сцена", "donate": "поддержка проекта", "pro": "расширенная практика"}
     names.update({k: f"{v[0]} монет" for k, v in themes.PACKS.items()})
     def label(i):
         return names.get(i) or ("наряд" if i.startswith("skin") else "оформление «" + themes.BY_ID[i[6:]]["name"]["ru"] + "»" if i.startswith("theme_") and i[6:] in themes.BY_ID else i)
@@ -3906,7 +4000,7 @@ def start_webapp():
     try:
         import webapp
         deps = {"token": TOKEN, "owner_id": OWNER_ID, "bot_username": bot_username, "notify_owner": notify_owner,
-                "ikb": ikb, "pay": {"info": PAY_INFO, "price": PAY_PRICE, "url": PAY_URL, "days": PRO_DAYS},
+                "ikb": ikb, "pay": {"stars": PRO_STARS, "days": PRO_DAYS},
                 "webapp_url": WEBAPP_URL,
                 "create_invoice": make_invoice_link if STARS_ON else None,
                 "donate": {"on": True, "card": bool(DONATE_INFO or DONATE_URL)}}

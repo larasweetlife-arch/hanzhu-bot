@@ -101,6 +101,8 @@ def tick(now, send_reminder, send_weekly, send_digest=None, hooks=()):
         key = f"{kind}:{lesson.strftime('%Y-%m-%dT%H:%M')}"
         if db.was_sent(slot["user_id"], key):
             continue
+        if db.lesson_cancelled(slot["user_id"], lesson.strftime("%Y-%m-%dT%H:%M")):     # занятие отменено: не напоминаем
+            continue
         db.mark_sent(slot["user_id"], key)   # сперва отмечаем, чтобы не слать дважды
         try:
             send_reminder(kind, slot, lesson)

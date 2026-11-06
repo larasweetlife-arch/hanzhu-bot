@@ -667,6 +667,16 @@ def log_donation(uid, stars, charge_id):
         return True
 
 
+def log_pro(uid, stars, charge_id, nonce=""):
+    """Записывает оплату расширенной практики. True, если оплата новая (по номеру операции повторно не засчитывается)."""
+    with _LOCK, db._conn() as c:
+        if c.execute("SELECT 1 FROM quest_pay WHERE charge_id=?", (charge_id,)).fetchone():
+            return False
+        c.execute("INSERT INTO quest_pay (charge_id, nonce, user_id, item, stars, ts) VALUES (?,?,?,?,?,?)",
+                  (charge_id, nonce, uid, "pro", stars, db.today()))
+        return True
+
+
 def pay_lookup(charge_id):
     with db._conn() as c:
         return _row(c, "SELECT * FROM quest_pay WHERE charge_id=?", (charge_id,))

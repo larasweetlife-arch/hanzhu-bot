@@ -28,6 +28,7 @@ def _jb():
     return b if isinstance(b, dict) else {}
 
 import db
+import cabinet
 import practice
 import quest
 import themes
@@ -163,7 +164,7 @@ def create_app(deps):
 
     NEED = ["index.html", "app.js", "app.css", "i18n.js", "quest.js", "quest.css", "quest_game.css",
             "quest_art.js", "quest_world.js", "quest_world2.js", "quest_world3.js", "quest_i18n.js", "chacha/chacha_wave.webp",
-            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "progress.js", "consent.js", "home_i18n.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
+            "hanzi-writer.min.js", "hanzi.js", "hanzi.css", "tones.js", "phon.js", "locker.js", "progress.js", "consent.js", "home_i18n.js", "cabinet.js", "hz/s0.json", "hz/s15.json", "hz/ARPHICPL.TXT"]
     missing = [f for f in NEED if not os.path.isfile(os.path.join(STATIC, f))]
     if missing:
         logging.error("Mini App: в папке %s НЕТ файлов: %s (загрузите на GitHub всю папку webapp_static целиком)", STATIC, ", ".join(missing))
@@ -223,7 +224,7 @@ def create_app(deps):
         if nick and nick_date:
             can_change = datetime.strptime(nick_date, "%Y-%m-%d").date() + timedelta(days=practice.NICK_CHANGE_DAYS) <= now_tz().date()
         return {
-            "lang": lang, "is_owner": bool(OWNER and uid == OWNER), "nick": nick, "can_change_nick": can_change,
+            "lang": lang, "is_owner": bool(OWNER and uid == OWNER), "cab": "owner" if (OWNER and uid == OWNER) else ("student" if u.get("is_student") else None), "nick": nick, "can_change_nick": can_change,
             "joined": joined, "coins": g["coins"], "served": g["served"], "streak": g["streak"],
             "lives": g["lives"], "lives_max": lives_max(g), "pro_until": g.get("pro_until") if db.pro_active(g) else None,
             "rank": {"emoji": emoji, "key": tkey, "title": t(lang, tkey), "from": th, "to": nxt, "level": [r[0] for r in practice.TITLES].index(th)},
@@ -236,8 +237,8 @@ def create_app(deps):
                      "streak": gstreak},
             "invite": {"link": link, "joined": rs["joined"], "trial": rs["trial"], "paid": rs["paid"],
                        "disc_queue": dq["queued"], "disc_until": dq["active"]["end"] if dq["active"] else None},
-            "pay": {"on": bool(PAY.get("info") or PAY.get("url")), "price": PAY.get("price") or "", "info": PAY.get("info") or "",
-                    "url": PAY.get("url") or "", "days": PAY.get("days") or 30, "pro_lives": practice.LIVES_PER_DAY * db.PRO_MULT},
+            "pay": {"on": bool(deps.get("create_invoice")), "stars": PAY.get("stars") or 250, "days": PAY.get("days") or 30,
+                    "pro_lives": practice.LIVES_PER_DAY * db.PRO_MULT},
             "limits": {"nick_min": practice.NICK_MIN, "nick_max": practice.NICK_MAX},
             "links": {"instagram": INSTAGRAM_URL, "channel": CHANNEL_URL, "threads": THREADS_URL},
         }
@@ -699,29 +700,121 @@ def create_app(deps):
                     db.game_save(uid, coins=g["coins"] + 5)
             return jsonify(res)
 
-    # ── продление практики без Stars ──
-    @app.route("/api/pay/paid", methods=["POST"])
-    @need_auth
-    def api_paid(tg, lang, u):
+    # ── кабинеты: ученик (только своё) и преподаватель (всё, только владелица) ──
+    def cab_role(tg):
         uid = tg["id"]
-        rid, new = db.lx_open(uid)
-        if new:
-            sent = deps["notify_owner"](
-                f"💳 <b>{html.escape(u.get('name') or '?')}</b> (@{html.escape(u.get('username') or '—')}) нажал(а) «Я оплатил(а)» в Mini App: "
-                f"расширенная практика на {PAY.get('days', 30)} дней" + (f", {html.escape(PAY.get('price'))}" if PAY.get("price") else "") +
-                ".\nПроверь поступление и подтверди.",
-                reply_markup=deps["ikb"]([[("✅ Оплата пришла", f"lx:ok:{rid}"), ("❌ Не нашла", f"lx:no:{rid}")]]))
-            if sent:
-                db.save_inbox(sent.message_id, uid)
-        return jsonify({"ok": True, "dup": not new})
+        if OWNER and uid == OWNER:
+            return "owner"
+        return "student" if (db.get_user(uid) or {}).get("is_student") else None
+
+    def _int(v, default=0):
+        try:
+            return int(v)
+        except (TypeError, ValueError):
+            return default
+
+    def _s(v, n=300):
+        return v.strip()[:n] if isinstance(v, str) else ""
+
+    @app.route("/api/cab/me", methods=["POST"])
+    @need_auth
+    def cab_me(tg, lang, u):
+        role = cab_role(tg)
+        if role == "student":
+            return jsonify({"role": "student", **cabinet.student_view(tg["id"])})
+        if role == "owner":
+            b = _jb()
+            off = max(-28, min(28, _int(b.get("offset"), 0)))
+            return jsonify({"role": "owner", "offset": off, "week": cabinet.owner_week(off, 7),
+                            "students": cabinet.owner_students(), "pending": cabinet.owner_pending()})
+        return jsonify({"role": None})
+
+    @app.route("/api/cab/student", methods=["POST"])
+    @need_auth
+    def cab_student(tg, lang, u):
+        if cab_role(tg) != "owner":
+            return jsonify({"error": "forbidden"}), 403
+        card = cabinet.owner_student(_int(_jb().get("uid")))
+        return jsonify(card or {"err": "none"})
+
+    @app.route("/api/cab/cancel", methods=["POST"])
+    @need_auth
+    def cab_cancel(tg, lang, u):
+        role, b = cab_role(tg), _jb()
+        if role == "student":
+            return jsonify(cabinet.student_cancel(tg["id"], _s(b.get("iso"), 20), _s(b.get("code"), 12), _s(b.get("text"))))
+        if role == "owner":
+            return jsonify(cabinet.owner_cancel(_int(b.get("uid")), _s(b.get("iso"), 20), _s(b.get("code"), 12), _s(b.get("text"))))
+        return jsonify({"error": "forbidden"}), 403
+
+    @app.route("/api/cab/move", methods=["POST"])
+    @need_auth
+    def cab_move(tg, lang, u):
+        role, b = cab_role(tg), _jb()
+        if role == "student":
+            return jsonify(cabinet.request_move(tg["id"], _s(b.get("iso"), 20), _s(b.get("new"), 20)))
+        if role == "owner":
+            rep = _int(b.get("replace")) or None
+            return jsonify(cabinet.teacher_move(_int(b.get("uid")), _s(b.get("iso"), 20), _s(b.get("new"), 20),
+                                                "student" if b.get("who") == "student" else "teacher", rep, bool(b.get("allow_clash"))))
+        return jsonify({"error": "forbidden"}), 403
+
+    @app.route("/api/cab/decide", methods=["POST"])
+    @need_auth
+    def cab_decide(tg, lang, u):
+        if cab_role(tg) != "owner":
+            return jsonify({"error": "forbidden"}), 403
+        b = _jb()
+        ok = bool(b.get("ok"))
+        if b.get("kind") == "force":
+            return jsonify(cabinet.force_decide(_int(b.get("id")), ok))
+        m = cabinet.move_decide(_int(b.get("id")), ok)
+        return jsonify({"ok": True} if m else {"err": "done"})
+
+    @app.route("/api/cab/held", methods=["POST"])
+    @need_auth
+    def cab_held(tg, lang, u):
+        if cab_role(tg) != "owner":
+            return jsonify({"error": "forbidden"}), 403
+        b = _jb()
+        return jsonify(cabinet.mark_held(_int(b.get("uid")), _s(b.get("iso"), 20), _s(b.get("topic"), 120)))
+
+    @app.route("/api/cab/pay", methods=["POST"])
+    @need_auth
+    def cab_pay(tg, lang, u):
+        if cab_role(tg) != "owner":
+            return jsonify({"error": "forbidden"}), 403
+        b = _jb()
+        uid = _int(b.get("uid"))
+        if not (db.get_user(uid) or {}).get("is_student"):
+            return jsonify({"err": "none"})
+        return jsonify(cabinet.add_payment(uid, b.get("n")))
+
+    # ── продление практики за Stars ──
+    @app.route("/api/pro/invoice", methods=["POST"])
+    @need_auth
+    def api_pro_invoice(tg, lang, u):
+        """Ссылка на оплату расширенной практики звёздами. Включение — только в обработчике successful_payment бота."""
+        if not deps.get("create_invoice"):
+            return jsonify({"ok": False, "err": "off"})
+        uid = tg["id"]
+        nonce = "".join(random.choice("abcdefghjkmnpqrstuvwxyz23456789") for _ in range(10))
+        title = t(lang, "lx_title")
+        desc = t(lang, "lx_desc", pro=practice.LIVES_PER_DAY * db.PRO_MULT, days=PAY.get("days") or 30)
+        try:
+            link = deps["create_invoice"](title[:32], desc[:250], f"px:{uid}:{nonce}", PAY.get("stars") or 250)
+        except Exception as e:
+            logging.warning("не удалось создать счёт на продление практики: %s", e)
+            return jsonify({"ok": False, "err": "fail"})
+        return jsonify({"ok": True, "link": link, "nonce": nonce})
 
     @app.route("/api/pay/ask", methods=["POST"])
     @need_auth
     def api_pay_ask(tg, lang, u):
-        """Способ оплаты не задан: просим преподавателя связаться с игроком."""
+        """Оплата звёздами выключена (STARS_ON): просим преподавателя связаться с игроком."""
         uid = tg["id"]
-        sent = deps["notify_owner"](f"💳 <b>{html.escape(u.get('name') or '?')}</b> (@{html.escape(u.get('username') or '—')}) хочет продлить практику (Mini App). "
-                                    f"Задай PAY_INFO/PAY_URL, чтобы реквизиты показывались сами.\n\n<i>Ответь на это сообщение, и я перешлю ответ.</i>")
+        sent = deps["notify_owner"](f"💳 <b>{html.escape(u.get('name') or '?')}</b> (@{html.escape(u.get('username') or '—')}) хочет продлить практику (Mini App), "
+                                    f"но оплата звёздами выключена (STARS_ON).\n\n<i>Ответь на это сообщение, и я перешлю ответ.</i>")
         if sent:
             db.save_inbox(sent.message_id, uid)
         return jsonify({"ok": True})

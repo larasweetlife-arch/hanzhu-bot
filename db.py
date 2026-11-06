@@ -161,6 +161,11 @@ def init():
         CREATE TABLE IF NOT EXISTS kpi (
             id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, date TEXT NOT NULL, note TEXT
         );
+        CREATE TABLE IF NOT EXISTS lesson_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, lesson TEXT NOT NULL, kind TEXT NOT NULL,
+            code TEXT, text TEXT, who TEXT, late INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT 'ok',
+            charged INTEGER NOT NULL DEFAULT 0, lesson_id INTEGER, ref INTEGER, created TEXT NOT NULL
+        );
         """)
         # миграция для базы, созданной прошлой версией
         cols = {r["name"] for r in c.execute("PRAGMA table_info(users)")}
@@ -200,6 +205,7 @@ def init():
             "CREATE INDEX IF NOT EXISTS ix_homework_user ON homework(user_id, done)",
             "CREATE INDEX IF NOT EXISTS ix_hwsubs_hw ON hw_subs(hw_id, user_id)",
             "CREATE INDEX IF NOT EXISTS ix_moves_user ON moves(user_id, status)",
+            "CREATE INDEX IF NOT EXISTS ix_lesson_log_user ON lesson_log(user_id, lesson)",
             "CREATE INDEX IF NOT EXISTS ix_reviews_user ON reviews(user_id)",
             "CREATE INDEX IF NOT EXISTS ix_referrals_ref ON referrals(referrer_id)",
             "CREATE INDEX IF NOT EXISTS ix_tea_day ON tea_score(day)",
@@ -290,6 +296,97 @@ def undo_last_lesson(uid):
             return False
         c.execute("DELETE FROM lessons WHERE id=?", (row["id"],))
         return True
+
+
+def lesson_row_add(uid, topic, date=None):
+    """Записывает проведённый (или списанный) урок и возвращает его номер."""
+    with _conn() as c:
+        cur = c.execute("INSERT INTO lessons (user_id, date, topic) VALUES (?,?,?)", (uid, date or today(), topic))
+        return cur.lastrowid
+
+
+def lesson_row_del(lid):
+    with _conn() as c:
+        c.execute("DELETE FROM lessons WHERE id=?", (lid,))
+
+
+def lessons_all(uid, limit=100):
+    with _conn() as c:
+        return [dict(r) for r in c.execute(
+            "SELECT id, date, topic FROM lessons WHERE user_id=? ORDER BY date DESC, id DESC LIMIT ?", (uid, limit))]
+
+
+def payments_all(uid, limit=50):
+    with _conn() as c:
+        return [dict(r) for r in c.execute(
+            "SELECT id, date, lessons, note FROM payments WHERE user_id=? ORDER BY date DESC, id DESC LIMIT ?", (uid, limit))]
+
+
+# журнал отмен и переносов уроков (кабинеты): кто, когда, по какой причине
+def log_add(uid, lesson, kind, code=None, text=None, who=None, late=0, status="ok", charged=0, lesson_id=None, ref=None):
+    with _conn() as c:
+        cur = c.execute("INSERT INTO lesson_log (user_id, lesson, kind, code, text, who, late, status, charged, lesson_id, ref, created) "
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (uid, lesson, kind, code, text, who, int(late), status, int(charged), lesson_id, ref,
+                         datetime.now(TZ).strftime("%Y-%m-%dT%H:%M")))
+        return cur.lastrowid
+
+
+def log_get(lid):
+    with _conn() as c:
+        r = c.execute("SELECT * FROM lesson_log WHERE id=?", (lid,)).fetchone()
+        return dict(r) if r else None
+
+
+def log_set(lid, **kw):
+    if not kw:
+        return
+    with _conn() as c:
+        c.execute(f"UPDATE lesson_log SET {', '.join(k + '=?' for k in kw)} WHERE id=?", (*kw.values(), lid))
+
+
+def log_for_user(uid, limit=40):
+    with _conn() as c:
+        return [dict(r) for r in c.execute("SELECT * FROM lesson_log WHERE user_id=? ORDER BY id DESC LIMIT ?", (uid, limit))]
+
+
+def log_find(uid, lesson, kind):
+    """Последняя запись журнала про это занятие (kind: cancel / move / held) или None."""
+    with _conn() as c:
+        r = c.execute("SELECT * FROM lesson_log WHERE user_id=? AND lesson=? AND kind=? ORDER BY id DESC LIMIT 1",
+                      (uid, lesson, kind)).fetchone()
+        return dict(r) if r else None
+
+
+def log_by_ref(kind, ref):
+    with _conn() as c:
+        r = c.execute("SELECT * FROM lesson_log WHERE kind=? AND ref=? ORDER BY id DESC LIMIT 1", (kind, ref)).fetchone()
+        return dict(r) if r else None
+
+
+def log_pending(kind, statuses):
+    """Все записи журнала данного вида в одном из статусов (для списка «ждут решения»)."""
+    q = ",".join("?" for _ in statuses)
+    with _conn() as c:
+        return [dict(r) for r in c.execute(f"SELECT * FROM lesson_log WHERE kind=? AND status IN ({q}) ORDER BY id", (kind, *statuses))]
+
+
+def lesson_cancelled(uid, lesson):
+    """True, если это занятие отменено (учеником или преподавателем): напоминания о нём не шлём."""
+    with _conn() as c:
+        return bool(c.execute("SELECT 1 FROM lesson_log WHERE user_id=? AND lesson=? AND kind='cancel'", (uid, lesson)).fetchone())
+
+
+def moves_pending(uid=None):
+    with _conn() as c:
+        if uid is None:
+            return [dict(r) for r in c.execute("SELECT * FROM moves WHERE status='pending' ORDER BY id")]
+        return [dict(r) for r in c.execute("SELECT * FROM moves WHERE status='pending' AND user_id=? ORDER BY id", (uid,))]
+
+
+def moves_for_user(uid):
+    with _conn() as c:
+        return [dict(r) for r in c.execute("SELECT * FROM moves WHERE user_id=? ORDER BY id", (uid,))]
 
 
 def lessons_count_since(date):
@@ -600,7 +697,7 @@ def delete_user(uid):
     """Стирает всё, что бот знает об этом человеке. Данные других людей не трогает."""
     with _conn() as c:
         for table in ("lessons", "payments", "tests", "schedule", "attendance", "events", "sent", "seen",
-                      "cards", "prefs", "game", "homework", "moves", "reviews", "kpi", "marathon", "hw_subs", "grp_members", "tea_score", "board", "rewards", "discounts", "lx_requests", "feed", "gifts"):
+                      "cards", "prefs", "game", "homework", "moves", "reviews", "kpi", "marathon", "hw_subs", "grp_members", "tea_score", "board", "rewards", "discounts", "lx_requests", "feed", "gifts", "lesson_log"):
             c.execute(f"DELETE FROM {table} WHERE user_id=?", (uid,))
         c.execute("DELETE FROM parents WHERE parent_id=? OR child_id=?", (uid, uid))
         c.execute("DELETE FROM par_codes WHERE child_id=?", (uid,))
@@ -688,6 +785,7 @@ def export_user(uid):
             "tests": rows("SELECT date, title, score, max_score FROM tests WHERE user_id=? ORDER BY date, id"),
             "schedule": rows("SELECT weekday, time FROM schedule WHERE user_id=? ORDER BY weekday, time"),
             "attendance": rows("SELECT lesson, status, reason, date FROM attendance WHERE user_id=? ORDER BY id"),
+            "lesson_log": rows("SELECT lesson, kind, code, text, who, late, status, created FROM lesson_log WHERE user_id=? ORDER BY id"),
             "homework": rows("SELECT text, due, done, created FROM homework WHERE user_id=? ORDER BY id"),
             "reviews": rows("SELECT rating, text, public, date FROM reviews WHERE user_id=? ORDER BY id"),
             "kpi_notes": rows("SELECT date, note FROM kpi WHERE user_id=? ORDER BY id"),
