@@ -93,7 +93,7 @@ def occurrences(uid, start_offset=0, days=21):
 
 
 def _has_lesson(uid, iso):
-    return any(iso_of(dt) == iso for dt, _ in occurrences(uid, start_offset=-2, days=95))
+    return any(iso_of(dt) == iso for dt, _ in occurrences(uid, start_offset=-120, days=215))
 
 
 def _held_dates(uid):
